@@ -34,7 +34,7 @@
             top: 0; left: 0;
             width: 3072px; /* 3個循環寬度 */
             height: 100vh;
-            background-image: url('../assets/bg_dining_empty_seamless.png');
+            background-image: url('assets/bg_dining_empty_seamless.png');
             background-repeat: repeat-x;
             background-size: auto 100%; /* 高度填滿，寬度等比 */
             image-rendering: pixelated;
@@ -580,10 +580,10 @@
         }
         .npc-sprite:hover { filter: brightness(1.2) drop-shadow(0 0 5px var(--ui-gold)); }
 
-        .npc-chen { content: url('../assets/npc_chen.png'); }
-        .npc-zhao { content: url('../assets/npc_zhao.png'); }
-        .npc-baroness { content: url('../assets/npc_baroness.png'); }
-        .npc-fang { content: url('../assets/npc_fang.png'); }
+        .npc-chen { content: url('assets/npc_chen.png'); }
+        .npc-zhao { content: url('assets/npc_zhao.png'); }
+        .npc-baroness { content: url('assets/npc_baroness.png'); }
+        .npc-fang { content: url('assets/npc_fang.png'); }
 
         .plate-sprite {
             width: 120px; height: auto;
@@ -600,7 +600,7 @@
         /* 標題畫面 CSS */
         #title-screen {
             position: fixed; inset: 0;
-            background: #000 url('../assets/bg_title_pixel.png') no-repeat center center;
+            background: #000 url('assets/bg_title_pixel.png') no-repeat center center;
             background-size: cover;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 9000;
@@ -981,7 +981,7 @@
         </div>
 
         <audio id="bgm" loop>
-            <source src="../assets/bgm.mp3" type="audio/mpeg">
+            <source src="assets/bgm.mp3" type="audio/mpeg">
         </audio>
         
         <div id="inventory-panel">
@@ -1084,18 +1084,16 @@
             function segmentsToHTML(segments) {
                 let html = '';
                 for (const seg of segments) {
-                    const chars = [...seg.text]; // 正確處理多字節 Unicode
+                    const chars = [...seg.text]; 
                     for (let i = 0; i < chars.length; i++) {
                         const ch = chars[i];
-                        if (seg.className) {
-                            html += `<span class="char-span ${seg.className}">${ch}</span>`;
+                        const cls = seg.className ? ` ${seg.className}` : '';
+                        
+                        // 全部包裝在 char-span 中以利打字機與排版控制
+                        if (NO_LINE_START.has(ch)) {
+                            html += `<span class="char-span${cls}" style="white-space:nowrap; opacity:1">${ch}</span>`;
                         } else {
-                            // 如果此字是避頭標點，用 inline-block 確保不被孤立在行首
-                            if (NO_LINE_START.has(ch)) {
-                                html += `<span class="char-span" style="white-space:nowrap">${chars[i-1] !== undefined && !seg.className ? '' : ''}${ch}</span>`;
-                            } else {
-                                html += ch;
-                            }
+                            html += `<span class="char-span${cls}" style="opacity:1">${ch}</span>`;
                         }
                     }
                 }
@@ -1251,10 +1249,18 @@
 
             const container = document.getElementById('opening-text-content');
             const text = segments[index];
-            container.innerHTML = ""; // 清空
             
-            for (let char of text) {
-                container.innerHTML += char;
+            // 使用引擎預渲染完整 HTML (所有字元初始為透明)
+            const fullHTML = TextLayoutEngine.render(text);
+            container.innerHTML = fullHTML;
+            
+            // 選取所有生成的字元 span 並將其設為隱藏
+            const charSpans = container.querySelectorAll('.char-span');
+            charSpans.forEach(s => s.style.opacity = '0');
+            
+            // 逐一顯示
+            for (let span of charSpans) {
+                span.style.opacity = '1';
                 await new Promise(r => setTimeout(r, gameState.settings.textSpeed));
             }
 
@@ -1281,7 +1287,7 @@
         // --- 多場景配置 (Scene Configuration) ---
         const SCENES = {
             DINING_CAR: {
-                bg: "url('../assets/bg_dining_empty_seamless.png')",
+                bg: "url('assets/bg_dining_empty_seamless.png')",
                 widthRatio: 6, 
                 entities: [
                     { type: 'NPC', id: 'CHEN_AFAR', class: 'npc-chen', x: 800, y: 'var(--ground-y)' },
@@ -1295,7 +1301,7 @@
                 ]
             },
             CORRIDOR: {
-                bg: "url('../assets/bg_corridor.png')",
+                bg: "url('assets/bg_corridor.png')",
                 widthRatio: 6, 
                 entities: [
                     { type: 'PLATE', id: 'plate_301', img: 'plate_301.png', x: 425, y: '40%' },
@@ -1313,7 +1319,7 @@
                 ]
             },
             KITCHEN: {
-                bg: "url('../assets/bg_kitchen.png')",
+                bg: "url('assets/bg_kitchen.png')",
                 widthRatio: 4, 
                 entities: [
                     { type: 'ITEM', id: 'CLUE_FILM_CASE', text: '🔍 調查：備料台空底片盒', x: 600, y: '80%', clueName: "底片盒", 
@@ -1322,11 +1328,11 @@
                     // 文字謎題觸發點：需先持有底片盒線索才會出現
                     { type: 'PUZZLE', id: 'PUZZLE_NOTE', text: '🔍 調查：地板縫隙的紙條碎片', x: 1200, y: '75%',
                       requiresClue: 'CLUE_FILM_CASE',
-                      imgSrc: '../assets/clue_note_fragment.png' }
+                      imgSrc: 'assets/clue_note_fragment.png' }
                 ]
             },
             CABIN: {
-                bg: "url('../assets/bg_cabin.png')",
+                bg: "url('assets/bg_cabin.png')",
                 widthRatio: 2, 
                 entities: [
                     { type: 'ITEM', id: 'CLUE_LETTER', text: '🔍 調查：書桌上的信封', x: 150, y: '70%', clueName: "催款信", 
@@ -1404,7 +1410,7 @@
                 } else if(ent.type === 'PLATE') {
                     el.classList.add('plate-sprite');
                     const plateImg = document.createElement('img');
-                    plateImg.src = `../assets/${ent.img}`;
+                    plateImg.src = `assets/${ent.img}`;
                     plateImg.style.width = '100%';
                     el.appendChild(plateImg);
                     el.style.left = ent.x + 'px';

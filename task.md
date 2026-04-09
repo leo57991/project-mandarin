@@ -1,0 +1,6 @@
+- [ ] Re-implement TextLayoutEngine span-wrap logic
+- [ ] Re-implement opacity-based typeSequence logic
+- [ ] Verify all paths are 'assets/' in index.html
+- [ ] Create high-quality README.md
+- [ ] Create .gitignore
+- [ ] Final GitHub sync (Push the clean structure)
