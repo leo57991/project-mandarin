@@ -2127,13 +2127,17 @@
             overlay.classList.add('active');
             if (puzzleState.chars.length === 0) _initPuzzleChars();
             const paper = document.getElementById('puzzle-paper');
+            
+            // 每次開啟都重新獲取位置，確保座標精確
             puzzleState.paperRect = paper.getBoundingClientRect();
             _updateSlotRects();
+            
             if (!puzzleState.rafId) {
                 puzzleState.rafId = requestAnimationFrame(_puzzleLoop);
             }
+            
             overlay.onmousemove = (e) => {
-                const pr = puzzleState.paperRect;
+                const pr = paper.getBoundingClientRect(); // 動態獲取以應對視窗變化
                 puzzleState.mouseX = e.clientX - pr.left;
                 puzzleState.mouseY = e.clientY - pr.top;
             };
@@ -2234,11 +2238,22 @@
             // --- 鼠標排斥與基本運動 ---
             puzzleState.chars.forEach(c => {
                 if (c.locked) return;
+
+                // 檢查是否靠近任何有效的空格 (Dampening Logic)
+                let nearAnySlot = puzzleState.slotRects.some(slot => {
+                    const sdx = c.x - slot.cx;
+                    const sdy = c.y - slot.cy;
+                    return Math.sqrt(sdx*sdx + sdy*sdy) < PUZZLE_CONFIG.snapDist * 2;
+                });
+
                 const dx = c.x - puzzleState.mouseX;
                 const dy = c.y - puzzleState.mouseY;
                 const dist = Math.sqrt(dx * dx + dy * dy);
+                
                 if (dist < PUZZLE_CONFIG.repelRadius && dist > 1) {
-                    const force = (PUZZLE_CONFIG.repelRadius - dist) * PUZZLE_CONFIG.repelForce;
+                    // 如果靠近空格，則大幅降低排斥力，讓方塊能被順利「推入」或「吸入」
+                    const dampening = nearAnySlot ? 0.2 : 1.0;
+                    const force = (PUZZLE_CONFIG.repelRadius - dist) * PUZZLE_CONFIG.repelForce * dampening;
                     c.vx += (dx / dist) * force;
                     c.vy += (dy / dist) * force;
                 }
@@ -2268,14 +2283,15 @@
                     }
                 }
 
-                if (nearestSlot && minDistToSlot < PUZZLE_CONFIG.snapDist * 1.5) {
-                    // 靠近空格時施加阻尼與引力，輔助定位
-                    c.vx *= 0.75; 
-                    c.vy *= 0.75;
+                if (nearestSlot && minDistToSlot < 65) {
+                    // 靠近空格時施加阻尼與強化引力，輔助定位
+                    const attractionStrength = (65 - minDistToSlot) / 65;
+                    c.vx *= (1 - attractionStrength * 0.4); 
+                    c.vy *= (1 - attractionStrength * 0.4);
                     const sdx = nearestSlot.cx - c.x;
                     const sdy = nearestSlot.cy - c.y;
-                    c.vx += sdx * 0.08;
-                    c.vy += sdy * 0.08;
+                    c.vx += sdx * 0.12;
+                    c.vy += sdy * 0.12;
                 }
 
                 // --- 判定吸附 (Remove Speed Gate for Instant Catch) ---
@@ -2284,7 +2300,7 @@
                     if (occupied) continue;
                     const sdx = c.x - slot.cx;
                     const sdy = c.y - slot.cy;
-                    if (Math.sqrt(sdx * sdx + sdy * sdy) < PUZZLE_CONFIG.snapDist) {
+                    if (Math.sqrt(sdx * sdx + sdy * sdy) < 55) {
                         if (PUZZLE_CONFIG.answer[slot.slotIdx] === c.text) {
                             c.x = slot.cx;
                             c.y = slot.cy;
