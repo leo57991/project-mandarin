@@ -845,6 +845,14 @@
             25%       { transform: translateX(-4px); }
             75%       { transform: translateX(4px); }
         }
+        @keyframes puzzle-shake {
+            0%, 100% { transform: translate(-50%, -50%); }
+            20%, 60% { transform: translate(-54%, -50%); }
+            40%, 80% { transform: translate(-46%, -50%); }
+        }
+        .puzzle-char.shake {
+            animation: puzzle-shake 0.3s ease-in-out;
+        }
 
         /* 成功發光 */
         #puzzle-success-flash {
@@ -2200,12 +2208,18 @@
                             c1.vy += ny * force;
                             c1.x += nx * (overlap * 0.2);
                             c1.y += ny * (overlap * 0.2);
+                        } else {
+                            // c1 鎖定，被撞時觸發震動
+                            _triggerPuzzleShake(c1);
                         }
                         if (!c2.locked) {
                             c2.vx -= nx * force;
                             c2.vy -= ny * force;
                             c2.x -= nx * (overlap * 0.2);
                             c2.y -= ny * (overlap * 0.2);
+                        } else {
+                            // c2 鎖定，被撞時觸發震動
+                            _triggerPuzzleShake(c2);
                         }
                     }
                 }
@@ -2239,8 +2253,8 @@
                 for (const slot of puzzleState.slotRects) {
                     const occupied = puzzleState.chars.some(o => o !== c && o.locked && o.slotIndex === slot.slotIdx);
                     if (occupied) continue;
-                    const sdx = (c.x + elW / 2) - slot.cx;
-                    const sdy = (c.y + elH / 2) - slot.cy;
+                    const sdx = c.x - slot.cx; // 已修正：中心點對中心點
+                    const sdy = c.y - slot.cy;
                     const d = Math.sqrt(sdx * sdx + sdy * sdy);
                     if (d < minDistToSlot) {
                         minDistToSlot = d;
@@ -2258,35 +2272,33 @@
                     c.vy += sdy * 0.08;
                 }
 
-                const speed = Math.sqrt(c.vx * c.vx + c.vy * c.vy);
-                if (speed < PUZZLE_CONFIG.snapSpeed) {
-                    for (const slot of puzzleState.slotRects) {
-                        const occupied = puzzleState.chars.some(o => o !== c && o.locked && o.slotIndex === slot.slotIdx);
-                        if (occupied) continue;
-                        const sdx = c.x - slot.cx;
-                        const sdy = c.y - slot.cy;
-                        if (Math.sqrt(sdx * sdx + sdy * sdy) < PUZZLE_CONFIG.snapDist) {
-                            if (PUZZLE_CONFIG.answer[slot.slotIdx] === c.text) {
-                                c.x = slot.cx;
-                                c.y = slot.cy;
-                                c.vx = 0; c.vy = 0;
-                                c.locked = true; c.slotIndex = slot.slotIdx;
-                                c.el.classList.add('locked');
-                                slot.el.classList.add('filled');
-                                slot.el.innerText = '';
-                                _checkPuzzleSolved();
-                            } else {
-                                c.vx = (Math.random() - 0.5) * 6;
-                                c.vy = -3 - Math.random() * 3;
-                                slot.el.classList.add('error');
-                                setTimeout(() => slot.el.classList.remove('error'), 500);
-                                puzzleState.errorCount++;
-                                if (puzzleState.errorCount >= 1) {
-                                    document.getElementById('puzzle-hint-msg').classList.add('visible');
-                                }
+                // --- 判定吸附 (Remove Speed Gate for Instant Catch) ---
+                for (const slot of puzzleState.slotRects) {
+                    const occupied = puzzleState.chars.some(o => o !== c && o.locked && o.slotIndex === slot.slotIdx);
+                    if (occupied) continue;
+                    const sdx = c.x - slot.cx;
+                    const sdy = c.y - slot.cy;
+                    if (Math.sqrt(sdx * sdx + sdy * sdy) < PUZZLE_CONFIG.snapDist) {
+                        if (PUZZLE_CONFIG.answer[slot.slotIdx] === c.text) {
+                            c.x = slot.cx;
+                            c.y = slot.cy;
+                            c.vx = 0; c.vy = 0;
+                            c.locked = true; c.slotIndex = slot.slotIdx;
+                            c.el.classList.add('locked');
+                            slot.el.classList.add('filled');
+                            slot.el.innerText = '';
+                            _checkPuzzleSolved();
+                        } else {
+                            c.vx = (Math.random() - 0.5) * 6;
+                            c.vy = -3 - Math.random() * 3;
+                            slot.el.classList.add('error');
+                            setTimeout(() => slot.el.classList.remove('error'), 500);
+                            puzzleState.errorCount++;
+                            if (puzzleState.errorCount >= 1) {
+                                document.getElementById('puzzle-hint-msg').classList.add('visible');
                             }
-                            break;
                         }
+                        break;
                     }
                 }
                 c.el.style.left = c.x + 'px';
@@ -2337,6 +2349,16 @@
                     if (currentScene === 'KITCHEN') initScene('KITCHEN', camX);
                 }, 2000);
             }, 1500);
+        }
+
+        function _triggerPuzzleShake(charObj) {
+            if (charObj.isShaking) return;
+            charObj.isShaking = true;
+            charObj.el.classList.add('shake');
+            setTimeout(() => {
+                charObj.el.classList.remove('shake');
+                charObj.isShaking = false;
+            }, 300);
         }
 
     </script>
