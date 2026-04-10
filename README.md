@@ -36,7 +36,7 @@ This game employs **implicit negative feedback embedded in narrative consequence
 
 ## Development Approach
 
-Instructional design, narrative structure, grammar point selection, and all pedagogical decisions were authored by **[Your Name]**. Code implementation was developed through an AI-assisted workflow, with the author directing all functional specifications and reviewing outputs iteratively.
+Instructional design, narrative structure, grammar point selection, and all pedagogical decisions were authored by **[Leo Guan]**. Code implementation was developed through an AI-assisted workflow, with the author directing all functional specifications and reviewing outputs iteratively.
 
 **Tech stack**: 
 - **Core**: Vanilla JavaScript (ES6+), HTML5 Canvas
