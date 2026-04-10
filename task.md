@@ -1,6 +1,8 @@
-- [ ] Re-implement TextLayoutEngine span-wrap logic
-- [ ] Re-implement opacity-based typeSequence logic
-- [ ] Verify all paths are 'assets/' in index.html
-- [ ] Create high-quality README.md
-- [ ] Create .gitignore
-- [ ] Final GitHub sync (Push the clean structure)
+- [ ] Inject Google Fonts link
+- [ ] Redesign Title Screen CSS (Stardew Style + Snow)
+- [ ] Implement Vertical Title Menu and new buttons
+- [ ] Implement Save/Load System (localStorage)
+- [ ] Implement Ending Collection Panel (UI + Logic)
+- [ ] Implement Grammar Notes Panel (UI + Logic)
+- [ ] Update Ending logic to save progress and unlockings
+- [ ] Final Verification and GitHub Push
