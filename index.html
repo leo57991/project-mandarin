@@ -245,6 +245,26 @@
             50% { color: #ff4444; filter: brightness(1.3); }
         }
 
+        /* [impact] 最終高潮感：巨大、脈動、血色陰影 */
+        .txt-impact {
+            display: inline-block;
+            color: #ff0000;
+            font-size: 1.4em;
+            font-weight: 900;
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.9), 3px 3px 0px #000;
+            animation: txt-impact-pulse 0.5s ease-in-out infinite alternate, txt-impact-glitch 2s infinite;
+        }
+        @keyframes txt-impact-pulse {
+            from { transform: scale(1); text-shadow: 0 0 10px rgba(255, 0, 0, 0.7); }
+            to { transform: scale(1.1); text-shadow: 0 0 25px rgba(255, 0, 0, 1); }
+        }
+        @keyframes txt-impact-glitch {
+            0%, 90%, 100% { transform: translate(0); filter: none; }
+            92% { transform: translate(-2px, 1px); filter: hue-rotate(90deg) brightness(1.5); }
+            94% { transform: translate(2px, -1px); filter: hue-rotate(-90deg) contrast(2); }
+            96% { transform: translate(-1px, -2px); }
+        }
+
         #bubble-options {
             margin-top: 2vh;
             display: flex; gap: 20px; flex-wrap: wrap; flex-direction: row;
@@ -1276,11 +1296,12 @@
 
             // 特效標籤對照表
             const EFFECT_TAGS = {
-                'shake': 'txt-shake',
-                'ink':   'txt-ink',
-                'hint':  'txt-hint',
-                'key':   'txt-key',
-                'crime': 'txt-crime'
+                'shake':  'txt-shake',
+                'ink':    'txt-ink',
+                'hint':   'txt-hint',
+                'key':    'txt-key',
+                'crime':  'txt-crime',
+                'impact': 'txt-impact'
             };
 
             // 解析帶有特效標籤的文字，返回分段陣列 [{text, className}]
@@ -1538,7 +1559,7 @@
                 "1899年冬，清朝末年。上海開往北京的夜班列車 [ink]「北線號」[/ink]。",
                 "[ink]秘密條約副本[/ink] 被一個人冒死帶上了這列火車，那是列強瓜分中國的罪證。",
                 "[shake]暴風雪[/shake] 封住了鐵軌。學者 [ink]江明[/ink]——正是那個冒死帶著手稿的人——在頭等車廂 [crime]陳屍[/crime]，手稿不見了。",
-                "你是 [ink]林探長[/ink]。[crime]兇手[/crime] 還在車上，[shake][crime]把兇手找出來！[/crime][/shake]"
+                "你是 [ink]林探長[/ink]。[crime]兇手[/crime] 還在車上，[shake][impact]把兇手找出來！[/impact][/shake]"
             ];
             typeSequence(segments, 0);
         }
