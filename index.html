@@ -1027,6 +1027,10 @@
                         <input type="range" id="vol-slider" min="0" max="100" value="70">
                     </div>
                     <div class="setting-item">
+                        <span>音效音量</span>
+                        <input type="range" id="sfx-slider" min="0" max="100" value="70">
+                    </div>
+                    <div class="setting-item">
                         <span>文字速度</span>
                         <select id="text-speed-select">
                             <option value="100">慢 (0.1s)</option>
@@ -1199,6 +1203,68 @@
         const bubble = document.getElementById('speech-bubble');
 
         // =====================================================
+        // AudioManager: 音效管理系統
+        // =====================================================
+        const AudioManager = (() => {
+            const sounds = {
+                typewriter: 'assets/sfx/typewriter.wav',
+                click: 'assets/sfx/click.wav',
+                hover: 'assets/sfx/hover.wav',
+                clue: 'assets/sfx/clue.wav'
+            };
+
+            const audioMap = {};
+            let sfxVolume = parseFloat(localStorage.getItem('sfx_volume')) || 0.7;
+
+            // 預加載
+            Object.keys(sounds).forEach(name => {
+                const audio = new Audio(sounds[name]);
+                audio.preload = 'auto';
+                audioMap[name] = audio;
+            });
+
+            function play(name) {
+                if (!audioMap[name]) return;
+                
+                // 為了讓音效可以重疊（例如快速打字），我們複製一個 Audio 物件來播放
+                const sound = audioMap[name].cloneNode();
+                sound.volume = sfxVolume;
+                sound.play().catch(e => console.warn("Audio play failed:", e));
+            }
+
+            function setVolume(val) {
+                sfxVolume = val;
+                localStorage.setItem('sfx_volume', val);
+            }
+
+            function getVolume() { return sfxVolume; }
+
+            return { play, setVolume, getVolume };
+        })();
+
+        // 初始化音效拉桿
+        const sfxSlider = document.getElementById('sfx-slider');
+        if (sfxSlider) {
+            sfxSlider.value = AudioManager.getVolume() * 100;
+            sfxSlider.addEventListener('input', (e) => {
+                const val = e.target.value / 100;
+                AudioManager.setVolume(val);
+            });
+        }
+
+        // 為所有按鈕添加通用音效
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.closest('button') || e.target.closest('.interactive-btn')) {
+                AudioManager.play('hover');
+            }
+        });
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('button') || e.target.closest('.interactive-btn')) {
+                AudioManager.play('click');
+            }
+        });
+
+        // =====================================================
         // Pretext-Lite: 文字佈局引擎
         // 靈感來自 github.com/chenglou/pretext
         // 核心：用 Canvas 精確測量字寬，實作中文避頭尾排版，
@@ -1242,19 +1308,26 @@
 
             // 將解析後的分段轉為 HTML 字串
             // 對每個字元逐一包裝，兼顧避頭尾處理
-            function segmentsToHTML(segments) {
+            function segmentsToHTML(segments, initiallyHidden = false, parentClass = '') {
                 let html = '';
+                const opacity = initiallyHidden ? 0 : 1;
                 for (const seg of segments) {
-                    const chars = [...seg.text]; 
-                    for (let i = 0; i < chars.length; i++) {
-                        const ch = chars[i];
-                        const cls = seg.className ? ` ${seg.className}` : '';
-                        
-                        // 全部包裝在 char-span 中以利打字機與排版控制
-                        if (NO_LINE_START.has(ch)) {
-                            html += `<span class="char-span${cls}" style="white-space:nowrap; opacity:1">${ch}</span>`;
-                        } else {
-                            html += `<span class="char-span${cls}" style="opacity:1">${ch}</span>`;
+                    const combinedClass = (parentClass + (seg.className ? ` ${seg.className}` : '')).trim();
+                    const cls = combinedClass ? ` ${combinedClass}` : '';
+                    
+                    // 檢查是否含有嵌套標籤
+                    if (/\[\w+\]/.test(seg.text)) {
+                        html += render(seg.text, initiallyHidden, combinedClass);
+                    } else {
+                        const chars = [...seg.text]; 
+                        for (let i = 0; i < chars.length; i++) {
+                            const ch = chars[i];
+                            
+                            if (NO_LINE_START.has(ch)) {
+                                html += `<span class="char-span${cls}" style="white-space:nowrap; opacity:${opacity}" data-char="${ch}">${ch}</span>`;
+                            } else {
+                                html += `<span class="char-span${cls}" style="opacity:${opacity}" data-char="${ch}">${ch}</span>`;
+                            }
                         }
                     }
                 }
@@ -1262,18 +1335,53 @@
             }
 
             // 公開 API：將原始文字（含特效標籤）轉換為對應 innerHTML
-            function render(rawText) {
+            function render(rawText, initiallyHidden = false, parentClass = '') {
                 const segments = parseSegments(rawText);
-                return segmentsToHTML(segments);
+                return segmentsToHTML(segments, initiallyHidden, parentClass);
             }
 
             return { render };
         })();
 
         // --- 用新引擎設定文字的工具函式 ---
-        function setDialogueText(text) {
+        async function setDialogueText(text) {
             const el = document.getElementById('bubble-text');
-            el.innerHTML = TextLayoutEngine.render(text);
+            await typeWriter(el, text);
+        }
+
+        // --- 打字機引擎 (含漢字跳動效果) ---
+        const CHINESE_SCRAMBLE_POOL = "的一是在不了有和人這中大來上國個道我們地於起就分以後到時樣事下能生會出為成則手而行自那西高天其法市此多方正實業本力加比關本使進先向作政各物後此與表名面也者而";
+
+        async function typeWriter(element, rawText, scrambleCount = 2) {
+            // 先渲染隱藏的 HTML
+            element.innerHTML = TextLayoutEngine.render(rawText, true);
+            const spans = element.querySelectorAll('.char-span');
+            const baseSpeed = gameState.settings.textSpeed || 50;
+
+            for (const span of spans) {
+                const finalChar = span.getAttribute('data-char');
+
+                // 標點符號直接顯示，保持節奏感
+                if (/[，。！？、；：『』「」（）【】…—]/.test(finalChar)) {
+                    span.style.opacity = 1;
+                    await new Promise(r => setTimeout(r, baseSpeed));
+                    continue;
+                }
+
+                // 漢字跳動效果：隨機更換幾次內容後揭曉真相
+                for (let i = 0; i < scrambleCount; i++) {
+                    span.innerText = CHINESE_SCRAMBLE_POOL[Math.floor(Math.random() * CHINESE_SCRAMBLE_POOL.length)];
+                    span.style.opacity = 1;
+                    AudioManager.play('typewriter');
+                    await new Promise(r => setTimeout(r, baseSpeed / (scrambleCount + 1)));
+                }
+
+                // 恢復正確字符
+                span.innerText = finalChar;
+                span.style.opacity = 1;
+                AudioManager.play('typewriter');
+                await new Promise(r => setTimeout(r, baseSpeed / 2));
+            }
         }
 
         
@@ -1441,15 +1549,8 @@
             const container = document.getElementById('opening-text-content');
 
             if (index >= segments.length) {
-                // 最後一段結束後點擊進入遊戲
-                tip.style.display = 'block';
-                screen.onclick = () => {
-                    screen.style.opacity = '0';
-                    setTimeout(() => {
-                        screen.style.display = 'none';
-                        startGame();
-                    }, 1000);
-                };
+                // 此狀態理論上不會從主流程進入
+                startGame();
                 return;
             }
 
@@ -1457,18 +1558,9 @@
             tip.style.display = 'none';
             screen.onclick = null;
             
-            const text = segments[index];
-            const fullHTML = TextLayoutEngine.render(text);
-            container.innerHTML = fullHTML;
+            // 使用打字機引擎渲染文字
+            await typeWriter(container, segments[index]);
             
-            const charSpans = container.querySelectorAll('.char-span');
-            charSpans.forEach(s => s.style.opacity = '0');
-            
-            for (let span of charSpans) {
-                span.style.opacity = '1';
-                await new Promise(r => setTimeout(r, gameState.settings.textSpeed));
-            }
-
             // 打字完畢，顯示提示並等待點擊
             tip.style.display = 'block';
             await new Promise(resolve => {
@@ -1478,8 +1570,16 @@
                 };
             });
 
-            // 進入下一句
-            typeSequence(segments, index + 1);
+            // 判斷是否為最後一段
+            if (index === segments.length - 1) {
+                screen.style.opacity = '0';
+                setTimeout(() => {
+                    screen.style.display = 'none';
+                    startGame();
+                }, 1000);
+            } else {
+                typeSequence(segments, index + 1);
+            }
         }
 
         function startGame() {
@@ -1589,6 +1689,9 @@
         }
 
         function initScene(sceneId, spawnX = 0) {
+            AudioManager.play('clue'); // Using clue sound temporarily for transition as placeholder or I'll use click
+            // Actually I'll use hover for transition if no specific file exists
+            AudioManager.play('hover');
             currentScene = sceneId;
             const s = SCENES[sceneId];
             world.style.backgroundImage = s.bg;
@@ -2275,6 +2378,7 @@
             inventory.push(clueObj);
             unseenClues++;
             updateInventoryUI();
+            AudioManager.play('clue');
 
             const flyObj = document.createElement('div');
             flyObj.className = 'fly-item';
