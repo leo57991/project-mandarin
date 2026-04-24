@@ -105,6 +105,124 @@
             filter: brightness(1.2) drop-shadow(0 0 5px var(--ui-gold));
         }
 
+        /* 系統按鈕容器 (右下角) */
+        #system-btns {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .side-btn {
+            width: 70px;
+            height: 70px;
+            background: var(--ui-bg);
+            border: var(--ui-border);
+            color: var(--ui-gold);
+            border-radius: 5px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .side-btn:hover {
+            background: var(--ui-gold);
+            color: #000;
+            transform: translateY(-5px);
+        }
+        .side-badge {
+            position: absolute;
+            top: -10px; right: -10px;
+            background: #ff0000;
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* 偵探手札面板 */
+        #notebook-panel {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85vw;
+            height: 80vh;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            border: 3px solid var(--ui-gold);
+            z-index: 6000;
+            display: none;
+            flex-direction: column;
+            padding: 40px;
+            box-sizing: border-box;
+            box-shadow: 0 0 100px rgba(0,0,0,1);
+            font-family: var(--main-font);
+        }
+
+        .notebook-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--ui-gold);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .notebook-tabs {
+            display: flex;
+            gap: 20px;
+        }
+
+        .notebook-tab {
+            padding: 10px 25px;
+            border: 1px solid var(--ui-gold);
+            color: var(--ui-gold);
+            cursor: pointer;
+            background: rgba(212, 175, 55, 0.1);
+            transition: all 0.2s;
+        }
+        .notebook-tab.active {
+            background: var(--ui-gold);
+            color: #000;
+        }
+
+        .notebook-body {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 15px;
+        }
+
+        /* 人物檔案卡 */
+        .suspect-card {
+            display: flex;
+            gap: 30px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .suspect-img {
+            width: 150px;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid var(--ui-gold);
+            filter: grayscale(0.8);
+        }
+        .suspect-info h3 { color: var(--ui-gold); margin: 0 0 10px 0; }
+        .suspect-lore { font-size: 16px; color: #bbb; line-height: 1.6; }
+
+        /* 證據項目樣式已存在於 .inv-item */
+
         /* 浮動對話氣泡 -> 視覺小說式大面板 */
         #speech-bubble {
             position: fixed;
@@ -140,8 +258,69 @@
             font-family: var(--main-font);
             margin-bottom: 1.5vh;
             display: block;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-            letter-spacing: 2px;
+        }
+
+        /* 多種表情類別 */
+        .npc-chen.serious { background-image: url('assets/npc_chen_serious.png'); }
+        .npc-chen.worried { background-image: url('assets/npc_chen_worried.png'); }
+        .npc-zhao.angry   { background-image: url('assets/npc_zhao_angry.png'); }
+        .npc-zhao.nervous { background-image: url('assets/npc_zhao_nervous.png'); }
+        .npc-baroness.shocked { background-image: url('assets/npc_baroness_shocked.png'); }
+        .npc-baroness.haughty { background-image: url('assets/npc_baroness_haughty.png'); }
+        .npc-fang.resolved { background-image: url('assets/npc_fang_resolved.png'); }
+        .npc-fang.sad      { background-image: url('assets/npc_fang_sad.png'); }
+
+        /* 雪花粒子 (用於包廂窗外) */
+        .snow-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .snow-flake {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0.8;
+            filter: blur(1px);
+            animation: snow-fall linear infinite;
+        }
+        @keyframes snow-fall {
+            0% { transform: translateY(-10px) translateX(0); }
+            100% { transform: translateY(100vh) translateX(20px); }
+        }
+
+        /* 特效：場景過渡黑幕 (Screen Wipe) */
+        #screen-wipe {
+            position: fixed;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: #000;
+            z-index: 9999;
+            pointer-events: none;
+            transition: left 0.8s cubic-bezier(0.8, 0, 0.2, 1);
+        }
+        #screen-wipe.active {
+            left: 100%;
+        }
+
+        /* 燈光閃爍效果 (Flicker) */
+        .flicker-overlay {
+            position: absolute;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0);
+            pointer-events: none;
+            z-index: 5;
+            animation: flicker-anim 5s infinite;
+        }
+        @keyframes flicker-anim {
+            0%, 100% { background: rgba(0,0,0,0); }
+            95% { background: rgba(0,0,0,0); }
+            96% { background: rgba(0,0,0,0.3); }
+            97% { background: rgba(0,0,0,0); }
+            98% { background: rgba(0,0,0,0.2); }
+            99% { background: rgba(0,0,0,0); }
         }
 
         #bubble-text {
@@ -1084,14 +1263,55 @@
 
         <!-- 對話大面板 UI 固定於畫面下半部 -->
         <div id="speech-bubble" style="display:none;">
+            <div id="npc-expression"></div>
             <span class="bubble-name" id="bubble-name">名稱</span>
             <span id="bubble-text">對話內容...</span>
             <div id="bubble-options"></div>
+            
+            <!-- 系統按鈕 (右下角) -->
+            <div id="screen-wipe"></div>
+            <div id="system-btns">
+                <div id="notebook-btn" class="side-btn" onclick="toggleNotebook()">
+                    <div style="font-size: 24px;">📓</div>
+                    <div>手札(N)</div>
+                </div>
+                <div id="inventory-btn" class="side-btn" onclick="toggleInventory()">
+                    <div id="inv-badge" class="side-badge">0</div>
+                    <div style="font-size: 24px;">👜</div>
+                    <div>證據(I)</div>
+                </div>
+                <div id="bgm-btn" class="side-btn" onclick="toggleBGM()" style="opacity: 0.5;">
+                    <div style="font-size: 24px;">🎵</div>
+                    <div>音樂(M)</div>
+                </div>
+            </div>
+
+            <!-- 偵探手札面板 -->
+            <div id="notebook-panel">
+                <div class="notebook-header">
+                    <div class="notebook-tabs">
+                        <div class="notebook-tab active" onclick="switchNotebookTab('suspects')">嫌疑人</div>
+                        <div class="notebook-tab" onclick="switchNotebookTab('evidence')">證據彙整</div>
+                        <div class="notebook-tab" onclick="switchNotebookTab('timeline')">事件簿</div>
+                    </div>
+                    <button class="menu-btn" onclick="toggleNotebook(false)">關閉</button>
+                </div>
+                <div id="notebook-body" class="notebook-body">
+                    <!-- 動態注入內容 -->
+                </div>
+            </div>
+            
             <div class='bubble-next' id="bubble-next-btn" onclick="closeDialogue()">結束對話 ❯</div>
+            <div id="bubble-evidence-btn" onclick="toggleEvidenceSelect()">[ 出示證據 ]</div>
         </div>
 
-        <div id="inventory-btn" style="display:none;" onclick="toggleInventory()">🎒<div id="inv-badge">0</div></div>
-        <div id="bgm-btn" style="display:none;" onclick="toggleBGM()">🎵</div>
+        <!-- 證據選擇小窗 -->
+        <div id="evidence-selector" style="display:none;">
+            <div class="selector-header">請選擇要出示的證據</div>
+            <div id="evidence-grid"></div>
+            <button class="menu-btn" onclick="toggleEvidenceSelect(false)">取消</button>
+        </div>
+
         <div id="accuse-btn" style="display:none;" onclick="resolveEnding()">🔍 指認兇手</div>
 
         <!-- 文字物理謎題面板 -->
@@ -1604,14 +1824,86 @@
         }
 
         function startGame() {
-            document.getElementById('inventory-btn').style.display = 'flex';
-            document.getElementById('bgm-btn').style.display = 'flex';
+            document.querySelectorAll('.side-btn').forEach(btn => btn.style.display = 'flex');
             initScene('DINING_CAR', 500);
             requestAnimationFrame(gameLoop);
         }
 
         function toggleSettings(show) {
             document.getElementById('settings-panel').style.display = show ? 'flex' : 'none';
+        }
+
+        // --- 偵探手札邏輯 ---
+        let currentNotebookTab = 'suspects';
+
+        function toggleNotebook(force) {
+            const panel = document.getElementById('notebook-panel');
+            const isShowing = panel.style.display === 'flex';
+            const next = (force !== undefined) ? force : !isShowing;
+            
+            panel.style.display = next ? 'flex' : 'none';
+            if (next) {
+                updateNotebookUI();
+            }
+        }
+
+        function switchNotebookTab(tabId) {
+            currentNotebookTab = tabId;
+            document.querySelectorAll('.notebook-tab').forEach(t => {
+                t.classList.toggle('active', t.innerText.includes(tabId === 'suspects' ? '嫌疑人' : tabId === 'evidence' ? '證據' : '事件'));
+            });
+            updateNotebookUI();
+        }
+
+        function updateNotebookUI() {
+            const body = document.getElementById('notebook-body');
+            body.innerHTML = '';
+
+            if (currentNotebookTab === 'suspects') {
+                for (let id in gameState.npcs) {
+                    const npc = gameState.npcs[id];
+                    if (!npc.met) continue;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'suspect-card';
+                    card.innerHTML = `
+                        <div class="suspect-img" style="background-image: url('assets/npc_${id.toLowerCase()}.png')"></div>
+                        <div class="suspect-info">
+                            <h3>${npc.name}</h3>
+                            <div class="suspect-lore">${npc.text || '尚未獲得更深層的背景資料。'}</div>
+                            <div style="margin-top:10px; font-size:12px; color:var(--ui-gold)">
+                                羈絆：禮貌 ${gameState.rapport[id].polite} | 強硬 ${gameState.rapport[id].aggressive}
+                            </div>
+                        </div>
+                    `;
+                    body.appendChild(card);
+                }
+            } else if (currentNotebookTab === 'evidence') {
+                if (inventory.length === 0) {
+                    body.innerHTML = '<div style="color:#777; text-align:center; margin-top:50px;">尚未收集任何證據。</div>';
+                } else {
+                    const grid = document.createElement('div');
+                    grid.style.display = 'grid';
+                    grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(150px, 1fr))';
+                    grid.style.gap = '20px';
+                    
+                    inventory.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'inv-item';
+                        div.style.width = '100%';
+                        div.innerHTML = `
+                            <div style="font-size:32px;">🔍</div>
+                            <div style="font-size:14px; font-weight:bold; margin-top:5px;">${item.name}</div>
+                        `;
+                        div.onclick = () => showClueDetail(item.id);
+                        grid.appendChild(div);
+                    });
+                    body.appendChild(grid);
+                }
+            } else if (currentNotebookTab === 'timeline') {
+                body.innerHTML = '<div style="color:#777; text-align:center; margin-top:50px;">案件正在進行中，目前僅記錄初步線索。</div>';
+                // 這裡未來可以加入遊戲進程的紀錄
+            }
         }
 
         function performRestart() {
@@ -1709,13 +2001,40 @@
             };
         }
 
-        function initScene(sceneId, spawnX = 0) {
-            AudioManager.play('clue'); // Using clue sound temporarily for transition as placeholder or I'll use click
-            // Actually I'll use hover for transition if no specific file exists
+        async function initScene(sceneId, spawnX = 0) {
+            // 場景切換動畫
+            const wipe = document.getElementById('screen-wipe');
+            wipe.style.left = '-100%';
+            wipe.classList.remove('active');
+            void wipe.offsetWidth; // 強制重繪
+            
+            wipe.classList.add('active');
+            await new Promise(r => setTimeout(r, 400)); // 在黑幕正中央時切換
+
+            AudioManager.play('clue'); 
             AudioManager.play('hover');
             currentScene = sceneId;
             const s = SCENES[sceneId];
             world.style.backgroundImage = s.bg;
+            
+            // 處理燈光閃爍 (走廊與廚房)
+            const oldFlicker = world.querySelector('.flicker-overlay');
+            if (oldFlicker) oldFlicker.remove();
+            if (sceneId === 'CORRIDOR' || sceneId === 'KITCHEN') {
+                const f = document.createElement('div');
+                f.className = 'flicker-overlay';
+                world.appendChild(f);
+            }
+
+            // 處理雪花粒子 (包廂)
+            const oldSnow = world.querySelector('.snow-overlay');
+            if (oldSnow) oldSnow.remove();
+            if (sceneId === 'CABIN') {
+                const sOverlay = document.createElement('div');
+                sOverlay.className = 'snow-overlay';
+                world.appendChild(sOverlay);
+                createSnow(sOverlay, 50);
+            }
             
             WORLD_W = VIEW_H * s.widthRatio;
             world.style.backgroundSize = 'auto 100%';
@@ -1879,6 +2198,11 @@
                         { text: "繼續說。", tone: "neutral", clueId: "CLUE_DARK_COAT_NERVOUS", playerReceived: "深色大衣的人離開時不斷回頭張望，像是在找什麼重要的東西。", truthVersion: "趙福生殺人後折返廚房尋找遺落的手稿殘頁時表現出的焦急跡象。", nextNode: "END" }
                     ]
                 },
+                'CONFRONT_CLUE_COFFEE_CUP': {
+                    text: "「啊！這不是白男爵夫人的咖啡杯嗎？我昨晚一直在找它...[shake]雖然這是我遺失的[/shake]，但我絕對沒有殺害江明先生！」",
+                    expression: "worried",
+                    choices: [{ text: "繼續詢問", nextNode: "CHEN_2" }]
+                },
                 END: { text: "（陳阿發低下頭繼續擦桌子）我就知道這些了。", choices: [] }
             },
             ZHAO: {
@@ -1980,6 +2304,16 @@
                         { text: "...知道了。", tone: "neutral", clueId: "CLUE_FANG_DEFENSIVE", playerReceived: "方小蘭情緒激動，強調自己昨晚一直在幫病人看診不在餐車。", truthVersion: "方小蘭說的是實話，她確實不在場，但她激動的反應讓玩家誤以為她在隱瞞。", nextNode: "END" }
                     ]
                 },
+                'CONFRONT_CLUE_STETHOSCOPE': {
+                    text: "「...謝謝你幫我找回它。這是我重要的診斷工具。[sad]身為醫生，我卻沒能救活他，真是失職。[/sad]」",
+                    expression: "sad",
+                    choices: [{ text: "詢問現場細節", nextNode: "FANG_2" }]
+                },
+                'CONFRONT_CLUE_ZHAO_LIE': {
+                    text: "「[impact]你說什麼？[/impact]趙先生在說謊？[resolved]如果他真的在現場，那我們必須揭穿他的假面具。[/resolved]」",
+                    expression: "resolved",
+                    choices: [{ text: "繼續詢問", nextNode: "FANG_2" }]
+                },
                 END: { text: "（方小蘭低頭整理她的醫療包）", choices: [] }
             }
         };
@@ -2011,7 +2345,15 @@
         // --- 輸入監聽 ---
         window.addEventListener('keydown', e => {
             if (e.key === '`') toggleDevMode();
-            if (e.key === 'Escape' && bubble.style.display === 'block') closeDialogue();
+            if (e.key === 'Escape') {
+                if (document.getElementById('notebook-panel').style.display === 'flex') toggleNotebook(false);
+                else if (document.getElementById('inventory-panel').style.display === 'flex') toggleInventory(false);
+                else if (bubble.style.display === 'block') closeDialogue();
+            }
+            if (e.key.toLowerCase() === 'n') toggleNotebook();
+            if (e.key.toLowerCase() === 'i') toggleInventory();
+            if (e.key.toLowerCase() === 'm') toggleBGM();
+            
             keys[e.key.toLowerCase()] = true;
             if(e.key === ' ' && bubble.style.display === 'block') { // Space 鍵對應關閉對話
                 e.preventDefault();
@@ -2097,6 +2439,21 @@
             world.style.transform = `translate(${-Math.floor(camX)}px, 0px)`;
         }
 
+        function createSnow(container, count) {
+            for (let i = 0; i < count; i++) {
+                const flake = document.createElement('div');
+                flake.className = 'snow-flake';
+                const size = Math.random() * 5 + 2;
+                flake.style.width = size + 'px';
+                flake.style.height = size + 'px';
+                flake.style.left = Math.random() * 100 + '%';
+                flake.style.top = Math.random() * 100 + '%';
+                flake.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                flake.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(flake);
+            }
+        }
+
         function gameLoop() {
             logicUpdate();
             renderUpdate();
@@ -2116,10 +2473,61 @@
             renderDialogueNode(npcId, node);
         }
 
+        function setNPCExpression(npcId, expr) {
+            const el = document.getElementById(npcId);
+            if (!el) return;
+            const sprite = el.querySelector('.npc-sprite');
+            // 清除舊表情
+            sprite.classList.remove('serious','worried','angry','nervous','shocked','haughty','resolved','sad');
+            if (expr && expr !== 'normal') {
+                sprite.classList.add(expr);
+            }
+        }
+
+        function toggleEvidenceSelect(show) {
+            const selector = document.getElementById('evidence-selector');
+            const force = (show !== undefined) ? show : selector.style.display === 'none';
+            selector.style.display = force ? 'flex' : 'none';
+            
+            if (force) {
+                const grid = document.getElementById('evidence-grid');
+                grid.innerHTML = inventory.map(item => `
+                    <div class="inv-item" onclick="handleInterrogation('${currentNPCId}', '${item.id}')">
+                        <div style="font-size:24px;">🔍</div>
+                        <div style="font-size:11px; margin-top:3px; word-break:break-all;">${item.name}</div>
+                    </div>
+                `).join('');
+                if (inventory.length === 0) grid.innerHTML = '<div style="color:#777; font-size:12px;">無可用證據。</div>';
+            }
+        }
+
+        function handleInterrogation(npcId, clueId) {
+            toggleEvidenceSelect(false);
+            
+            // 檢查該 NPC 是否在對應該線索的分支
+            const nodeId = `CONFRONT_${clueId}`;
+            if (dialogueTree[npcId] && dialogueTree[npcId][nodeId]) {
+                renderDialogueNode(npcId, nodeId);
+            } else {
+                // 預設失敗對話
+                const defaultText = `「這東西（${gameState.clues.details[clueId].name}）和我沒什麼關係吧？偵探先生。」`;
+                dialogueTree[npcId]['_TEMP_FAIL'] = {
+                    text: defaultText,
+                    choices: [{ text: "繼續", nextNode: gameState.npcs[npcId].dialogueNode || 'START' }]
+                };
+                renderDialogueNode(npcId, '_TEMP_FAIL');
+            }
+        }
+
         function renderDialogueNode(npcId, nodeId) {
             let nodeData = dialogueTree[npcId][nodeId];
             if(!nodeData) return;
             
+            // 處理表情變換
+            if (nodeData.expression) {
+                setNPCExpression(npcId, nodeData.expression);
+            }
+
             // --- 線索條件過濾 ---
             if (nodeData.choices) {
                 nodeData.choices = nodeData.choices.filter(c => {
@@ -2446,7 +2854,7 @@
             `).join('');
         }
 
-        function showClueDetail(clueId) {
+        async function showClueDetail(clueId) {
             const detailPanel = document.getElementById('inv-details');
             const title = document.getElementById('clue-detail-title');
             const desc = document.getElementById('clue-detail-desc');
@@ -2455,11 +2863,14 @@
 
             detailPanel.style.display = 'block';
             title.innerText = clue.name || clue.id.replace('CLUE_', '');
+            
             let content = clue.desc;
             if (clue.truth) {
-                content += `<br><br><b style="color:var(--ui-gold)">[真相解析]</b><br>${clue.truth}`;
+                content += ` [ink][key][\n\n真相解析]\n${clue.truth}[/key][/ink]`;
             }
-            desc.innerHTML = content;
+            
+            desc.innerHTML = ''; // 清空舊內容
+            await typeWriter(desc, content);
         }
 
         function toggleInventory() {
