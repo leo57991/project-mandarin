@@ -1281,7 +1281,9 @@
             <span id="bubble-text">對話內容...</span>
             <div id="bubble-options"></div>
             
-            <!-- 偵探手札面板 -->
+                        <div class='bubble-next' id="bubble-next-btn" onclick="closeDialogue()">結束對話 ❯</div>
+            <div id="bubble-evidence-btn" onclick="toggleEvidenceSelect()">[ 出示證據 ]</div>
+        <!-- 偵探手札面板 -->
             <div id="notebook-panel">
                 <div class="notebook-header">
                     <div class="notebook-tabs">
@@ -1295,9 +1297,8 @@
                     <!-- 動態注入內容 -->
                 </div>
             </div>
-            
-            <div class='bubble-next' id="bubble-next-btn" onclick="closeDialogue()">結束對話 ❯</div>
-            <div id="bubble-evidence-btn" onclick="toggleEvidenceSelect()">[ 出示證據 ]</div>
+
+
         </div>
 
         <!-- 證據選擇小窗 -->
