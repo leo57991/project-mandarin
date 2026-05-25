@@ -461,6 +461,22 @@
         }
         .bubble-next:hover { color: var(--ui-gold); }
 
+        #bubble-evidence-btn {
+            position: absolute;
+            bottom: 4vh; left: 5vw;
+            color: var(--ui-gold);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px 10px;
+            border: 1px solid var(--ui-gold);
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        #bubble-evidence-btn:hover {
+            background: var(--ui-gold);
+            color: #000;
+        }
+
         @keyframes breathe {
             from { opacity: 0.5; transform: translateX(0); }
             to { opacity: 1; transform: translateX(5px); }
@@ -2361,7 +2377,10 @@ function startGame() {
                     expression: "worried",
                     choices: [{ text: "繼續詢問", nextNode: "CHEN_2" }]
                 },
-                END: { text: "（陳阿發低下頭繼續擦桌子）我就知道這些了。", choices: [] }
+                END: { text: "（陳阿發低下頭繼續擦桌子）我就知道這些了。", choices: [] },
+                INTERROGATION: {
+                    'CLUE_COFFEE_CUP': 'CONFRONT_CLUE_COFFEE_CUP'
+                }
             },
             ZHAO: {
                 START: {
@@ -2469,7 +2488,7 @@ function startGame() {
                 BARONESS_3: {
                     text: "關於那個咖啡杯……",
                     choices: [
-                        { text: "不好意思，您忘了帶走它。", tone: "polite", response: "是的，杯沿有我的脣印。但我發誓我看到那個人離開時，江明還沒出事。", nextNode: "BARONESS_4" },
+                        { text: "不好意思，您忘了帶走它。", tone: "polite", response: "是的，杯沿有我的脣印。但我發誓我看到那個人離開時，江明還沒出事。", nextNode: "END" },
                         { text: "明明證據就在現場，你竟敢否認？", tone: "aggressive", response: "（冷笑）那是證明我在場，而不是證明我殺人的證據。", nextNode: "END" }
                     ]
                 },
@@ -2511,7 +2530,10 @@ function startGame() {
                         { text: "清理江明嗎？", tone: "neutral", clueId: "CLUE_BARONESS_HINT", playerReceived: "男爵夫人暗示趙福生身上帶有外國勢力的指令，目標是「清理」相關人員。", truthVersion: "男爵夫人利用電報線索點破趙福生的殺手身份，將調查導向正確目標。", nextNode: "END" }
                     ]
                 },
-                END: { text: "（白男爵夫人轉身望向窗外的雪景，不再說話）", choices: [] }
+                END: { text: "（白男爵夫人轉身望向窗外的雪景，不再說話）", choices: [] },
+                INTERROGATION: {
+                    'CLUE_LETTER': 'BARONESS_4'
+                }
             },
             FANG: {
                 START: {
