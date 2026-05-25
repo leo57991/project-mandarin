@@ -2978,9 +2978,7 @@
                     if (!hasScarf) missing.push('深色圍巾');
                     if (!hasManuscript) missing.push('手稿殘頁');
                     if (!hasFilm) missing.push('底片盒');
-                    showSystemMessage('您懷疑趙福生是兇手，但手頭缺乏足夠的關鍵鐵證。
-缺少：' + missing.join('、') + '
-請繼續調查後再指認。');
+                    showSystemMessage('您懷疑趙福生是兇手，但手頭缺乏足夠的關鍵鐵證。缺少：' + missing.join('、') + '，請繼續調查後再指認。');
                     return;
                 }
                 initScene('DINING_CAR', 2000).then(() => {
