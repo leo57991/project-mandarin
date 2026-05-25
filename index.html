@@ -2328,7 +2328,7 @@ function startGame() {
                 START: {
                     text: "（陳阿發擦著桌子，[shake]眼神飄忽[/shake]）探長，您來了。我已經把我知道的都跟列車長說了，真的，我什麼都沒看見……",
                     choices: [
-                        { text: "你發現尸體的時候，現場是什麼情況？", tone: "polite", grammarPoint: "GP2_TIME_ADVERB", isCorrect: true, response: "那時大概九點十分，我從廚房出來，就看到江先生倒在椅子邊，趙先生站在旁邊，[shake]臉色發白[/shake]。之前我送咖啡時他們還在講話。後來我回廚房洗碗，再出來就是那樣了……", nextNode: "CHEN_2" },
+                        { text: "你發現尸體的時候，現場是什麼情況？", tone: "polite", grammarPoint: "GP2_TIME_ADVERB", isCorrect: true, response: "那時大概九點十分，我從廚房出來，就看到江先生倒在椅子邊，趙先生站在旁邊，[shake]臉色發白[/shake]。之前我送咖啡時他們還在講話。後來我回廚房洗碗，再出來就是那樣了……", nextNode: "END" },
                         { text: "你什麼時候發現的尸體？", tone: "neutral", grammarPoint: "GP2_TIME_ADVERB", isCorrect: false, response: "什麼時候？嗯……我記不太清了，好像是九點半，也可能快十點了。我洗碗洗得太累了，沒有注意確切的時間。", nextNode: "END" }
                     ]
                 },
@@ -2379,96 +2379,65 @@ function startGame() {
                 },
                 END: { text: "（陳阿發低下頭繼續擦桌子）我就知道這些了。", choices: [] },
                 INTERROGATION: {
-                    'CLUE_COFFEE_CUP': 'CONFRONT_CLUE_COFFEE_CUP'
+                    'CLUE_COFFEE_CUP': 'CONFRONT_CLUE_COFFEE_CUP',
+                    'CLUE_SCARF': 'CHEN_3',
+                    'CLUE_FILM_CASE': 'CHEN_4',
+                    'CLUE_MANUSCRIPT_PAGE': 'CHEN_5'
                 }
             },
             ZHAO: {
                 START: {
-                    text: "（趙福生放下報紙，[shake]眼神警惕[/shake]）你找我？",
+                    text: "（趙福生放下報紙，神情泰然）探長，有何貴幹？",
                     choices: [
-                        { text: "不好意思打擾您，昨晚您在餐車看見什麼？", tone: "polite", grammarPoint: "GP4_WORD_ORDER", isCorrect: true, response: "（緩緩放下茶杯）就是正常吃飯。十點多我就回包廂了。", nextNode: "ZHAO_CHOICE" },
-                        { text: "你昨晚到底在哪裡？", tone: "aggressive", grammarPoint: "GP4_WORD_ORDER", isCorrect: false, response: "（冷冷地）我？我什麼都沒做。你這是什麼意思？", nextNode: "END" }
-                    ]
-                },
-                ZHAO_CHOICE: {
-                    text: "還有什麼想問的？",
-                    choices: [
-                        { text: "請跟我說說關於那台萊卡相機……", tone: "polite", condition: "CLUE_CAMERA", response: "那是江明的相機，他不離身的。不過昨晚我確實沒注意他在不在拍。", nextNode: "ZHAO_2" },
-                        { text: "明明相機就在現場，你竟然說沒注意？", tone: "aggressive", condition: "CLUE_CAMERA", response: "（煩躁）我說過我十點多就走了！", nextNode: "END" },
-                        { text: "沒事了。", tone: "neutral", nextNode: "END" }
+                        { text: "案發當時，您在哪裡？", tone: "polite", grammarPoint: "GP4_WORD_ORDER", isCorrect: true, response: "我就在餐車。江明倒下的時候，我離他最近。但我也是受害者，我差點被牽連。", nextNode: "END" },
+                        { text: "你就是兇手吧！", tone: "aggressive", grammarPoint: "GP4_WORD_ORDER", isCorrect: false, response: "探長，說話要講證據。", nextNode: "END" }
                     ]
                 },
                 ZHAO_2: {
-                    text: "（看到您手持[key]相機[/key]）你這是在哪找到的？那是江明的東西……",
+                    text: "（趙福生看著您手中的[key]相機[/key]）那是江明的相機，他不離身的。不過昨晚我確實沒注意他在不在拍。",
                     choices: [
-                        { text: "底片槽是空的，底片被人取走了。您知道誰會這麼做嗎？", tone: "polite", response: "（眼神一閃而過）……我不知道。江明那個人很謹慎，不會隨便讓人動他的東西。", nextNode: "ZHAO_3" },
-                        { text: "底片不見了。您有什麼要解釋的嗎？", tone: "aggressive", response: "（惱怒）你憑什麼質問我？！我根本不知道底片的事！", nextNode: "END" }
+                        { text: "底片槽是空的，底片被人取走了。您知道誰會這麼做嗎？", tone: "polite", response: "（眼神一閃而過）……我不知道。江明那個人很謹慎，不會隨便讓人動他的東西。", nextNode: "END" }
                     ]
                 },
                 ZHAO_3: {
                     text: "（趙福生接過您呈示的[key]外文電報[/key]，表情微微一僵）這……這哪裡來的？",
                     choices: [
-                        { text: "您的包廂桌上。電報是法文，收件人是您。", tone: "polite", response: "（沉默片刻）這是商業往來的電報。我在上海做紡織生意，與法國客戶有業務聯繫。這沒什麼好解釋的。", nextNode: "ZHAO_4" },
+                        { text: "您的包廂桌上。電報是法文，收件人是您。", tone: "polite", response: "（沉默片刻）這是商業往來的電報。我在上海做紡織生意，與法國客戶有業務聯繫。這沒什麼好解釋的。", nextNode: "END" },
                         { text: "這封電報告訴我，您這次上車絕非只是做生意。", tone: "aggressive", response: "（臉色一白）你……你不要亂說！這是私人電報！", nextNode: "END" }
                     ]
                 },
                 ZHAO_4: {
                     text: "（趙福生看到您手中的[key]聽診器[/key]，突然一怔）那個……那不是那個護士小姐的東西嗎？",
                     choices: [
-                        { text: "是方小蘭醫師的。她說這是您從她醫療包裡拿走的。", tone: "polite", response: "（強行鎮定）胡說。我為什麼要拿她的東西？我那晚只是問她借了繃帶，我的手……（停頓）沒什麼，我只是問了問。", nextNode: "ZHAO_5_INTRO" },
+                        { text: "是方小蘭醫師的。她說這是您從她醫療包裡拿走的。", tone: "polite", response: "（強行鎮定）胡說。我為什麼要拿她的東西？我那晚只是問她借了繃帶，我的手……（停頓）沒什麼，我只是問了問。", nextNode: "END" },
                         { text: "您謊稱手受傷，實際上是為了偷竊這個聽診器偷聽別人談話！", tone: "aggressive", response: "（拍桌）你這是誣陷！你有什麼證據！", nextNode: "END" }
                     ]
                 },
                 ZHAO_5_INTRO: {
-                    text: "（趙福生緩緩坐回椅子，表情隱晦難測）探長，您很厲害。但光憑這些……您能定我的罪嗎？",
+                    text: "（趙福生看到您手中的[key]隱藏紙條[/key]，緩緩坐回椅子，表情隱晦難測）探長，您很厲害。但光憑這些……您能定我的罪嗎？",
                     choices: [
-                        { text: "我還有最後幾個問題。", tone: "neutral", nextNode: "END" }
-                    ]
-                },
-                ZHAO_ROUND5: {
-                    text: "（趙福生面對您，[crime]眼神終於不再掩飾[/crime]）探長。您現在手上有什麼證據，就拿出來吧。",
-                    choices: [
-                        { text: "【出示深色圍巾】這條圍巾，是您的吧？", tone: "neutral", condition: "CLUE_SCARF", nextNode: "ZHAO_ROUND5_A" },
-                        { text: "我需要更多時間。", tone: "neutral", nextNode: "END" }
-                    ]
-                },
-                ZHAO_ROUND5_A: {
-                    text: "（趙福生看到圍巾，[shake]手指微微顫抖[/shake]）那條圍巾……我在包廂弄丟了，不知道怎麼跑到那裡去的。",
-                    choices: [
-                        { text: "【出示手稿殘頁】廚房爐灶裡燒不完全的殘頁，上面有英國使館的火漆印。", tone: "neutral", condition: "CLUE_MANUSCRIPT_PAGE", nextNode: "ZHAO_ROUND5_B" }
-                    ]
-                },
-                ZHAO_ROUND5_B: {
-                    text: "（趙福生[impact]臉色驟變[/impact]）你……你在哪裡找到的！那應該已經……",
-                    choices: [
-                        { text: "【出示底片盒】江明已經把手稿拍成底片了。您取走了底片，卻扔掉了這個空盒。", tone: "neutral", condition: "CLUE_FILM_CASE", nextNode: "ZHAO_ROUND5_C" }
-                    ]
-                },
-                ZHAO_ROUND5_C: {
-                    text: "（趙福生長久沉默，[crime]最終露出一個複雜的苦笑[/crime]）……好。您贏了，探長。我承認，[crime]江明是我殺的[/crime]。他不肯交出手稿，還要去找外國記者公開條約內容。我沒有選擇。",
-                    choices: [
-                        { text: "您奉命行事，但命令不能替殺人免責。", tone: "polite", clueId: "CLUE_ZHAO_CONFESSION", playerReceived: "趙福生承認殺害江明，目的是奪回秘密條約手稿，防止其被公開。", truthVersion: "趙福生受外國勢力指使，為防止列強瓜分中國的秘密條約曝光而滅口江明。", nextNode: "ZHAO_TRUE_END" }
-                    ]
-                },
-                ZHAO_TRUE_END: {
-                    text: "（趙福生緩緩閉上眼睛）列強在這片土地上的棋局……從來不是我一個人能左右的。探長，您破了這個案子，但……[shake]您真的能改變什麼嗎？[/shake]",
-                    choices: [
-                        { text: "至少，江明的死不會成為謎案。", tone: "neutral", nextNode: "__TRIGGER_TRUE_END__" }
+                        { text: "這已經足夠證明你拿走了底片。", tone: "polite", response: "就算我拿了底片，那又如何？殺人可是要講求直接證據的。", nextNode: "END" }
                     ]
                 },
                 ZHAO_BONUS_POLITE: {
-                    text: "（趙福生放鬆了一點）江明這個人……自詡為正義，抄錄秘密條約，但他太天真了。在上海，想要這份手稿的人多到您無法想像。",
+                    text: "（趙福生冷笑）探長，您是個聰明人。但有些水太深，您最好別趟。江明手裡的東西，不是他該拿的。",
                     choices: [
-                        { text: "所以您是其中之一嗎？", tone: "neutral", clueId: "CLUE_ZHAO_DEFLECT", playerReceived: "趙福生透露江明的手稿涉及國家秘密，且江明在上海已有許多潛在敵手。", truthVersion: "趙福生試圖將動機泛化，將自己包裝成僅僅是「眾多競爭者之一」。", nextNode: "END" }
+                        { text: "他在哪裡？", tone: "neutral", clueId: "CLUE_ZHAO_THREAT", playerReceived: "趙福生暗示江明持有的物品涉及極大勢力，警告探長停止調查。", truthVersion: "趙福生確認自己是為奪取機密文件而來，側面承認其動機。", nextNode: "END" }
                     ]
                 },
                 ZHAO_BONUS_AGGRESSIVE: {
-                    text: "（趙福生[crime]惱怒[/crime]）我跟[crime]江明[/crime]的合作關係與你無關！你不要以為拿著幾張殘頁就能定我的罪！",
+                    text: "（趙福生[shake]惱羞成怒[/shake]）你以為你能把我怎麼樣？就算你把我交給警察，明天我就會無罪釋放！你根本不知道你在對付誰！",
                     choices: [
-                        { text: "這反應已經說明了一切。", tone: "neutral", clueId: "CLUE_ZHAO_OUTBURST", playerReceived: "趙福生情緒激動，默認了與江明之間存在某種合作（走私），並對手稿殘頁非常敏感。", truthVersion: "趙福生與江明合夥利用中俄邊境走私，因分贓不均與政治壓力決定滅口。", nextNode: "END" }
+                        { text: "法律會制裁你。", tone: "neutral", clueId: "CLUE_ZHAO_ARROGANCE", playerReceived: "趙福生極度囂張，聲稱背後的勢力足以讓他免於任何法律制裁。", truthVersion: "進一步證實趙福生背靠外國勢力，擁有超越普通法律的特權。", nextNode: "END" }
                     ]
                 },
-                END: { text: "（趙福生重新拿起報紙，不再說話）", choices: [] }
+                END: { text: "（趙福生閉上眼睛，拒絕再回答）", choices: [] },
+                INTERROGATION: {
+                    'CLUE_CAMERA': 'ZHAO_2',
+                    'CLUE_LETTER': 'ZHAO_3',
+                    'CLUE_STETHOSCOPE': 'ZHAO_4',
+                    'CLUE_JIANGMING_NOTE': 'ZHAO_5_INTRO'
+                }
             },
             BARONESS: {
                 START: {
@@ -2481,12 +2450,12 @@ function startGame() {
                 BARONESS_2: {
                     text: "昨晚您在哪裡？",
                     choices: [
-                        { text: "請告訴我您目擊的一切細節。", tone: "polite", response: "餐車角落，喝咖啡等他。但我看到一個穿[ink]深色大衣[/ink]的人走得很急。", nextNode: "BARONESS_3" },
+                        { text: "請告訴我您目擊的一切細節。", tone: "polite", response: "餐車角落，喝咖啡等他。但我看到一個穿[ink]深色大衣[/ink]的人走得很急。", nextNode: "END" },
                         { text: "竟然在那種地方待了一整晚？", tone: "aggressive", response: "（皺眉）我只是在等一個不守時的人。", nextNode: "END" }
                     ]
                 },
                 BARONESS_3: {
-                    text: "關於那個咖啡杯……",
+                    text: "（白男爵夫人看著您手中的[key]咖啡杯[/key]）關於那個咖啡杯……",
                     choices: [
                         { text: "不好意思，您忘了帶走它。", tone: "polite", response: "是的，杯沿有我的脣印。但我發誓我看到那個人離開時，江明還沒出事。", nextNode: "END" },
                         { text: "明明證據就在現場，你竟敢否認？", tone: "aggressive", response: "（冷笑）那是證明我在場，而不是證明我殺人的證據。", nextNode: "END" }
@@ -2495,25 +2464,24 @@ function startGame() {
                 BARONESS_4: {
                     text: "（白男爵夫人看著您呈示的[key]外文電報[/key]，輕輕嘆了口氣）這封電報……",
                     choices: [
-                        { text: "這封外文電報是怎麼回事？", tone: "polite", response: "昨晚我從走廊回來的時候，發現房門開了一條縫，梳妝台上多了這張紙，我不知道是誰放的。對了，說到這個，我[ink]聞到過趙先生身上有紙張燒焦的味道[/ink]。他說他頭疼，要出去透透氣，但我看見他從廚房走出來。一個頭疼的人，跑去廚房做什麼？", nextNode: "BARONESS_4B" },
+                        { text: "這封外文電報是怎麼回事？", tone: "polite", response: "昨晚我從走廊回來的時候，發現房門開了一條縫，梳妝台上多了這張紙，我不知道是誰放的。對了，說到這個，我[ink]聞到過趙先生身上有紙張燒焦的味道[/ink]。", nextNode: "BARONESS_4B" },
                         { text: "您知道這電報是誰放的嗎？", tone: "neutral", response: "不知道。但我發現的時候，房門縫裡還有股燒焦的氣息。趙先生那晚不知道在廚房搗什麼鬼。", nextNode: "BARONESS_4B" }
                     ]
                 },
                 BARONESS_4B: {
-                    text: "（男爵夫人若有所思）您還想問些什麼呢？",
+                    text: "（男爵夫人若有所思）他還曾跟我說過他弄到了一份[key]「能讓洋人睡不著覺的東西」[/key]。",
                     choices: [
-                        { text: "江明跟您提過他手上有什麼特別的東西嗎？", tone: "polite", response: "特別的東西？讓我想想……前幾天他在走廊碰見我，心情很好的樣子，說他弄到了一份[key]「能讓洋人睡不著覺的東西」[/key]。我問他是什麼，他沒細說，只講了一句「這東西比黃金值錢，能換我下半輩子不用再看人臉色」。我當時還勸他小心點，別惹火上身。他終究還是把命搭了進去，誰知道呢，誰知道呢。", clueId: "CLUE_BARONESS_JIANGMING_HINT", playerReceived: "男爵夫人轉述江明曾提到手上有份「能讓洋人睡不著覺的東西」，暗指機密文件。", truthVersion: "江明掌握的秘密條約副本是使列強寢食難安的核心證據，也是他被殺的真正原因。", nextNode: "END" }
+                        { text: "謝謝您。", tone: "polite", response: "他終究還是把命搭了進去，誰知道呢，誰知道呢。", clueId: "CLUE_BARONESS_JIANGMING_HINT", playerReceived: "男爵夫人轉述江明曾提到手上有份「能讓洋人睡不著覺的東西」，暗指機密文件。", truthVersion: "江明掌握的秘密條約副本是使列強寢食難安的核心證據，也是他被殺的真正原因。", nextNode: "END" }
                     ]
                 },
                 BARONESS_5: {
-                    text: "（男爵夫人看到您手中的殘頁，[shake]神情凝重[/shake]）「這紙片上的火漆印……我認得。獅子與獨角獸，是[key]英國使館的徽記[/key]。我見過。」",
+                    text: "（男爵夫人看到您手中的殘頁，[shake]神情凝重[/shake]）「這紙片上的火漆印……我認得。獅子與獨角獸，是[key]英國使館的徽記[/key]。」",
                     choices: [
-                        { text: "您確定？", tone: "polite", response: "不會錯的。我在上海這麼多年，跟各國使館的人打過不少交道。英國人的文件上都有這個圖案，法國人是公雞，德國人是鷹。這張紙雖然燒焦了，但您看這個爪子的形狀——是獅子沒錯。", nextNode: "BARONESS_5B" },
-                        { text: "真的嗎？", tone: "neutral", response: "絕對不會錯。我跟英國使館的人打過交道，那個獅子與獨角獸的徽記，是英國王室的紋章。這份文件……跟英國有關。", nextNode: "BARONESS_5B" }
+                        { text: "您確定？", tone: "polite", response: "不會錯的。我在上海這麼多年，跟各國使館的人打過不少交道。", nextNode: "BARONESS_5B" }
                     ]
                 },
                 BARONESS_5B: {
-                    text: "（男爵夫人緩緩說道）如果江明手上真的有這種東西，那這件事就比探長你想像的要[impact]大得多[/impact]了。列強瓜分中國的計劃，這幾年一直在暗中進行，只是沒有人敢公開說。要是有人拿到了書面證據……也難怪江明之前會那麼說。",
+                    text: "（男爵夫人緩緩說道）如果江明手上真的有這種東西，那這件事就比探長你想像的要[impact]大得多[/impact]了。",
                     choices: [
                         { text: "謝謝您，這對案件至關重要。", tone: "polite", clueId: "CLUE_EMBASSY_SEAL", playerReceived: "男爵夫人確認手稿殘頁上的火漆印是英國使館的獅子與獨角獸徽記。", truthVersion: "江明持有的是英國使館機密文件副本，涉及列強瓜分中國的秘密計劃，這就是他被殺的核心原因。", nextNode: "END" }
                     ]
@@ -2532,29 +2500,31 @@ function startGame() {
                 },
                 END: { text: "（白男爵夫人轉身望向窗外的雪景，不再說話）", choices: [] },
                 INTERROGATION: {
-                    'CLUE_LETTER': 'BARONESS_4'
+                    'CLUE_COFFEE_CUP': 'BARONESS_3',
+                    'CLUE_LETTER': 'BARONESS_4',
+                    'CLUE_MANUSCRIPT_PAGE': 'BARONESS_5'
                 }
             },
             FANG: {
                 START: {
-                    text: "（方小蘭皺眉）醫務工作很忙。你手裡拿的是？",
+                    text: "（方小蘭皺眉）醫務工作很忙。你有什麼事？",
                     choices: [
-                        { text: "不好意思，在餐車桌子下面找到您的聽診器。", tone: "polite", grammarPoint: "GP3_LOCATION_WORD", isCorrect: true, response: "（震驚）桌子下面？我昨晚把它放在走廊醫療包裡，回來就不見了！趙先生當時正好經過，還停下來跟我打過招呼……沒想到那之後聽診器就丟了。", nextNode: "FANG_2" },
-                        { text: "這竟然是你的聽診器？你到底在搞什麼？", tone: "aggressive", grammarPoint: "GP3_LOCATION_WORD", isCorrect: false, response: "（委屈）我都說了我是弄丟了！我怎麼會知道它跑到那裡去！", nextNode: "END" }
+                        { text: "請問您昨晚在哪裡？", tone: "polite", grammarPoint: "GP3_LOCATION_WORD", isCorrect: true, response: "我一直在走廊整理醫療包，沒有去過餐車。", nextNode: "END" },
+                        { text: "你昨晚在餐車做什麼？", tone: "aggressive", grammarPoint: "GP3_LOCATION_WORD", isCorrect: false, response: "我根本沒去過餐車！", nextNode: "END" }
                     ]
                 },
                 FANG_2: {
-                    text: "走廊上還有誰？趙先生有什麼可疑的動作嗎？",
+                    text: "（看到您出示的[key]聽診器[/key]）桌子下面？我昨晚把它放在走廊醫療包裡，回來就不見了！趙先生當時正好經過，還停下來跟我打過招呼……沒想到那之後聽診器就丟了。",
                     choices: [
-                        { text: "請回憶一下當時周遭的情況。", tone: "polite", response: "他問我醫療包裡有沒有繃帶，說他手被紙割到了。但我看他的手，[ink]根本沒有傷口[/ink]。他肯定是想藉機找理由開我的醫療包！", nextNode: "FANG_3" },
-                        { text: "你竟然懷疑趙先生？你有證據嗎？", tone: "aggressive", response: "我……我只是說他經過過！他問我借繃帶，說手受傷了，但我根本沒看到任何傷口！", nextNode: "END" }
+                        { text: "趙先生有什麼可疑的動作嗎？", tone: "polite", response: "他問我醫療包裡有沒有繃帶，說他手被紙割到了。但我看他的手，[ink]根本沒有傷口[/ink]。他肯定是想藉機找理由開我的醫療包！", nextNode: "FANG_3" },
+                        { text: "你竟然懷疑趙先生？", tone: "aggressive", response: "我……我只是說他經過過！他問我借繃帶，說手受傷了，但我根本沒看到任何傷口！", nextNode: "END" }
                     ]
                 },
                 FANG_3: {
                     text: "（方小蘭猶豫了一下）探長，其實我……我有一件事沒跟您說。",
                     choices: [
-                        { text: "請說，我不會隨意判斷。", tone: "polite", response: "我其實不只是護士。我是[key]《晨光報》的記者[/key]，這次以醫護人員的身份上車，是為了追蹤江明的手稿。我聽說他手上有份很重要的東西……但我沒想到，他會死在這列火車上。", nextNode: "FANG_4" },
-                        { text: "你一直在隱瞞什麼？", tone: "aggressive", response: "（咬唇）好吧……我是記者。《晨光報》的。我這次上車是為了採訪江明的，他手上有份涉及列強的秘密文件……現在他死了，我也不知道該怎麼辦。", nextNode: "FANG_4" }
+                        { text: "請說，我不會隨意判斷。", tone: "polite", response: "我其實不只是護士。我是[key]《晨光報》的記者[/key]，這次以醫護人員的身份上車，是為了追蹤江明的手稿。我聽說他手上有份很重要的東西……但我沒想到，他會死在這列火車上。", nextNode: "END" },
+                        { text: "你一直在隱瞞什麼？", tone: "aggressive", response: "（咬唇）好吧……我是記者。《晨光報》的。我這次上車是為了採訪江明的，他手上有份涉及列強的秘密文件……現在他死了，我也不知道該怎麼辦。", nextNode: "END" }
                     ]
                 },
                 FANG_4: {
@@ -2566,33 +2536,26 @@ function startGame() {
                 FANG_5: {
                     text: "（方小蘭焦急地說）探長，您已經掌握的線索夠多了！[impact]快去餐車找趙福生對質！[/impact]他殺了人，不能讓他繼續逍遙自在！",
                     choices: [
-                        { text: "好，我現在就去。", tone: "neutral", nextNode: "END" },
-                        { text: "再確認一件事……", tone: "neutral", nextNode: "END" }
+                        { text: "好，我現在就去。", tone: "neutral", nextNode: "END" }
                     ]
                 },
                 FANG_BONUS_POLITE: {
                     text: "（方小蘭想了想）對了，昨晚趙先生問我醫療包裡有沒有繃帶，說他[shake]手被紙割到了[/shake]。但我看他的手，[ink]根本沒有傷口[/ink]。他肯定是想藉機偷走我的[key]聽診器[/key]去偷聽包廂內的談話！",
                     choices: [
-                        { text: "分析得很合理。", tone: "neutral", clueId: "CLUE_FANG_BANDAGE", playerReceived: "方小蘭揭露趙福生曾試圖接觸醫療包，並以虛假的傷口作為遮掩，目的是獲取聽診器。", truthVersion: "趙福生利用竊取的聽診器監控江明在包廂內的動靜，尋找最佳下手時機。", nextNode: "END" }
+                        { text: "這分析很合理。", tone: "neutral", clueId: "CLUE_FANG_BANDAGE", playerReceived: "方小蘭揭露趙福生曾試圖接觸醫療包，並以虛假的傷口作為遮掩，目的是獲取聽診器。", truthVersion: "趙福生利用竊取的聽診器監控江明在包廂內的動靜，尋找最佳下手時機。", nextNode: "END" }
                     ]
                 },
                 FANG_BONUS_AGGRESSIVE: {
-                    text: "（方小蘭被激怒）你憑什麼懷疑我！我昨晚一直在幫病人看診，根本不在餐車！你去查別人吧！",
+                    text: "（方小蘭被您的語氣激怒）我說的都是實話！我那晚一直在忙著整理病歷和藥品，根本沒空去餐車管你們的閒事！",
                     choices: [
                         { text: "……知道了。", tone: "neutral", clueId: "CLUE_FANG_DEFENSIVE", playerReceived: "方小蘭情緒激動，強調自己昨晚一直在幫病人看診不在餐車。", truthVersion: "方小蘭說的是實話，她確實不在場，但她激動的反應讓玩家誤以為她在隱瞞。", nextNode: "END" }
                     ]
                 },
-                'CONFRONT_CLUE_STETHOSCOPE': {
-                    text: "「……謝謝你幫我找回它。這是我重要的診斷工具。[sad]身為醫生，我卻沒能救活他，真是失職。[/sad]」",
-                    expression: "sad",
-                    choices: [{ text: "詢問現場細節", nextNode: "FANG_2" }]
-                },
-                'CONFRONT_CLUE_ZHAO_LIE': {
-                    text: "「[impact]你說什麼？[/impact]趙先生在說謊？[resolved]如果他真的在現場，那我們必須揭穿他的假面具。[/resolved]」",
-                    expression: "resolved",
-                    choices: [{ text: "繼續詢問", nextNode: "FANG_2" }]
-                },
-                END: { text: "（方小蘭低頭整理她的醫療包）", choices: [] }
+                END: { text: "（方小蘭低頭翻閱著醫療紀錄）請給我一點空間。", choices: [] },
+                INTERROGATION: {
+                    'CLUE_STETHOSCOPE': 'FANG_2',
+                    'CLUE_MANUSCRIPT_PAGE': 'FANG_4'
+                }
             }
         };
         
