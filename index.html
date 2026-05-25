@@ -105,15 +105,16 @@
             filter: brightness(1.2) drop-shadow(0 0 5px var(--ui-gold));
         }
 
-        /* 系統按鈕容器 (右下角) */
-        #system-btns {
+        /* 全局 HUD 容器 */
+        #hud-top-left, #hud-top-right {
             position: fixed;
-            bottom: 25px;
-            right: 25px;
+            top: 25px;
             display: flex;
             gap: 15px;
             z-index: 1000;
         }
+        #hud-top-left { left: 25px; }
+        #hud-top-right { right: 25px; }
 
         .side-btn {
             width: 70px;
@@ -1261,6 +1262,26 @@
         <div id="flicker-overlay"></div>
         <div id="snow-layer"></div>
         <div id="hud-hint">使用 A / D 左右移動視角 | 點擊調查物件或人物 | 按 <kbd>`</kbd> 開啟開發者模式</div>
+        <!-- 全局 HUD 獨立放置 -->
+        <div id="hud-top-left" class="hud-group" style="display:none;">
+            <div id="bgm-btn" class="side-btn" onclick="toggleBGM()" style="opacity: 0.5;">
+                <div style="font-size: 24px;">🎵</div>
+                <div>音樂(M)</div>
+            </div>
+        </div>
+        
+        <div id="hud-top-right" class="hud-group" style="display:none;">
+            <div id="notebook-btn" class="side-btn" onclick="toggleNotebook()">
+                <div style="font-size: 24px;">📓</div>
+                <div>手札(N)</div>
+            </div>
+            <div id="inventory-btn" class="side-btn" onclick="toggleInventory()">
+                <div id="inv-badge" class="side-badge">0</div>
+                <div style="font-size: 24px;">👜</div>
+                <div>證據(I)</div>
+            </div>
+        </div>
+
         <div id="dev-toggle-btn" onclick="toggleDevMode()">Dev Mode: OFF</div>
         <div id="dev-mouse-tracker" style="display:none; position:fixed; pointer-events:none; background:rgba(0,0,0,0.8); color:#0f0; padding:4px 8px; border: 1px solid #0f0; z-index:9999; font-family: monospace;"></div>
 
@@ -1275,24 +1296,6 @@
             <span id="bubble-text">對話內容...</span>
             <div id="bubble-options"></div>
             
-            <!-- 系統按鈕 (右下角) -->
-            <div id="screen-wipe"></div>
-            <div id="system-btns">
-                <div id="notebook-btn" class="side-btn" onclick="toggleNotebook()">
-                    <div style="font-size: 24px;">📓</div>
-                    <div>手札(N)</div>
-                </div>
-                <div id="inventory-btn" class="side-btn" onclick="toggleInventory()">
-                    <div id="inv-badge" class="side-badge">0</div>
-                    <div style="font-size: 24px;">👜</div>
-                    <div>證據(I)</div>
-                </div>
-                <div id="bgm-btn" class="side-btn" onclick="toggleBGM()" style="opacity: 0.5;">
-                    <div style="font-size: 24px;">🎵</div>
-                    <div>音樂(M)</div>
-                </div>
-            </div>
-
             <!-- 偵探手札面板 -->
             <div id="notebook-panel">
                 <div class="notebook-header">
@@ -1712,6 +1715,7 @@
             if (localStorage.getItem('skip_intro') === 'true') {
                 localStorage.removeItem('skip_intro');
                 document.getElementById('title-screen').style.display = 'none';
+            document.querySelectorAll('.hud-group').forEach(el => el.style.display = 'flex');
                 startGame();
                 return;
             }
@@ -1883,7 +1887,7 @@
         }
 
         function startGame() {
-            document.querySelectorAll('.side-btn').forEach(btn => btn.style.display = 'flex');
+            document.querySelectorAll('.hud-group, .side-btn').forEach(el => el.style.display = 'flex');
             initScene('DINING_CAR', 500);
             requestAnimationFrame(gameLoop);
         }
@@ -2933,10 +2937,12 @@
 
             // 恢復視覺小說面板，取消定位追蹤
             bubble.style.display = 'block';
+            document.querySelectorAll('.hud-group').forEach(el => el.style.display = 'none');
         }
 
         function closeDialogue() {
             bubble.style.display = 'none';
+            document.querySelectorAll('.hud-group').forEach(el => el.style.display = 'flex');
             currentNPCId = null;
             checkAccuseButtonVisible();
         }
@@ -2995,6 +3001,7 @@
             document.getElementById('bubble-options').style.display = 'none';
             document.getElementById('bubble-next-btn').style.display = 'block';
             document.getElementById('speech-bubble').style.display = 'block';
+            document.querySelectorAll('.hud-group').forEach(el => el.style.display = 'none');
         }
 
         function triggerEnding(type) {
