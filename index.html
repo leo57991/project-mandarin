@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>語境偵緝：雪國列車 - 無縫橫捲軸</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --pixel-size: 4px;
@@ -19,7 +19,7 @@
             margin: 0; padding: 0;
             background-color: #000;
             color: #fff;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Inter', 'Noto Serif TC', serif, sans-serif;
             overflow: hidden;
             user-select: none;
         }
@@ -837,38 +837,45 @@
             text-shadow: 2px 2px 4px #000;
         }
         .title-menu {
-            margin-top: 60px; 
-            display: flex; flex-direction: row; gap: 30px;
+            margin-top: 50px; 
+            display: flex; flex-direction: column; gap: 14px;
             opacity: 0; z-index: 10;
             animation: fadeIn 2s 3s forwards;
             justify-content: center;
             align-items: center;
         }
         .title-btn {
-            width: 200px; height: 50px;
-            background: rgba(0,0,0,0.8);
+            width: 240px; height: 50px;
+            background: rgba(18, 12, 8, 0.95); /* 深褐木質調背景 */
             color: #f5e6c8;
             border: 3px solid #d4af37;
+            outline: 2px solid #1a1008; /* 外側邊框 */
+            outline-offset: -5px; /* 雙重邊框的內縮效果 */
             font-family: var(--main-font);
-            font-size: 18px;
+            font-size: 19px;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+            letter-spacing: 2px;
         }
         .title-btn:hover {
-            background: rgba(212,175,55,0.3);
-            box-shadow: 0 0 15px #d4af37;
+            background: rgba(93, 64, 55, 0.85); /* 暖木褐色 hover */
+            box-shadow: 0 0 20px rgba(212,175,55,0.7), inset 0 0 10px rgba(212,175,55,0.5);
             transform: scale(1.05);
             color: #fff;
+            border-color: #fff;
         }
         .title-btn:disabled {
             border-color: #555;
             color: #666;
             cursor: not-allowed;
-            background: rgba(0,0,0,0.5);
+            background: rgba(12, 12, 12, 0.8);
             transform: none; box-shadow: none;
+            outline: none;
         }
         .title-btn:disabled:hover::after {
             content: "尚無存檔";
@@ -1671,10 +1678,10 @@
             },
             clues: { collected: [], details: {} },
             npcs: {
-                CHEN_AFAR: { met: false, dialogueNode: "START", name: "陳阿發", description: "餐車服務生，沈默寡言，看過火車上許多不為人知的角落。" },
-                ZHAO: { met: false, dialogueNode: "START", name: "趙福生", description: "外表是富商，實為外國勢力買辦，奉命取回手稿不惜一切代價。" },
-                BARONESS: { met: false, dialogueNode: "START", name: "男爵夫人", description: "精通法語的貴族，與江明有債務糾紛，但對真相似乎另有所求。" },
-                FANG: { met: false, dialogueNode: "START", name: "方小蘭", description: "實習女記者（偽裝為醫生），對新聞真相有著近乎偏執的追求。" }
+                CHEN_AFAR: { met: false, dialogueNode: "START", name: "陳阿發", description: "餐車服務生，沈默寡言，看過火車上許多不為人知的角落。", round1Done: false, round2Done: false, round3Done: false, round4Done: false, round5Done: false },
+                ZHAO: { met: false, dialogueNode: "START", name: "趙福生", description: "外表是富商，實為外國勢力買辦，奉命取回手稿不惜一切代價。", round1Done: false, round2Done: false, round3Done: false, round4Done: false, round5Done: false },
+                BARONESS: { met: false, dialogueNode: "START", name: "男爵夫人", description: "精通法語的貴族，與江明有債務糾紛，但對真相似乎另有所求。", round1Done: false, round2Done: false, round3Done: false, round4Done: false, round5Done: false },
+                FANG: { met: false, dialogueNode: "START", name: "方小蘭", description: "實習女記者（偽裝為醫生），對新聞真相有著近乎偏執的追求。", round1Done: false, round2Done: false, round3Done: false, round4Done: false, round5Done: false }
             },
             settings: { bgmVolume: 70, textSpeed: 50 },
             rapport: {
@@ -1685,7 +1692,30 @@
             }
         };
 
+        function saveGame() {
+            const saveData = {
+                currentScene: currentScene,
+                camX: camX,
+                grammarProgress: gameState.grammarProgress,
+                collectedClues: gameState.clues.collected,
+                clueDetails: gameState.clues.details,
+                npcs: gameState.npcs,
+                rapport: gameState.rapport
+            };
+            localStorage.setItem('mandarin_save', JSON.stringify(saveData));
+            USER_RECORDS.saveData = saveData;
+            const btn = document.getElementById('continue-btn');
+            if (btn) btn.disabled = false;
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('skip_intro') === 'true') {
+                localStorage.removeItem('skip_intro');
+                document.getElementById('title-screen').style.display = 'none';
+                startGame();
+                return;
+            }
+
             // 初始化標題飄雪
             const snowContainer = document.getElementById('title-snow-container');
             if (snowContainer) {
@@ -1734,6 +1764,18 @@
             playOpening();
         }
 
+        // 線索靜態模板（讀檔時 fallback 使用）
+        const CLUE_TEMPLATES = {
+            CLUE_CAMERA: { id: 'CLUE_CAMERA', isDistorted: false, name: '萊卡相機', desc: '江明的萊卡相機。底片槽是空的，快門旁有細微指紋痕跡。', truth: '江明用相機拍下手稿內容作為備份，底片被趙福生取走。' },
+            CLUE_COFFEE_CUP: { id: 'CLUE_COFFEE_CUP', isDistorted: false, name: '咖啡杯', desc: '杯沿留有脣印，杯底有半冷的咖啡。這杯咖啡不是江明點的。', truth: '這是男爵夫人的咖啡杯，證明她案發時在餐車角落。' },
+            CLUE_STETHOSCOPE: { id: 'CLUE_STETHOSCOPE', isDistorted: false, name: '聽診器', desc: '一副醫用聽診器，上面刻有「方」字。', truth: '趙福生從方小蘭的醫療包偷來放在餐車現場嫁禍她。' },
+            CLUE_FILM_CASE: { id: 'CLUE_FILM_CASE', isDistorted: false, name: '底片盒', desc: '一個空置的底片盒，鐵蓋開啟著，上面有些許髒污。', truth: '趙福生取走底片後，隨手將空盒扔在備料廚房的垃圾桶旁。' },
+            CLUE_MANUSCRIPT_PAGE: { id: 'CLUE_MANUSCRIPT_PAGE', isDistorted: false, name: '手稿殘頁', desc: '灶膛裡發現的沒燒乾淨的碎紙片，上面有火漆印的痕跡。', truth: '江明所攜帶的秘密條約手稿殘頁，雖被趙福生焚毀，但仍保留了關鍵的使館火漆印記。' },
+            CLUE_LETTER: { id: 'CLUE_LETTER', isDistorted: false, name: '外文電報', desc: '一封用法文寫成的電報，收件人是趙福生。內容無法完全辨認，但看到了數字和地名。', truth: '這是外國勢力給趙福生的指令：取回手稿，不惜一切代價。' },
+            CLUE_SCARF: { id: 'CLUE_SCARF', isDistorted: false, name: '深色圍巾', desc: '一條質地厚重的深色圍巾，不屬於男爵夫人。她說她從未見過這條圍巾。', truth: '趙福生的圍巾，他用它勒死江明後藏在男爵夫人包廂嫁禍。' },
+            CLUE_JIANGMING_NOTE: { id: 'CLUE_JIANGMING_NOTE', isDistorted: false, name: '江明的隱藏紙條', desc: '地板縫裡撿到的碎紙片，拼湊後是江明留下的警告。', truth: '江明預料自己可能遇害，事先留下線索指引調查方向。' }
+        };
+
         function continueGame() {
             const data = USER_RECORDS.saveData;
             if (!data) return;
@@ -1742,6 +1784,23 @@
             Object.assign(gameState.clues.details, data.clueDetails || {});
             gameState.clues.collected = data.collectedClues || [];
             gameState.grammarProgress = data.grammarProgress || gameState.grammarProgress;
+            if (data.npcs) gameState.npcs = data.npcs;
+            if (data.rapport) gameState.rapport = data.rapport;
+
+            // 重建背包（有 fallback 到 CLUE_TEMPLATES）
+            inventory.length = 0;
+            if (data.collectedClues) {
+                data.collectedClues.forEach(id => {
+                    if (gameState.clues.details[id]) {
+                        inventory.push(gameState.clues.details[id]);
+                    } else if (CLUE_TEMPLATES[id]) {
+                        // fallback: use static template
+                        gameState.clues.details[id] = CLUE_TEMPLATES[id];
+                        inventory.push(CLUE_TEMPLATES[id]);
+                    }
+                });
+            }
+            updateInventoryUI();
             
             document.getElementById('title-screen').style.display = 'none';
             initScene(data.currentScene, data.camX);
@@ -1864,13 +1923,16 @@
                     const npc = gameState.npcs[id];
                     if (!npc.met) continue;
                     
+                    let imgId = id.toLowerCase();
+                    if (imgId === 'chen_afar') imgId = 'chen';
+                    
                     const card = document.createElement('div');
                     card.className = 'suspect-card';
                     card.innerHTML = `
-                        <div class="suspect-img" style="background-image: url('assets/npc_${id.toLowerCase()}.png')"></div>
+                        <div class="suspect-img" style="background-image: url('assets/npc_${imgId}.png')"></div>
                         <div class="suspect-info">
                             <h3>${npc.name}</h3>
-                            <div class="suspect-lore">${npc.text || '尚未獲得更深層的背景資料。'}</div>
+                            <div class="suspect-lore">${npc.description || '尚未獲得更深層的背景資料。'}</div>
                             <div style="margin-top:10px; font-size:12px; color:var(--ui-gold)">
                                 羈絆：禮貌 ${gameState.rapport[id].polite} | 強硬 ${gameState.rapport[id].aggressive}
                             </div>
@@ -1902,12 +1964,15 @@
                 }
             } else if (currentNotebookTab === 'timeline') {
                 body.innerHTML = '<div style="color:#777; text-align:center; margin-top:50px;">案件正在進行中，目前僅記錄初步線索。</div>';
-                // 這裡未來可以加入遊戲進程的紀錄
             }
         }
 
         function performRestart() {
+            localStorage.removeItem('mandarin_save');
             localStorage.setItem('skip_intro', 'true');
+            if (window.USER_RECORDS) {
+                USER_RECORDS.saveData = null;
+            }
             location.reload();
         }
 
@@ -1921,10 +1986,12 @@
                     { type: 'NPC', id: 'ZHAO', class: 'npc-zhao', x: 2200, y: 'var(--ground-y)', text: '🔍 與 趙福生 交談 (外表是富商，實為外國勢力買辦，奉命取回手稿不惜一切代價。)' },
                     { type: 'ITEM', id: 'CLUE_CAMERA', text: '🔍 調查：桌上的萊卡相機', x: 600, y: '70%', clueName: "萊卡相機", 
                       playerReceived: "江明的萊卡相機。底片槽是空的，快門旁有細微指紋痕跡。", 
-                      truthVersion: "江明用相機拍下手稿內容作為備份，底片被趙福生取走。" },
+                      truthVersion: "江明用相機拍下手稿內容作為備份，底片被趙福生取走。",
+                      imgSrc: "assets/clue_camera.png" },
                     { type: 'ITEM', id: 'CLUE_COFFEE_CUP', text: '🔍 調查：殘留脣印的咖啡杯', x: 1200, y: '75%', clueName: "咖啡杯", 
                       playerReceived: "杯沿留有脣印，杯底有半冷的咖啡。這杯咖啡不是江明點的。", 
-                      truthVersion: "這是男爵夫人的咖啡杯，證明她案發時在餐車角落。" }
+                      truthVersion: "這是男爵夫人的咖啡杯，證明她案發時在餐車角落。",
+                      imgSrc: "assets/clue_coffee_cup.png" }
                 ]
             },
             CORRIDOR: {
@@ -1941,7 +2008,8 @@
                     { type: 'NPC', id: 'FANG', class: 'npc-fang', x: 1200, y: 'var(--ground-y)', text: '🔍 與 方小蘭 交談 (實習記者偽裝成醫生，對真相有著執著追求)' },
                     { type: 'ITEM', id: 'CLUE_STETHOSCOPE', text: '🔍 調查：走廊牆角的物品', x: 1500, y: '95%', clueName: "聽診器", 
                       playerReceived: "一副醫用聽診器，上面刻有「方」字。", 
-                      truthVersion: "趙福生從方小蘭的醫療包偷來放在餐車現場嫁禍她。" },
+                      truthVersion: "趙福生從方小蘭的醫療包偷來放在餐車現場嫁禍她。",
+                      imgSrc: "assets/clue_stethoscope.png" },
                     { type: 'KNOB', id: 'door_cabin', x: 2172, y: '59%', target: 'CABIN', targetX: 0 }
                 ]
             },
@@ -1949,13 +2017,21 @@
                 bg: "url('assets/bg_kitchen.png')",
                 widthRatio: 4, 
                 entities: [
-                    { type: 'ITEM', id: 'CLUE_FILM_CASE', text: '🔍 調查：地板縫隙的焦黑碎片', x: 600, y: '80%', clueName: "手稿殘頁", 
-                      playerReceived: "一張燒焦的紙，上面有工整的漢字，但大部分已無法辨認。", 
-                      truthVersion: "趙福生銷毀手稿時不慎遺落的殘頁，證明手稿曾在廚房被部分焚毀。" },
+                    { type: 'ITEM', id: 'CLUE_FILM_CASE', text: '🔍 調查：垃圾桶旁的空鐵盒', x: 600, y: '80%', clueName: "底片盒", 
+                      playerReceived: "一個空置的底片盒，鐵蓋開啟著，上面有些許髒污。", 
+                      truthVersion: "趙福生取走底片後，隨手將空盒扔在備料廚房的垃圾桶旁。",
+                      imgSrc: "assets/clue_film_case.png" },
                     // 文字謎題觸發點：需先持有底片盒線索才會出現
                     { type: 'PUZZLE', id: 'PUZZLE_NOTE', text: '🔍 調查：地板縫隙的紙條碎片', x: 1200, y: '75%',
                       requiresClue: 'CLUE_FILM_CASE',
-                      imgSrc: 'assets/clue_note_fragment.png' }
+                      imgSrc: 'assets/clue_note_fragment.png' },
+                    // 手稿殘頁：需陳阿發 Round 4 對話完成
+                    { type: 'ITEM', id: 'CLUE_MANUSCRIPT_PAGE', text: '🔍 調查：廚房灶膛內未燒乾淨的紙片', x: 1800, y: '75%', clueName: "手稿殘頁",
+                      playerReceived: "灶膛裡發現的沒燒乾淨的碎紙片，上面有火漆印的痕跡。",
+                      truthVersion: "江明所攜帶的秘密條約手稿殘頁，雖被趙福生焚毀，但仍保留了關鍵的使館火漆印記。",
+                      imgSrc: "assets/clue_manuscript_page.png" },
+                    // NPC 陳阿發在廚房：需獲得「江明的隱藏紙條」
+                    { type: 'NPC', id: 'CHEN_AFAR', class: 'npc-chen', x: 800, y: 'var(--ground-y)', text: '🔍 與 服務生陳阿發 交談' }
                 ]
             },
             CABIN: {
@@ -1964,10 +2040,12 @@
                 entities: [
                     { type: 'ITEM', id: 'CLUE_LETTER', text: '🔍 調查：書桌上的外文電報', x: 150, y: '70%', clueName: "外文電報", 
                       playerReceived: "一封用法文寫成的電報，收件人是趙福生。內容無法完全辨認，但看到了數字和地名。", 
-                      truthVersion: "這是外國勢力給趙福生的指令：取回手稿，不惜一切代價。" },
+                      truthVersion: "這是外國勢力給趙福生的指令：取回手稿，不惜一切代價。",
+                      imgSrc: "assets/clue_letter.png" },
                     { type: 'ITEM', id: 'CLUE_SCARF', text: '🔍 調查：行李箱旁的深色物', x: 400, y: '90%', clueName: "深色圍巾", 
                       playerReceived: "一條質地厚重的深色圍巾，不屬於男爵夫人。她說她從未見過這條圍巾。", 
-                      truthVersion: "趙福生的圍巾，他用它勒死江明後藏在男爵夫人包廂嫁禍。" },
+                      truthVersion: "趙福生的圍巾，他用它勒死江明後藏在男爵夫人包廂嫁禍。",
+                      imgSrc: "assets/clue_scarf.png" },
                     { type: 'NPC', id: 'BARONESS', class: 'npc-baroness', x: 800, y: 'var(--ground-y)', transform: 'translate(-50%, -100%) scaleX(-1)', text: '🔍 與 白男爵夫人 交談 (精通多國語言的貴族，與江明有債務糾紛)' }
                 ]
             }
@@ -2034,6 +2112,7 @@
                 sOverlay.className = 'snow-overlay';
                 world.appendChild(sOverlay);
                 createSnow(sOverlay, 50);
+                gameState.visitedCabin = true; // 進入包廂記錄
             }
             
             WORLD_W = VIEW_H * s.widthRatio;
@@ -2047,6 +2126,27 @@
             camX = Math.max(0, Math.min(WORLD_W - VIEW_W, camX));
 
             s.entities.forEach(ent => {
+                // 條件式生成檢查
+                if (ent.id === 'CHEN_AFAR') {
+                    const hasNote = gameState.clues.collected.includes('CLUE_JIANGMING_NOTE');
+                    if (sceneId === 'DINING_CAR' && hasNote) return;
+                    if (sceneId === 'KITCHEN' && !hasNote) return;
+                }
+                if (ent.id === 'CLUE_MANUSCRIPT_PAGE') {
+                    if (!gameState.npcs.CHEN_AFAR.round4Done) return;
+                }
+                if (ent.id === 'CLUE_SCARF') {
+                    if (!(gameState.grammarProgress.GP3_LOCATION_WORD.isCorrect && gameState.npcs.FANG.round2Done)) return;
+                }
+                if (ent.type === 'ITEM' && gameState.clues.collected.includes(ent.id)) {
+                    return;
+                }
+                if (ent.type === 'PUZZLE') {
+                    const hasClue = !ent.requiresClue || gameState.clues.collected.includes(ent.requiresClue);
+                    if (!hasClue) return;
+                    if (gameState.clues.collected.includes('CLUE_JIANGMING_NOTE')) return;
+                }
+
                 const el = document.createElement('div');
                 el.className = 'entity';
                 if(ent.id) el.id = ent.id;
@@ -2088,14 +2188,13 @@
                     el.title = '進入包廂';
                     el.onclick = (e) => {
                         e.stopPropagation();
+                        if (ent.id === 'door_cabin') {
+                            gameState.clickedDoor303 = true;
+                            saveGame();
+                        }
                         promptTransition(ent.target, ent.targetX);
                     };
                 } else if(ent.type === 'PUZZLE') {
-                    // 謎題物件：根據 requiresClue 決定是否顯示
-                    const hasClue = !ent.requiresClue || gameState.clues.collected.includes(ent.requiresClue);
-                    if(!hasClue) return; // 沒有前置道具就不顯示
-                    if(gameState.clues.collected.includes('CLUE_JIANGMING_NOTE')) return; // 已解謎就不再顯示
-
                     // 圖像式謎題觸發物件
                     el.className = ''; // 清除 entity class
                     el.classList.add('puzzle-trigger-item');
@@ -2143,11 +2242,46 @@
                         openTextPuzzle();
                     };
                 } else if(ent.type === 'ITEM') {
-                    if(gameState.clues.collected.includes(ent.id)) return;
-                    el.classList.add('interact-item');
                     el.style.left = ent.x + 'px';
                     el.style.top = ent.y;
                     el.title = ent.text.replace('🔍 調查：', ''); 
+                    
+                    if (ent.imgSrc) {
+                        el.className = ''; // 清除 entity class
+                        el.classList.add('puzzle-trigger-item');
+                        el.style.position = 'absolute';
+                        el.style.transform = 'translate(-50%, -50%)';
+                        el.style.cursor = 'pointer';
+                        el.style.zIndex = '10';
+
+                        const img = document.createElement('img');
+                        img.src = ent.imgSrc;
+                        img.style.width = '80px';
+                        img.style.height = '80px';
+                        img.style.objectFit = 'contain';
+                        img.style.imageRendering = 'pixelated';
+                        img.style.filter = 'drop-shadow(0 0 6px rgba(212,175,55,0.5))';
+                        img.style.transition = 'all 0.2s';
+                        img.style.display = 'block';
+                        el.appendChild(img);
+
+                        const label = document.createElement('div');
+                        label.innerText = '🔍 可互動';
+                        label.style.cssText = `
+                            position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%);
+                            color: var(--ui-gold); font-size: 12px; white-space: nowrap;
+                            text-shadow: 0 0 6px rgba(0,0,0,0.8);
+                            animation: breathe 1.5s infinite alternate;
+                            pointer-events: none;
+                        `;
+                        el.appendChild(label);
+
+                        el.onmouseenter = () => { img.style.filter = 'drop-shadow(0 0 14px rgba(212,175,55,1)) brightness(1.2)'; img.style.transform = 'scale(1.15)'; };
+                        el.onmouseleave = () => { img.style.filter = 'drop-shadow(0 0 6px rgba(212,175,55,0.5))'; img.style.transform = 'scale(1)'; };
+                    } else {
+                        el.classList.add('interact-item');
+                    }
+
                     el.onclick = (e) => {
                         e.stopPropagation();
                         const sourceDom = e.currentTarget;
@@ -2163,27 +2297,50 @@
                         collectItem(clueObj, sourceDom);
                         sourceDom.style.display = 'none';
                         checkAccuseButtonVisible();
+                        saveGame();
                     };
                 }
                 world.appendChild(el);
             });
+            saveGame(); // 在 initScene 結束時進行自動存檔
             renderUpdate();
         }
 
         const dialogueTree = {
             CHEN_AFAR: {
                 START: {
-                    text: "（陳阿發擦著桌子，[shake]眼神飄忽[/shake]）我已經下班了，你問我幹嘛？",
+                    text: "（陳阿發擦著桌子，[shake]眼神飄忽[/shake]）探長，您來了。我已經把我知道的都跟列車長說了，真的，我什麼都沒看見……",
                     choices: [
-                        { text: "你昨晚幾點還在餐車？", tone: "neutral", grammarPoint: "GP2_TIME_ADVERB", isCorrect: true, response: "昨晚？我收到十一點才走。", nextNode: "CHEN_2" },
-                        { text: "你昨天晚上在哪裡？", tone: "neutral", grammarPoint: "GP2_TIME_ADVERB", isCorrect: false, response: "昨天？我昨天休假，根本不在車上。", nextNode: "END" }
+                        { text: "你發現尸體的時候，現場是什麼情況？", tone: "polite", grammarPoint: "GP2_TIME_ADVERB", isCorrect: true, response: "那時大概九點十分，我從廚房出來，就看到江先生倒在椅子邊，趙先生站在旁邊，[shake]臉色發白[/shake]。之前我送咖啡時他們還在講話。後來我回廚房洗碗，再出來就是那樣了……", nextNode: "CHEN_2" },
+                        { text: "你什麼時候發現的尸體？", tone: "neutral", grammarPoint: "GP2_TIME_ADVERB", isCorrect: false, response: "什麼時候？嗯……我記不太清了，好像是九點半，也可能快十點了。我洗碗洗得太累了，沒有注意確切的時間。", nextNode: "END" }
                     ]
                 },
                 CHEN_2: {
-                    text: "（陳阿發壓低聲音）十一點那麼晚，有沒有看到什麼？",
+                    text: "（陳阿發壓低聲音，四下張望）探長……您還有事嗎？",
                     choices: [
-                        { text: "請問您那時候有沒有注意到可疑的人？", tone: "polite", response: "有個人從餐車往頭等艙方向去。穿深色大衣。對了，那個俄國貴族——[ink]303號包廂[/ink]的男爵夫人——她當時也在餐車。你可以去問問她。", nextNode: "END" },
-                        { text: "難道你打算隱瞞看到的人嗎？", tone: "aggressive", response: "我...我有看到一個穿深色大衣的人走得很急。還有那個——303號的洋夫人也在。", nextNode: "END" }
+                        { text: "請問您那時候有沒有注意到可疑的人？", tone: "polite", response: "有個人從餐車往頭等艙方向去。穿深色大衣。對了，那個俄國貴族——[ink]303號包廂[/ink]的男爵夫人——她當時也在餐車。您可以去問問她。", nextNode: "END" },
+                        { text: "難道你打算隱瞞看到的人嗎？", tone: "aggressive", response: "我……我有看到一個穿深色大衣的人走得很急。還有那個——303號的洋夫人也在。", nextNode: "END" }
+                    ]
+                },
+                CHEN_3: {
+                    text: "（陳阿發探頭看看左右）探長，您還在查？我剛剛又想到一件事……",
+                    choices: [
+                        { text: "什麼事？請說。", tone: "polite", response: "趙先生上車的時候，那件[key]藏青色圍巾[/key]可講究了，圍在脖子上，誰碰他跟誰急。可今晚我見他從走廊回來時，圍巾不見了，手裡多了個[shake]鼓鼓的皮包[/shake]，露出一截圍巾尾。他那是把圍巾硬塞進包裡了，為什麼要這樣？", clueId: "CLUE_CHEN_SCARF_OBSERVATION", playerReceived: "陳阿發目擊趙福生從走廊返回後，隨身的藏青色圍巾消失了，塞入了行李包中。", truthVersion: "趙福生在殺人後藏匿了作案工具——用於勒頸的圍巾，趁亂藏入男爵夫人包廂。", nextNode: "END" },
+                        { text: "哦？說說看吧。", tone: "neutral", response: "趙先生那條圍巾，上車時一直圍著，挺貴氣的。但我今晚見他從走廊那頭過來，圍巾不見了，皮包鼓鼓的，還有點[shake]神情慌張[/shake]。", clueId: "CLUE_CHEN_SCARF_OBSERVATION", playerReceived: "陳阿發目擊趙福生從走廊返回後，隨身的藏青色圍巾消失了，塞入了行李包中。", truthVersion: "趙福生在殺人後藏匿了作案工具——用於勒頸的圍巾，趁亂藏入男爵夫人包廂。", nextNode: "END" }
+                    ]
+                },
+                CHEN_4: {
+                    text: "（陳阿發壓低聲音，把您拉到廚房門口）探長，這不是鬧著玩的……我今晚在廚房裡，[crime]親眼看到趙先生在爐子那裡燒東西[/crime]。他說他在燒廢紙，但那紙……看起來像有[key]火漆印[/key]的東西。",
+                    choices: [
+                        { text: "您有沒有撿到任何殘留的紙片？", tone: "polite", response: "我當時嚇到了，沒敢湊近。但爐灶裡[ink]有幾張沒燒完全的紙[/ink]，我後來掃地的時候看到的。探長您要不要去找找看？", nextNode: "END" },
+                        { text: "那他有沒有發現您看見他？", tone: "neutral", response: "發現了！他回頭看到我，當時[shake]臉色一下子變得很難看[/shake]，叫我趕快出去，說廚房是員工禁區。可我是餐車員工啊！他才是不該進廚房的人！", nextNode: "END" }
+                    ]
+                },
+                CHEN_5: {
+                    text: "（陳阿發在廚房裡焦急地等您）探長，您找到那個紙片了嗎？那是[key]手稿殘頁[/key]！我認得那種火漆印，是……是很厲害的地方蓋的！",
+                    choices: [
+                        { text: "您知道這份文件的重要性嗎？", tone: "polite", response: "我不懂那些大道理，但我知道[crime]江先生就是為了這個丟了命[/crime]。探長，您一定要查清楚啊。趙先生那個人，他表面上是商人，但……眼神太冷了。", nextNode: "END" },
+                        { text: "您還看到什麼了？", tone: "neutral", response: "我還看到他的手上……好像有[ink]一點燒傷的痕跡[/ink]，他燒紙的時候可能太急了。這個人，殺了人還敢若無其事……", nextNode: "END" }
                     ]
                 },
                 CHEN_BONUS_POLITE: {
@@ -2199,7 +2356,7 @@
                     ]
                 },
                 'CONFRONT_CLUE_COFFEE_CUP': {
-                    text: "「啊！這不是白男爵夫人的咖啡杯嗎？我昨晚一直在找它...[shake]雖然這是我遺失的[/shake]，但我絕對沒有殺害江明先生！」",
+                    text: "「啊！這不是白男爵夫人的咖啡杯嗎？我昨晚一直在找它……[shake]雖然這是我遺失的[/shake]，但我絕對沒有殺害江明先生！」",
                     expression: "worried",
                     choices: [{ text: "繼續詢問", nextNode: "CHEN_2" }]
                 },
@@ -2209,28 +2366,80 @@
                 START: {
                     text: "（趙福生放下報紙，[shake]眼神警惕[/shake]）你找我？",
                     choices: [
-                        { text: "不好意思打擾您，昨晚您在餐車看見什麼？", tone: "polite", grammarPoint: "GP4_WORD_ORDER", isCorrect: true, response: "就是正常吃飯。十點多我就回包廂了。", nextNode: "ZHAO_CHOICE" },
-                        { text: "你昨晚到底在哪裡？", tone: "aggressive", grammarPoint: "GP4_WORD_ORDER", isCorrect: false, response: "我？我什麼都沒做。你這是什麼意思？", nextNode: "END" }
+                        { text: "不好意思打擾您，昨晚您在餐車看見什麼？", tone: "polite", grammarPoint: "GP4_WORD_ORDER", isCorrect: true, response: "（緩緩放下茶杯）就是正常吃飯。十點多我就回包廂了。", nextNode: "ZHAO_CHOICE" },
+                        { text: "你昨晚到底在哪裡？", tone: "aggressive", grammarPoint: "GP4_WORD_ORDER", isCorrect: false, response: "（冷冷地）我？我什麼都沒做。你這是什麼意思？", nextNode: "END" }
                     ]
                 },
                 ZHAO_CHOICE: {
                     text: "還有什麼想問的？",
                     choices: [
-                        { text: "請跟我說說關於那台萊卡相機...", tone: "polite", condition: "CLUE_CAMERA", response: "那是江明的相機，他不離身的。不過昨晚我確實沒注意他在不在拍。", nextNode: "ZHAO_2" },
+                        { text: "請跟我說說關於那台萊卡相機……", tone: "polite", condition: "CLUE_CAMERA", response: "那是江明的相機，他不離身的。不過昨晚我確實沒注意他在不在拍。", nextNode: "ZHAO_2" },
                         { text: "明明相機就在現場，你竟然說沒注意？", tone: "aggressive", condition: "CLUE_CAMERA", response: "（煩躁）我說過我十點多就走了！", nextNode: "END" },
                         { text: "沒事了。", tone: "neutral", nextNode: "END" }
                     ]
                 },
                 ZHAO_2: {
-                    text: "（看到[key]手稿殘頁[/key]後）你這是在哪找到的？這不過是些廢紙……",
+                    text: "（看到您手持[key]相機[/key]）你這是在哪找到的？那是江明的東西……",
                     choices: [
-                        { text: "在廚房備料台的地板。你似乎很在意它？", tone: "neutral", response: "（趙福生眼神躲閃）那是江明的東西吧。我昨晚確實在餐車待到很晚，但這不代表什麼。", clueId: "CLUE_ZHAO_LIE", playerReceived: "趙福生承認他昨晚在餐車待到很晚，並對「手稿殘頁」表現出極大的不安。", truthVersion: "趙福生在廚房焚毀手稿時留下的證據，他試圖隱瞞自己曾出現在廚房。", nextNode: "END" }
+                        { text: "底片槽是空的，底片被人取走了。您知道誰會這麼做嗎？", tone: "polite", response: "（眼神一閃而過）……我不知道。江明那個人很謹慎，不會隨便讓人動他的東西。", nextNode: "ZHAO_3" },
+                        { text: "底片不見了。您有什麼要解釋的嗎？", tone: "aggressive", response: "（惱怒）你憑什麼質問我？！我根本不知道底片的事！", nextNode: "END" }
+                    ]
+                },
+                ZHAO_3: {
+                    text: "（趙福生接過您呈示的[key]外文電報[/key]，表情微微一僵）這……這哪裡來的？",
+                    choices: [
+                        { text: "您的包廂桌上。電報是法文，收件人是您。", tone: "polite", response: "（沉默片刻）這是商業往來的電報。我在上海做紡織生意，與法國客戶有業務聯繫。這沒什麼好解釋的。", nextNode: "ZHAO_4" },
+                        { text: "這封電報告訴我，您這次上車絕非只是做生意。", tone: "aggressive", response: "（臉色一白）你……你不要亂說！這是私人電報！", nextNode: "END" }
+                    ]
+                },
+                ZHAO_4: {
+                    text: "（趙福生看到您手中的[key]聽診器[/key]，突然一怔）那個……那不是那個護士小姐的東西嗎？",
+                    choices: [
+                        { text: "是方小蘭醫師的。她說這是您從她醫療包裡拿走的。", tone: "polite", response: "（強行鎮定）胡說。我為什麼要拿她的東西？我那晚只是問她借了繃帶，我的手……（停頓）沒什麼，我只是問了問。", nextNode: "ZHAO_5_INTRO" },
+                        { text: "您謊稱手受傷，實際上是為了偷竊這個聽診器偷聽別人談話！", tone: "aggressive", response: "（拍桌）你這是誣陷！你有什麼證據！", nextNode: "END" }
+                    ]
+                },
+                ZHAO_5_INTRO: {
+                    text: "（趙福生緩緩坐回椅子，表情隱晦難測）探長，您很厲害。但光憑這些……您能定我的罪嗎？",
+                    choices: [
+                        { text: "我還有最後幾個問題。", tone: "neutral", nextNode: "END" }
+                    ]
+                },
+                ZHAO_ROUND5: {
+                    text: "（趙福生面對您，[crime]眼神終於不再掩飾[/crime]）探長。您現在手上有什麼證據，就拿出來吧。",
+                    choices: [
+                        { text: "【出示深色圍巾】這條圍巾，是您的吧？", tone: "neutral", condition: "CLUE_SCARF", nextNode: "ZHAO_ROUND5_A" },
+                        { text: "我需要更多時間。", tone: "neutral", nextNode: "END" }
+                    ]
+                },
+                ZHAO_ROUND5_A: {
+                    text: "（趙福生看到圍巾，[shake]手指微微顫抖[/shake]）那條圍巾……我在包廂弄丟了，不知道怎麼跑到那裡去的。",
+                    choices: [
+                        { text: "【出示手稿殘頁】廚房爐灶裡燒不完全的殘頁，上面有英國使館的火漆印。", tone: "neutral", condition: "CLUE_MANUSCRIPT_PAGE", nextNode: "ZHAO_ROUND5_B" }
+                    ]
+                },
+                ZHAO_ROUND5_B: {
+                    text: "（趙福生[impact]臉色驟變[/impact]）你……你在哪裡找到的！那應該已經……",
+                    choices: [
+                        { text: "【出示底片盒】江明已經把手稿拍成底片了。您取走了底片，卻扔掉了這個空盒。", tone: "neutral", condition: "CLUE_FILM_CASE", nextNode: "ZHAO_ROUND5_C" }
+                    ]
+                },
+                ZHAO_ROUND5_C: {
+                    text: "（趙福生長久沉默，[crime]最終露出一個複雜的苦笑[/crime]）……好。您贏了，探長。我承認，[crime]江明是我殺的[/crime]。他不肯交出手稿，還要去找外國記者公開條約內容。我沒有選擇。",
+                    choices: [
+                        { text: "您奉命行事，但命令不能替殺人免責。", tone: "polite", clueId: "CLUE_ZHAO_CONFESSION", playerReceived: "趙福生承認殺害江明，目的是奪回秘密條約手稿，防止其被公開。", truthVersion: "趙福生受外國勢力指使，為防止列強瓜分中國的秘密條約曝光而滅口江明。", nextNode: "ZHAO_TRUE_END" }
+                    ]
+                },
+                ZHAO_TRUE_END: {
+                    text: "（趙福生緩緩閉上眼睛）列強在這片土地上的棋局……從來不是我一個人能左右的。探長，您破了這個案子，但……[shake]您真的能改變什麼嗎？[/shake]",
+                    choices: [
+                        { text: "至少，江明的死不會成為謎案。", tone: "neutral", nextNode: "__TRIGGER_TRUE_END__" }
                     ]
                 },
                 ZHAO_BONUS_POLITE: {
-                    text: "（趙福生放鬆了一點）江明這個人……自詡為正義抄錄秘密條約，但他太天真了。在上海，想要這份手稿的人多到你無法想像。",
+                    text: "（趙福生放鬆了一點）江明這個人……自詡為正義，抄錄秘密條約，但他太天真了。在上海，想要這份手稿的人多到您無法想像。",
                     choices: [
-                        { text: "所以你是其中之一嗎？", tone: "neutral", clueId: "CLUE_ZHAO_DEFLECT", playerReceived: "趙福生透露江明的手稿涉及國家秘密，且江明在上海已有許多潛在敵手。", truthVersion: "趙福生試圖將動機泛化，將自己包裝成僅僅是「眾多競爭者之一」。", nextNode: "END" }
+                        { text: "所以您是其中之一嗎？", tone: "neutral", clueId: "CLUE_ZHAO_DEFLECT", playerReceived: "趙福生透露江明的手稿涉及國家秘密，且江明在上海已有許多潛在敵手。", truthVersion: "趙福生試圖將動機泛化，將自己包裝成僅僅是「眾多競爭者之一」。", nextNode: "END" }
                     ]
                 },
                 ZHAO_BONUS_AGGRESSIVE: {
@@ -2243,7 +2452,7 @@
             },
             BARONESS: {
                 START: {
-                    text: "（男爵夫人冷冷地打量你）你是誰？",
+                    text: "（白男爵夫人冷冷地打量您）你是誰？",
                     choices: [
                         { text: "不好意思打擾您，請問您認識江明先生嗎？", tone: "polite", grammarPoint: "GP1_HONORIFIC", isCorrect: true, response: "（嘆氣）認識。他欠了我一筆錢，我這次上車就是要討債的。", nextNode: "BARONESS_2" },
                         { text: "難道你是為了債務殺死江明嗎？", tone: "aggressive", grammarPoint: "GP1_HONORIFIC", isCorrect: false, response: "（面無表情）注意你的措辭，偵探。", nextNode: "END" }
@@ -2252,44 +2461,90 @@
                 BARONESS_2: {
                     text: "昨晚您在哪裡？",
                     choices: [
-                        { text: "請告訴我您目擊的一切細節。", tone: "polite", response: "餐車角落，喝咖啡等他。但我看到一個穿深色大衣的人走得很急。", nextNode: "BARONESS_3" },
+                        { text: "請告訴我您目擊的一切細節。", tone: "polite", response: "餐車角落，喝咖啡等他。但我看到一個穿[ink]深色大衣[/ink]的人走得很急。", nextNode: "BARONESS_3" },
                         { text: "竟然在那種地方待了一整晚？", tone: "aggressive", response: "（皺眉）我只是在等一個不守時的人。", nextNode: "END" }
                     ]
                 },
                 BARONESS_3: {
-                    text: "關於那個咖啡杯...",
+                    text: "關於那個咖啡杯……",
                     choices: [
-                        { text: "不好意思，您忘了帶走它。", tone: "polite", response: "是的，杯沿有我的脣印。但我發誓我看到那個人離開時，江明還沒出事。", nextNode: "END" },
+                        { text: "不好意思，您忘了帶走它。", tone: "polite", response: "是的，杯沿有我的脣印。但我發誓我看到那個人離開時，江明還沒出事。", nextNode: "BARONESS_4" },
                         { text: "明明證據就在現場，你竟敢否認？", tone: "aggressive", response: "（冷笑）那是證明我在場，而不是證明我殺人的證據。", nextNode: "END" }
                     ]
                 },
+                BARONESS_4: {
+                    text: "（白男爵夫人看著您呈示的[key]外文電報[/key]，輕輕嘆了口氣）這封電報……",
+                    choices: [
+                        { text: "這封外文電報是怎麼回事？", tone: "polite", response: "昨晚我從走廊回來的時候，發現房門開了一條縫，梳妝台上多了這張紙，我不知道是誰放的。對了，說到這個，我[ink]聞到過趙先生身上有紙張燒焦的味道[/ink]。他說他頭疼，要出去透透氣，但我看見他從廚房走出來。一個頭疼的人，跑去廚房做什麼？", nextNode: "BARONESS_4B" },
+                        { text: "您知道這電報是誰放的嗎？", tone: "neutral", response: "不知道。但我發現的時候，房門縫裡還有股燒焦的氣息。趙先生那晚不知道在廚房搗什麼鬼。", nextNode: "BARONESS_4B" }
+                    ]
+                },
+                BARONESS_4B: {
+                    text: "（男爵夫人若有所思）您還想問些什麼呢？",
+                    choices: [
+                        { text: "江明跟您提過他手上有什麼特別的東西嗎？", tone: "polite", response: "特別的東西？讓我想想……前幾天他在走廊碰見我，心情很好的樣子，說他弄到了一份[key]「能讓洋人睡不著覺的東西」[/key]。我問他是什麼，他沒細說，只講了一句「這東西比黃金值錢，能換我下半輩子不用再看人臉色」。我當時還勸他小心點，別惹火上身。他終究還是把命搭了進去，誰知道呢，誰知道呢。", clueId: "CLUE_BARONESS_JIANGMING_HINT", playerReceived: "男爵夫人轉述江明曾提到手上有份「能讓洋人睡不著覺的東西」，暗指機密文件。", truthVersion: "江明掌握的秘密條約副本是使列強寢食難安的核心證據，也是他被殺的真正原因。", nextNode: "END" }
+                    ]
+                },
+                BARONESS_5: {
+                    text: "（男爵夫人看到您手中的殘頁，[shake]神情凝重[/shake]）「這紙片上的火漆印……我認得。獅子與獨角獸，是[key]英國使館的徽記[/key]。我見過。」",
+                    choices: [
+                        { text: "您確定？", tone: "polite", response: "不會錯的。我在上海這麼多年，跟各國使館的人打過不少交道。英國人的文件上都有這個圖案，法國人是公雞，德國人是鷹。這張紙雖然燒焦了，但您看這個爪子的形狀——是獅子沒錯。", nextNode: "BARONESS_5B" },
+                        { text: "真的嗎？", tone: "neutral", response: "絕對不會錯。我跟英國使館的人打過交道，那個獅子與獨角獸的徽記，是英國王室的紋章。這份文件……跟英國有關。", nextNode: "BARONESS_5B" }
+                    ]
+                },
+                BARONESS_5B: {
+                    text: "（男爵夫人緩緩說道）如果江明手上真的有這種東西，那這件事就比探長你想像的要[impact]大得多[/impact]了。列強瓜分中國的計劃，這幾年一直在暗中進行，只是沒有人敢公開說。要是有人拿到了書面證據……也難怪江明之前會那麼說。",
+                    choices: [
+                        { text: "謝謝您，這對案件至關重要。", tone: "polite", clueId: "CLUE_EMBASSY_SEAL", playerReceived: "男爵夫人確認手稿殘頁上的火漆印是英國使館的獅子與獨角獸徽記。", truthVersion: "江明持有的是英國使館機密文件副本，涉及列強瓜分中國的秘密計劃，這就是他被殺的核心原因。", nextNode: "END" }
+                    ]
+                },
                 BARONESS_BONUS_POLITE: {
-                    text: "（男爵夫人若有所思）那個人走路很奇怪……[ink]刻意壓低腳步聲[/ink]，甚至還把那條厚重的[key]深色圍巾[/key]裹在脖子上，像是想遮住臉。",
+                    text: "（白男爵夫人若有所思）那個人走路很奇怪……[ink]刻意壓低腳步聲[/ink]，甚至還把那條厚重的[key]深色圍巾[/key]裹在脖子上，像是想遮住臉。",
                     choices: [
                         { text: "這項觀察非常關鍵。", tone: "neutral", clueId: "CLUE_BARONESS_FOOTSTEP", playerReceived: "男爵夫人觀察到穿深色大衣的人行動極其謹慎，且身上攜帶著與包廂內發現的一致的圍巾。", truthVersion: "趙福生在謀殺過程中使用了圍巾作為勒殺工具，隨後試圖藏匿證據。", nextNode: "END" }
                     ]
                 },
                 BARONESS_BONUS_AGGRESSIVE: {
-                    text: "（男爵夫人冷冷地）既然你發現了那份[key]外文電報[/key]，就該知道趙先生這次來北京並非為了經商，而是執行一場『清理』任務。",
+                    text: "（白男爵夫人冷冷地）既然你發現了那份[key]外文電報[/key]，就該知道趙先生這次來北京並非為了經商，而是執行一場「清理」任務。",
                     choices: [
-                        { text: "清理江明嗎？", tone: "neutral", clueId: "CLUE_BARONESS_HINT", playerReceived: "男爵夫人暗示趙福生身上帶有外國勢力的指令，目標是『清理』相關人員。", truthVersion: "男爵夫人利用電報線索點破趙福生的殺手身份，將調查導向正確目標。", nextNode: "END" }
+                        { text: "清理江明嗎？", tone: "neutral", clueId: "CLUE_BARONESS_HINT", playerReceived: "男爵夫人暗示趙福生身上帶有外國勢力的指令，目標是「清理」相關人員。", truthVersion: "男爵夫人利用電報線索點破趙福生的殺手身份，將調查導向正確目標。", nextNode: "END" }
                     ]
                 },
-                END: { text: "（男爵夫人轉身望向窗外的雪景，不再說話）", choices: [] }
+                END: { text: "（白男爵夫人轉身望向窗外的雪景，不再說話）", choices: [] }
             },
             FANG: {
                 START: {
                     text: "（方小蘭皺眉）醫務工作很忙。你手裡拿的是？",
                     choices: [
-                        { text: "不好意思，在餐車桌子下面找到您的聽診器。", tone: "polite", grammarPoint: "GP3_LOCATION_WORD", isCorrect: true, response: "（震驚）桌子下面？我昨晚把它放在走廊醫療包裡，回來就不見了！", nextNode: "FANG_2" },
-                        { text: "這竟然是你的聽診器？你到底在搞什麼？", tone: "aggressive", grammarPoint: "GP3_LOCATION_WORD", isCorrect: false, response: "（委屈）我都說了我是弄丟了！", nextNode: "END" }
+                        { text: "不好意思，在餐車桌子下面找到您的聽診器。", tone: "polite", grammarPoint: "GP3_LOCATION_WORD", isCorrect: true, response: "（震驚）桌子下面？我昨晚把它放在走廊醫療包裡，回來就不見了！趙先生當時正好經過，還停下來跟我打過招呼……沒想到那之後聽診器就丟了。", nextNode: "FANG_2" },
+                        { text: "這竟然是你的聽診器？你到底在搞什麼？", tone: "aggressive", grammarPoint: "GP3_LOCATION_WORD", isCorrect: false, response: "（委屈）我都說了我是弄丟了！我怎麼會知道它跑到那裡去！", nextNode: "END" }
                     ]
                 },
                 FANG_2: {
-                    text: "走廊上還有誰？",
+                    text: "走廊上還有誰？趙先生有什麼可疑的動作嗎？",
                     choices: [
-                        { text: "請回憶一下當時周遭的情況。", tone: "polite", response: "趙先生當時正好經過，還停下來跟我打過招呼。沒想到那之後聽診器就丟了。", nextNode: "END" },
-                        { text: "你竟然懷疑趙先生？你有證據嗎？", tone: "aggressive", response: "我...我只是說他經過過！", nextNode: "END" }
+                        { text: "請回憶一下當時周遭的情況。", tone: "polite", response: "他問我醫療包裡有沒有繃帶，說他手被紙割到了。但我看他的手，[ink]根本沒有傷口[/ink]。他肯定是想藉機找理由開我的醫療包！", nextNode: "FANG_3" },
+                        { text: "你竟然懷疑趙先生？你有證據嗎？", tone: "aggressive", response: "我……我只是說他經過過！他問我借繃帶，說手受傷了，但我根本沒看到任何傷口！", nextNode: "END" }
+                    ]
+                },
+                FANG_3: {
+                    text: "（方小蘭猶豫了一下）探長，其實我……我有一件事沒跟您說。",
+                    choices: [
+                        { text: "請說，我不會隨意判斷。", tone: "polite", response: "我其實不只是護士。我是[key]《晨光報》的記者[/key]，這次以醫護人員的身份上車，是為了追蹤江明的手稿。我聽說他手上有份很重要的東西……但我沒想到，他會死在這列火車上。", nextNode: "FANG_4" },
+                        { text: "你一直在隱瞞什麼？", tone: "aggressive", response: "（咬唇）好吧……我是記者。《晨光報》的。我這次上車是為了採訪江明的，他手上有份涉及列強的秘密文件……現在他死了，我也不知道該怎麼辦。", nextNode: "FANG_4" }
+                    ]
+                },
+                FANG_4: {
+                    text: "（方小蘭看著您手中的[key]手稿殘頁[/key]，眼睛微微發亮）這是……那份手稿的一部分？！",
+                    choices: [
+                        { text: "您認識上面的內容嗎？", tone: "polite", response: "火漆印……英國使館？！那就對了！江明說過，那份文件是英國使館流出來的秘密條約副本。[impact]趙福生殺他，就是為了這個！[/impact]探長，您手上的這幾樣東西已經足夠了——快去餐車，趙福生現在一定還在那裡，趁他還沒機會銷毀更多證據！", nextNode: "END" }
+                    ]
+                },
+                FANG_5: {
+                    text: "（方小蘭焦急地說）探長，您已經掌握的線索夠多了！[impact]快去餐車找趙福生對質！[/impact]他殺了人，不能讓他繼續逍遙自在！",
+                    choices: [
+                        { text: "好，我現在就去。", tone: "neutral", nextNode: "END" },
+                        { text: "再確認一件事……", tone: "neutral", nextNode: "END" }
                     ]
                 },
                 FANG_BONUS_POLITE: {
@@ -2301,11 +2556,11 @@
                 FANG_BONUS_AGGRESSIVE: {
                     text: "（方小蘭被激怒）你憑什麼懷疑我！我昨晚一直在幫病人看診，根本不在餐車！你去查別人吧！",
                     choices: [
-                        { text: "...知道了。", tone: "neutral", clueId: "CLUE_FANG_DEFENSIVE", playerReceived: "方小蘭情緒激動，強調自己昨晚一直在幫病人看診不在餐車。", truthVersion: "方小蘭說的是實話，她確實不在場，但她激動的反應讓玩家誤以為她在隱瞞。", nextNode: "END" }
+                        { text: "……知道了。", tone: "neutral", clueId: "CLUE_FANG_DEFENSIVE", playerReceived: "方小蘭情緒激動，強調自己昨晚一直在幫病人看診不在餐車。", truthVersion: "方小蘭說的是實話，她確實不在場，但她激動的反應讓玩家誤以為她在隱瞞。", nextNode: "END" }
                     ]
                 },
                 'CONFRONT_CLUE_STETHOSCOPE': {
-                    text: "「...謝謝你幫我找回它。這是我重要的診斷工具。[sad]身為醫生，我卻沒能救活他，真是失職。[/sad]」",
+                    text: "「……謝謝你幫我找回它。這是我重要的診斷工具。[sad]身為醫生，我卻沒能救活他，真是失職。[/sad]」",
                     expression: "sad",
                     choices: [{ text: "詢問現場細節", nextNode: "FANG_2" }]
                 },
@@ -2463,12 +2718,56 @@
         // --- 對話樹系統 ---
         let currentNPCId = null;
 
+        /**
+         * 動態解析 NPC 當前應進入的對話節點
+         * 根據玩家收集的線索與已完成的對話輪次，決定對話起點
+         */
+        function getNPCDialogueNode(npcId) {
+            const npc = gameState.npcs[npcId];
+            const clues = gameState.clues.collected;
+
+            if (npcId === 'CHEN_AFAR') {
+                // round1Done=完成START; round2Done=完成CHEN_2; round3Done=CHEN_3; round4Done=CHEN_4; round5Done=CHEN_5
+                if (npc.round4Done) return 'CHEN_5';
+                if (clues.includes('CLUE_JIANGMING_NOTE') || (clues.includes('CLUE_SCARF') && npc.round3Done)) return 'CHEN_4';
+                if (clues.includes('CLUE_SCARF') && npc.round2Done) return 'CHEN_3';
+                if (clues.includes('CLUE_COFFEE_CUP') && npc.round1Done) return 'CHEN_2';
+                return 'START';
+            }
+            if (npcId === 'ZHAO') {
+                // round1Done=完成START; round2Done=ZHAO_CHOICE/ZHAO_2; round3Done=ZHAO_3; round4Done=ZHAO_4
+                if (npc.round4Done) return 'ZHAO_5_INTRO';
+                if (npc.round3Done && clues.includes('CLUE_STETHOSCOPE')) return 'ZHAO_4';
+                if (npc.round2Done && clues.includes('CLUE_LETTER')) return 'ZHAO_3';
+                if (npc.round1Done && clues.includes('CLUE_CAMERA')) return 'ZHAO_2';
+                return 'START';
+            }
+            if (npcId === 'BARONESS') {
+                // round1Done=完成START; round2Done=BARONESS_2; round3Done=BARONESS_3; round4Done=BARONESS_4
+                if (clues.includes('CLUE_MANUSCRIPT_PAGE') && npc.round4Done) return 'BARONESS_5';
+                if (npc.round3Done && clues.includes('CLUE_LETTER')) return 'BARONESS_4';
+                if (npc.round2Done && clues.includes('CLUE_COFFEE_CUP')) return 'BARONESS_3';
+                if (npc.round1Done) return 'BARONESS_2';
+                return 'START';
+            }
+            if (npcId === 'FANG') {
+                // round1Done=完成START; round2Done=FANG_2; round3Done=FANG_3
+                if (clues.includes('CLUE_MANUSCRIPT_PAGE') && npc.round3Done) return 'FANG_4';
+                if (npc.round2Done) return 'FANG_3';
+                if (npc.round1Done && clues.includes('CLUE_STETHOSCOPE')) return 'FANG_2';
+                return 'START';
+            }
+            return npc.dialogueNode || 'START';
+        }
+
         function startDialogue(event, npcId) {
-            event.stopPropagation();
+            if (event) event.stopPropagation();
             
             gameState.npcs[npcId].met = true;
             currentNPCId = npcId;
-            let node = gameState.npcs[npcId].dialogueNode;
+            // Use dynamic node resolver
+            const node = getNPCDialogueNode(npcId);
+            gameState.npcs[npcId].dialogueNode = node;
             
             renderDialogueNode(npcId, node);
         }
@@ -2476,11 +2775,10 @@
         function setNPCExpression(npcId, expr) {
             const el = document.getElementById(npcId);
             if (!el) return;
-            const sprite = el.querySelector('.npc-sprite');
-            // 清除舊表情
-            sprite.classList.remove('serious','worried','angry','nervous','shocked','haughty','resolved','sad');
+            // el 本身就是 npc-sprite，無需 querySelector
+            el.classList.remove('serious','worried','angry','nervous','shocked','haughty','resolved','sad');
             if (expr && expr !== 'normal') {
-                sprite.classList.add(expr);
+                el.classList.add(expr);
             }
         }
 
@@ -2528,19 +2826,17 @@
                 setNPCExpression(npcId, nodeData.expression);
             }
 
-            // --- 線索條件過濾 ---
-            if (nodeData.choices) {
-                nodeData.choices = nodeData.choices.filter(c => {
+            // --- 線索條件過濾（不污染原始 dialogueTree）---
+            const filteredChoices = nodeData.choices
+                ? nodeData.choices.filter(c => {
                     if (c.condition && !gameState.clues.collected.includes(c.condition)) return false;
                     return true;
-                });
-            }
+                  })
+                : nodeData.choices;
+            // 用淺拷貝避免修改原始節點
+            nodeData = Object.assign({}, nodeData, { choices: filteredChoices });
 
-            // 特殊強制轉向
-            if (nodeId === 'ZHAO_2' && !gameState.clues.collected.includes('CLUE_FILM_CASE')) nodeData = dialogueTree[npcId]['END'];
-            if (nodeId === 'BARONESS_3' && !gameState.clues.collected.includes('CLUE_COFFEE_CUP')) nodeData = dialogueTree[npcId]['END'];
-            if (nodeId === 'FANG_2' && !gameState.clues.collected.includes('CLUE_STETHOSCOPE')) nodeData = dialogueTree[npcId]['END'];
-
+            // (舊的強制轉向已由 getNPCDialogueNode 動態處理)
             document.getElementById('bubble-name').innerText = gameState.npcs[npcId].name;
             setDialogueText(nodeData.text);
             
@@ -2571,7 +2867,7 @@
                             const clueObj = {
                                 id: choice.clueId,
                                 isDistorted: isDistorted,
-                                name: choice.clueId.replace('CLUE_', '').replace('_', ' '),
+                                name: choice.clueId.replace('CLUE_', '').replace(/_/g, ' '),
                                 desc: choice.playerReceived,
                                 truth: choice.truthVersion
                             };
@@ -2598,16 +2894,34 @@
                             gameState.npcs[npcId].dialogueNode = targetNode;
                         }
 
+                        // 更新對話輪次完成狀態
+                        // key = 「目前節點」，value = 離開此節點後標記完成的輪次
+                        const roundMap = {
+                            START: 'round1Done',
+                            CHEN_2: 'round2Done', CHEN_3: 'round3Done', CHEN_4: 'round4Done', CHEN_5: 'round5Done',
+                            ZHAO_CHOICE: 'round1Done', ZHAO_2: 'round2Done', ZHAO_3: 'round3Done', ZHAO_4: 'round4Done', ZHAO_5_INTRO: 'round4Done',
+                            BARONESS_2: 'round2Done', BARONESS_3: 'round3Done', BARONESS_4: 'round4Done', BARONESS_5: 'round5Done',
+                            FANG_2: 'round2Done', FANG_3: 'round3Done', FANG_4: 'round4Done', FANG_5: 'round5Done'
+                        };
+                        if (roundMap[nodeId]) {
+                            gameState.npcs[npcId][roundMap[nodeId]] = true;
+                        }
+
                         // 自動進入其 response 節點
                         if (choice.response) {
+                            const respChoices = (targetNode && targetNode !== 'END') ? [{ text: "繼續", nextNode: targetNode }] : [];
                             dialogueTree[npcId]['_TEMP_RESP'] = {
                                 text: choice.response,
-                                choices: targetNode && targetNode !== 'END' ? [{ text: "繼續", nextNode: targetNode }] : []
+                                choices: respChoices
                             };
                             renderDialogueNode(npcId, '_TEMP_RESP');
+                        } else if (targetNode === '__TRIGGER_TRUE_END__') {
+                            closeDialogue();
+                            triggerEnding('TRUE_END');
                         } else if (targetNode) {
                             renderDialogueNode(npcId, targetNode);
                         }
+                        saveGame();
                     };
                     optionsContainer.appendChild(btn);
                 });
@@ -2637,33 +2951,52 @@
 
         function resolveEnding() {
             const gp = gameState.grammarProgress;
-            // 如果 isCorrect 仍為 null，代表該分支尚未走到結局點
             const allDone = ['GP1_HONORIFIC','GP2_TIME_ADVERB','GP3_LOCATION_WORD','GP4_WORD_ORDER']
                 .every(k => gp[k].isCorrect !== null);
-            
             if (!allDone) {
-                // 提示尚未調查完畢
-                document.getElementById('bubble-name').innerText = "系統提示";
-                document.getElementById('bubble-text').innerText = "還有嫌疑人的細節尚未調查完畢，現階段無法指認真兇。";
-                document.getElementById('bubble-options').style.display = 'none';
-                document.getElementById('bubble-next-btn').style.display = 'block';
-                document.getElementById('speech-bubble').style.display = 'block';
+                showSystemMessage('還有嫌疑人的細節尚未調查完畢，現階段無法指認真兇。請繼續蒐集線索。');
                 return;
             }
-
             const allCorrect = Object.values(gp).every(g => g.isCorrect === true);
             const gp1Wrong = gp.GP1_HONORIFIC.isCorrect === false;
             const gp2Wrong = gp.GP2_TIME_ADVERB.isCorrect === false;
             const gp3Wrong = gp.GP3_LOCATION_WORD.isCorrect === false;
             const gp4Wrong = gp.GP4_WORD_ORDER.isCorrect === false;
             const multipleWrong = Object.values(gp).filter(g => g.isCorrect === false).length >= 2;
-
             if (multipleWrong) return triggerEnding('FALSE_END_TRUTH_HIDDEN');
-            if (allCorrect) return triggerEnding('TRUE_END');
             if (gp1Wrong) return triggerEnding('FALSE_END_ACCUSE_BARONESS');
             if (gp2Wrong) return triggerEnding('FALSE_END_ACCUSE_WAITER');
             if (gp3Wrong) return triggerEnding('FALSE_END_ACCUSE_DOCTOR');
             if (gp4Wrong) return triggerEnding('FALSE_END_UNSOLVED');
+            if (allCorrect) {
+                const clues = gameState.clues.collected;
+                const hasScarf = clues.includes('CLUE_SCARF');
+                const hasManuscript = clues.includes('CLUE_MANUSCRIPT_PAGE');
+                const hasFilm = clues.includes('CLUE_FILM_CASE');
+                if (!hasScarf || !hasManuscript || !hasFilm) {
+                    const missing = [];
+                    if (!hasScarf) missing.push('深色圍巾');
+                    if (!hasManuscript) missing.push('手稿殘頁');
+                    if (!hasFilm) missing.push('底片盒');
+                    showSystemMessage('您懷疑趙福生是兇手，但手頭缺乏足夠的關鍵鐵證。
+缺少：' + missing.join('、') + '
+請繼續調查後再指認。');
+                    return;
+                }
+                initScene('DINING_CAR', 2000).then(() => {
+                    gameState.npcs['ZHAO'].met = true;
+                    currentNPCId = 'ZHAO';
+                    renderDialogueNode('ZHAO', 'ZHAO_ROUND5');
+                });
+            }
+        }
+
+        function showSystemMessage(msg) {
+            document.getElementById('bubble-name').innerText = '系統提示';
+            document.getElementById('bubble-text').innerText = msg;
+            document.getElementById('bubble-options').style.display = 'none';
+            document.getElementById('bubble-next-btn').style.display = 'block';
+            document.getElementById('speech-bubble').style.display = 'block';
         }
 
         function triggerEnding(type) {
