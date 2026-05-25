@@ -106,15 +106,15 @@
         }
 
         /* 全局 HUD 容器 */
-        #hud-top-left, #hud-top-right {
+        .hud-group {
             position: fixed;
-            top: 25px;
+            bottom: 25px;
             display: flex;
-            gap: 15px;
+            gap: 30px;
             z-index: 1000;
         }
-        #hud-top-left { left: 25px; }
-        #hud-top-right { right: 25px; }
+        #hud-bottom-left { left: 25px; }
+        #hud-bottom-right { right: 25px; }
 
         .side-btn {
             width: 70px;
@@ -1261,16 +1261,17 @@
 
         <div id="flicker-overlay"></div>
         <div id="snow-layer"></div>
+        <div id="screen-wipe"></div>
         <div id="hud-hint">使用 A / D 左右移動視角 | 點擊調查物件或人物 | 按 <kbd>`</kbd> 開啟開發者模式</div>
         <!-- 全局 HUD 獨立放置 -->
-        <div id="hud-top-left" class="hud-group" style="display:none;">
+        <div id="hud-bottom-left" class="hud-group" style="display:none;">
             <div id="bgm-btn" class="side-btn" onclick="toggleBGM()" style="opacity: 0.5;">
                 <div style="font-size: 24px;">🎵</div>
                 <div>音樂(M)</div>
             </div>
         </div>
         
-        <div id="hud-top-right" class="hud-group" style="display:none;">
+        <div id="hud-bottom-right" class="hud-group" style="display:none;">
             <div id="notebook-btn" class="side-btn" onclick="toggleNotebook()">
                 <div style="font-size: 24px;">📓</div>
                 <div>手札(N)</div>
@@ -1715,7 +1716,7 @@
             if (localStorage.getItem('skip_intro') === 'true') {
                 localStorage.removeItem('skip_intro');
                 document.getElementById('title-screen').style.display = 'none';
-            document.querySelectorAll('.hud-group').forEach(el => el.style.display = 'flex');
+            updateHUDVisibility(true);
                 startGame();
                 return;
             }
@@ -1807,6 +1808,7 @@
             updateInventoryUI();
             
             document.getElementById('title-screen').style.display = 'none';
+            updateHUDVisibility(true);
             initScene(data.currentScene, data.camX);
             
             // 啟動 BGM 如果有需要
@@ -1886,8 +1888,17 @@
             }
         }
 
-        function startGame() {
-            document.querySelectorAll('.hud-group, .side-btn').forEach(el => el.style.display = 'flex');
+        
+        function updateHUDVisibility(show) {
+            document.querySelectorAll('.hud-group').forEach(el => {
+                el.style.display = show ? 'flex' : 'none';
+            });
+            document.querySelectorAll('.side-btn').forEach(el => {
+                el.style.display = show ? 'flex' : 'none';
+            });
+        }
+function startGame() {
+            updateHUDVisibility(true);
             initScene('DINING_CAR', 500);
             requestAnimationFrame(gameLoop);
         }
@@ -2937,12 +2948,12 @@
 
             // 恢復視覺小說面板，取消定位追蹤
             bubble.style.display = 'block';
-            document.querySelectorAll('.hud-group').forEach(el => el.style.display = 'none');
+            updateHUDVisibility(false);
         }
 
         function closeDialogue() {
             bubble.style.display = 'none';
-            document.querySelectorAll('.hud-group').forEach(el => el.style.display = 'flex');
+            updateHUDVisibility(true);
             currentNPCId = null;
             checkAccuseButtonVisible();
         }
@@ -3001,7 +3012,7 @@
             document.getElementById('bubble-options').style.display = 'none';
             document.getElementById('bubble-next-btn').style.display = 'block';
             document.getElementById('speech-bubble').style.display = 'block';
-            document.querySelectorAll('.hud-group').forEach(el => el.style.display = 'none');
+            updateHUDVisibility(false);
         }
 
         function triggerEnding(type) {
