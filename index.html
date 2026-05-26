@@ -2759,19 +2759,23 @@ function startGame() {
 
             if (npcId === 'CHEN_AFAR') {
                 if (npc.round3Done) return 'CHEN_5_IDLE';
+                if (npc.round1Done) return 'END';
                 return 'START';
             }
             if (npcId === 'ZHAO') {
+                if (npc.round1Done) return 'END';
                 return 'START'; 
             }
             if (npcId === 'BARONESS') {
+                if (npc.round1Done) return 'END';
                 return 'START';
             }
             if (npcId === 'FANG') {
                 if (npc.round4Done) return 'FANG_5_IDLE';
-                if (gameState.npcs['CHEN_AFAR'].round4Done && gameState.npcs['ZHAO'].round3Done) {
+                if (gameState.npcs['CHEN_AFAR'].round4Done && gameState.npcs['ZHAO'].round3Done && !npc.round4Done) {
                     return 'FANG_4';
                 }
+                if (npc.round1Done) return 'END';
                 return 'START';
             }
             return 'START';
@@ -2919,7 +2923,9 @@ function startGame() {
                             FANG_2: 'round2Done', FANG_3: 'round3Done', FANG_4: 'round4Done', FANG_5_IDLE: 'round5Done'
                         };
                         if (roundMap[nodeId]) {
-                            gameState.npcs[npcId][roundMap[nodeId]] = true;
+                            if (choice.isCorrect !== false) {
+                                gameState.npcs[npcId][roundMap[nodeId]] = true;
+                            }
                         }
 
                         // 自動進入其 response 節點
