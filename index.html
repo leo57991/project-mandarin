@@ -1299,6 +1299,7 @@
             
                         <div class='bubble-next' id="bubble-next-btn" onclick="closeDialogue()">結束對話 ❯</div>
             <div id="bubble-evidence-btn" onclick="toggleEvidenceSelect()">[ 出示證據 ]</div>
+        </div>
         <!-- 偵探手札面板 -->
             <div id="notebook-panel">
                 <div class="notebook-header">
@@ -1313,9 +1314,6 @@
                     <!-- 動態注入內容 -->
                 </div>
             </div>
-
-
-        </div>
 
         <!-- 證據選擇小窗 -->
         <div id="evidence-selector" style="display:none;">
@@ -2721,40 +2719,25 @@ function startGame() {
          */
         function getNPCDialogueNode(npcId) {
             const npc = gameState.npcs[npcId];
-            const clues = gameState.clues.collected;
 
             if (npcId === 'CHEN_AFAR') {
-                // round1Done=完成START; round2Done=完成CHEN_2; round3Done=CHEN_3; round4Done=CHEN_4; round5Done=CHEN_5
-                if (npc.round4Done) return 'CHEN_5';
-                if (clues.includes('CLUE_JIANGMING_NOTE') || (clues.includes('CLUE_SCARF') && npc.round3Done)) return 'CHEN_4';
-                if (clues.includes('CLUE_SCARF') && npc.round2Done) return 'CHEN_3';
-                if (clues.includes('CLUE_COFFEE_CUP') && npc.round1Done) return 'CHEN_2';
+                if (npc.round3Done) return 'CHEN_5_IDLE';
                 return 'START';
             }
             if (npcId === 'ZHAO') {
-                // round1Done=完成START; round2Done=ZHAO_CHOICE/ZHAO_2; round3Done=ZHAO_3; round4Done=ZHAO_4
-                if (npc.round4Done) return 'ZHAO_5_INTRO';
-                if (npc.round3Done && clues.includes('CLUE_STETHOSCOPE')) return 'ZHAO_4';
-                if (npc.round2Done && clues.includes('CLUE_LETTER')) return 'ZHAO_3';
-                if (npc.round1Done && clues.includes('CLUE_CAMERA')) return 'ZHAO_2';
-                return 'START';
+                return 'START'; 
             }
             if (npcId === 'BARONESS') {
-                // round1Done=完成START; round2Done=BARONESS_2; round3Done=BARONESS_3; round4Done=BARONESS_4
-                if (clues.includes('CLUE_MANUSCRIPT_PAGE') && npc.round4Done) return 'BARONESS_5';
-                if (npc.round3Done && clues.includes('CLUE_LETTER')) return 'BARONESS_4';
-                if (npc.round2Done && clues.includes('CLUE_COFFEE_CUP')) return 'BARONESS_3';
-                if (npc.round1Done) return 'BARONESS_2';
                 return 'START';
             }
             if (npcId === 'FANG') {
-                // round1Done=完成START; round2Done=FANG_2; round3Done=FANG_3
-                if (clues.includes('CLUE_MANUSCRIPT_PAGE') && npc.round3Done) return 'FANG_4';
-                if (npc.round2Done) return 'FANG_3';
-                if (npc.round1Done && clues.includes('CLUE_STETHOSCOPE')) return 'FANG_2';
+                if (npc.round4Done) return 'FANG_5_IDLE';
+                if (gameState.npcs['CHEN_AFAR'].round4Done && gameState.npcs['ZHAO'].round3Done) {
+                    return 'FANG_4';
+                }
                 return 'START';
             }
-            return npc.dialogueNode || 'START';
+            return 'START';
         }
 
         function startDialogue(event, npcId) {
@@ -2799,16 +2782,14 @@ function startGame() {
         function handleInterrogation(npcId, clueId) {
             toggleEvidenceSelect(false);
             
-            // 檢查該 NPC 是否在對應該線索的分支
-            const nodeId = `CONFRONT_${clueId}`;
-            if (dialogueTree[npcId] && dialogueTree[npcId][nodeId]) {
-                renderDialogueNode(npcId, nodeId);
+            const node = dialogueTree[npcId];
+            if (node.INTERROGATION && node.INTERROGATION[clueId]) {
+                const targetNode = node.INTERROGATION[clueId];
+                renderDialogueNode(npcId, targetNode);
             } else {
-                // 預設失敗對話
-                const defaultText = `「這東西（${gameState.clues.details[clueId].name}）和我沒什麼關係吧？偵探先生。」`;
                 dialogueTree[npcId]['_TEMP_FAIL'] = {
-                    text: defaultText,
-                    choices: [{ text: "繼續", nextNode: gameState.npcs[npcId].dialogueNode || 'START' }]
+                    text: "不好意思，我不太清楚...",
+                    choices: [{ text: "（收起證據）", nextNode: "END" }]
                 };
                 renderDialogueNode(npcId, '_TEMP_FAIL');
             }
