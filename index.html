@@ -1361,26 +1361,19 @@
 
         <div id="accuse-btn" style="display:none;" onclick="resolveEnding()">🔍 指認兇手</div>
 
-        <!-- 文字物理謎題面板 -->
-        <div id="text-puzzle-overlay">
-            <div id="puzzle-paper">
-                <div id="puzzle-close-btn" onclick="closePuzzle()" title="關閉（進度保留）">×</div>
-                <div id="puzzle-success-flash"></div>
-                <div id="puzzle-title">紙上有隱約的字跡……</div>
-                <div id="puzzle-hint-text">中文時間狀語放在句首</div>
-                <!-- 字元由 JS 動態生成 -->
-                <div id="puzzle-char-area"></div>
-                <div id="puzzle-hint-msg">試試把時間詞移到最前面</div>
-                <div id="puzzle-slots">
-                    <div class="puzzle-slot" data-slot="0">第一位</div>
-                    <div class="puzzle-slot" data-slot="1">第二位</div>
-                    <div class="puzzle-slot" data-slot="2">第三位</div>
-                    <div class="puzzle-slot" data-slot="3">第四位</div>
+        <!-- 刮刮樂顯影面板 -->
+        <div id="scratch-overlay">
+            <div id="scratch-container">
+                <div id="scratch-text-layer">
+                    我若遇害，必是趙福生所為。<br>
+                    他已暗中倒戈，手稿萬不可落入他手。<br>
+                    <br>
+                    —— 江明 絕筆
                 </div>
-                <div id="puzzle-solved-text">昨晚他帶走底片</div>
+                <canvas id="scratch-canvas" width="600" height="400"></canvas>
             </div>
+            <button class="menu-btn" style="position:absolute; bottom:40px;" onclick="closeScratch()">放棄調查</button>
         </div>
-
         
         <!-- 獨立線索彈窗 -->
         <div id="clue-modal-overlay" onclick="this.style.display='none'">
@@ -1729,7 +1722,7 @@
             clues: { collected: [], details: {} },
             npcs: {
                 CHEN_AFAR: { met: false, dialogueNode: "START", name: "陳阿發", description: "餐車服務生，沈默寡言，看過火車上許多不為人知的角落。", round1Done: false, round2Done: false, round3Done: false, round4Done: false, round5Done: false },
-                ZHAO: { met: false, dialogueNode: "START", name: "趙福生", description: "外表是富商，實為外國勢力買辦，奉命取回手稿不惜一切代價。", round1Done: false, round2Done: false, round3Done: false, round4Done: false, round5Done: false },
+                ZHAO: { met: false, dialogueNode: "START", name: "趙福生", description: "外表是一位談吐文雅的富商，但眼神中偶爾閃過一絲令人不安的銳利。", round1Done: false, round2Done: false, round3Done: false, round4Done: false, round5Done: false },
                 BARONESS: { met: false, dialogueNode: "START", name: "男爵夫人", description: "精通法語的貴族，與江明有債務糾紛，但對真相似乎另有所求。", round1Done: false, round2Done: false, round3Done: false, round4Done: false, round5Done: false },
                 FANG: { met: false, dialogueNode: "START", name: "方小蘭", description: "實習女記者（偽裝為醫生），對新聞真相有著近乎偏執的追求。", round1Done: false, round2Done: false, round3Done: false, round4Done: false, round5Done: false }
             },
@@ -2042,7 +2035,7 @@ function startGame() {
                 widthRatio: 6, 
                 entities: [
                     { type: 'NPC', id: 'CHEN_AFAR', class: 'npc-chen', x: 800, y: 'var(--ground-y)', text: '🔍 與 服務生陳阿發 交談 (沈默寡言，看過火車上許多不為人知的角落)' },
-                    { type: 'NPC', id: 'ZHAO', class: 'npc-zhao', x: 2200, y: 'var(--ground-y)', text: '🔍 與 趙福生 交談 (外表是富商，實為外國勢力買辦，奉命取回手稿不惜一切代價。)' },
+                    { type: 'NPC', id: 'ZHAO', class: 'npc-zhao', x: 2200, y: 'var(--ground-y)', text: '🔍 與 趙福生 交談 (外表是一位談吐文雅的富商，但眼神中偶爾閃過一絲令人不安的銳利。)' },
                     { type: 'ITEM', id: 'CLUE_CAMERA', text: '🔍 調查：桌上的萊卡相機', x: 600, y: '70%', clueName: "萊卡相機", 
                       playerReceived: "江明的萊卡相機。底片槽是空的，快門旁有細微指紋痕跡。", 
                       truthVersion: "江明用相機拍下手稿內容作為備份，底片被趙福生取走。",
