@@ -2472,10 +2472,10 @@ function startGame() {
                     ]
                 },
                 ZHAO_4: {
-                    text: "（看到圍巾上的血跡，手開始發抖）這……這是我的圍巾，但我今晚沒戴，一定是有人偷了陷害我！",
+                    text: "（看到圍巾，並聽說上面掉落的絨毛出現在案發現場，手開始發抖）這……這是我的圍巾，但我今晚沒戴，一定是有人偷了陷害我！",
                     choices: [
                         { text: "你的圍巾怎麼會出現在男爵夫人房裡？", tone: "polite", response: "我不知道！說了我什麼都不知道！你再這樣我就要找律師了！", nextNode: "END" },
-                        { text: "你的圍巾怎麼沾著血？", tone: "neutral", response: "我不知道！說了我什麼都不知道！你再這樣我就要找律師了！", nextNode: "END" }
+                        { text: "你的圍巾絨毛怎麼會掉在案發現場？", tone: "neutral", response: "我不知道！說了我什麼都不知道！你再這樣我就要找律師了！", nextNode: "END" }
                     ]
                 },
                 ZHAO_5: {
@@ -3419,13 +3419,16 @@ function startGame() {
                 if (c.y + elH > H) { c.y = H - elH; c.vy = -Math.abs(c.vy) * 0.6; }
 
                 // --- 磁力吸附輔助 (Magnetic Snapping Assist) ---
+                const ccx = c.x + (c.el.offsetWidth || 80) / 2;
+                const ccy = c.y + (c.el.offsetHeight || 42) / 2;
+
                 let nearestSlot = null;
                 let minDistToSlot = Infinity;
                 for (const slot of puzzleState.slotRects) {
                     const occupied = puzzleState.chars.some(o => o !== c && o.locked && o.slotIndex === slot.slotIdx);
                     if (occupied) continue;
-                    const sdx = c.x - slot.cx; // 已修正：中心點對中心點
-                    const sdy = c.y - slot.cy;
+                    const sdx = ccx - slot.cx;
+                    const sdy = ccy - slot.cy;
                     const d = Math.sqrt(sdx * sdx + sdy * sdy);
                     if (d < minDistToSlot) {
                         minDistToSlot = d;
@@ -3434,26 +3437,25 @@ function startGame() {
                 }
 
                 if (nearestSlot && minDistToSlot < 65) {
-                    // 靠近空格時施加阻尼與強化引力，輔助定位
                     const attractionStrength = (65 - minDistToSlot) / 65;
                     c.vx *= (1 - attractionStrength * 0.4); 
                     c.vy *= (1 - attractionStrength * 0.4);
-                    const sdx = nearestSlot.cx - c.x;
-                    const sdy = nearestSlot.cy - c.y;
-                    c.vx += sdx * 0.12;
-                    c.vy += sdy * 0.12;
+                    const sdx = nearestSlot.cx - ccx;
+                    const sdy = nearestSlot.cy - ccy;
+                    c.vx += sdx * 0.15;
+                    c.vy += sdy * 0.15;
                 }
 
-                // --- 判定吸附 (Remove Speed Gate for Instant Catch) ---
+                // --- 判定吸附 ---
                 for (const slot of puzzleState.slotRects) {
                     const occupied = puzzleState.chars.some(o => o !== c && o.locked && o.slotIndex === slot.slotIdx);
                     if (occupied) continue;
-                    const sdx = c.x - slot.cx;
-                    const sdy = c.y - slot.cy;
-                    if (Math.sqrt(sdx * sdx + sdy * sdy) < 55) {
+                    const sdx = ccx - slot.cx;
+                    const sdy = ccy - slot.cy;
+                    if (Math.sqrt(sdx * sdx + sdy * sdy) < 40) {
                         if (PUZZLE_CONFIG.answer[slot.slotIdx] === c.text) {
-                            c.x = slot.cx;
-                            c.y = slot.cy;
+                            c.x = slot.cx - (c.el.offsetWidth || 80) / 2;
+                            c.y = slot.cy - (c.el.offsetHeight || 42) / 2;
                             c.vx = 0; c.vy = 0;
                             c.locked = true; c.slotIndex = slot.slotIdx;
                             c.el.classList.add('locked');
@@ -3461,8 +3463,8 @@ function startGame() {
                             slot.el.innerText = '';
                             _checkPuzzleSolved();
                         } else {
-                            c.vx = (Math.random() - 0.5) * 6;
-                            c.vy = -3 - Math.random() * 3;
+                            c.vx = (Math.random() - 0.5) * 8;
+                            c.vy = -4 - Math.random() * 4;
                             slot.el.classList.add('error');
                             setTimeout(() => slot.el.classList.remove('error'), 500);
                             puzzleState.errorCount++;
