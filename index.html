@@ -2289,7 +2289,7 @@ function startGame() {
 
                     el.onclick = (e) => {
                         e.stopPropagation();
-                        openTextPuzzle();
+                        openScratchPuzzle();
                     };
                 } else if(ent.type === 'ITEM') {
                     el.style.left = ent.x + 'px';
@@ -3240,299 +3240,126 @@ function startGame() {
         // requestAnimationFrame(gameLoop);
 
         // =====================================================
-        // 文字物理謎題系統 (Text Physics Puzzle)
+        // 刮刮樂顯影系統 (游龍顯影)
         // =====================================================
-        const PUZZLE_CONFIG = {
-            chars: ['昨晚', '他', '帶走', '底片', '的人'],
-            answer: ['昨晚', '他', '帶走', '底片'],
-            repelRadius: 100,
-            repelForce: 0.3,
-            tileRepelRadius: 85, // 方塊間開始排斥的距離
-            tileRepelForce: 0.15, // 方塊排斥力度
-            friction: 0.85,
-            snapDist: 45,  // 放大吸附半徑
-            snapSpeed: 5.0, // 放大容許速度
-        };
+        let scratchCtx = null;
+        let isScratching = false;
+        let scratchSolved = false;
 
-        let puzzleState = {
-            chars: [], mouseX: 0, mouseY: 0,
-            rafId: null, errorCount: 0,
-            paperRect: null, slotRects: [],
-        };
+        function openScratchPuzzle() {
+            const overlay = document.getElementById('scratch-overlay');
+            const canvas = document.getElementById('scratch-canvas');
+            scratchCtx = canvas.getContext('2d', { willReadFrequently: true });
+            
+            // 繪製遮罩層 (像是灰燼或燒焦的紙面)
+            scratchCtx.globalCompositeOperation = 'source-over';
+            scratchCtx.fillStyle = '#1c1c1c';
+            scratchCtx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 畫一些紋理
+            scratchCtx.fillStyle = '#2d2d2d';
+            for(let i=0; i<150; i++) {
+                scratchCtx.beginPath();
+                scratchCtx.arc(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*40+10, 0, Math.PI*2);
+                scratchCtx.fill();
+            }
 
-        function openTextPuzzle() {
-            const overlay = document.getElementById('text-puzzle-overlay');
+            scratchSolved = false;
             overlay.classList.add('active');
-            if (puzzleState.chars.length === 0) _initPuzzleChars();
-            const paper = document.getElementById('puzzle-paper');
+
+            canvas.addEventListener('mousedown', startScratch);
+            canvas.addEventListener('mousemove', scratch);
+            window.addEventListener('mouseup', endScratch);
             
-            // 每次開啟都重新獲取位置，確保座標精確
-            puzzleState.paperRect = paper.getBoundingClientRect();
-            _updateSlotRects();
+            // Touch support
+            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startScratch(e.touches[0]); }, {passive: false});
+            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); scratch(e.touches[0]); }, {passive: false});
+            window.addEventListener('touchend', endScratch);
+        }
+
+        function closeScratch() {
+            const overlay = document.getElementById('scratch-overlay');
+            overlay.classList.remove('active');
+            const canvas = document.getElementById('scratch-canvas');
+            canvas.removeEventListener('mousedown', startScratch);
+            canvas.removeEventListener('mousemove', scratch);
+            window.removeEventListener('mouseup', endScratch);
+        }
+
+        function startScratch(e) {
+            isScratching = true;
+            scratch(e);
+        }
+
+        function endScratch() {
+            isScratching = false;
+            if (!scratchSolved) checkScratchProgress();
+        }
+
+        function scratch(e) {
+            if (!isScratching || scratchSolved) return;
+            const canvas = document.getElementById('scratch-canvas');
+            const rect = canvas.getBoundingClientRect();
             
-            if (!puzzleState.rafId) {
-                puzzleState.rafId = requestAnimationFrame(_puzzleLoop);
+            // 計算縮放比例
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            let clientX = e.clientX;
+            let clientY = e.clientY;
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
             }
             
-            overlay.onmousemove = (e) => {
-                const pr = paper.getBoundingClientRect(); // 動態獲取以應對視窗變化
-                puzzleState.mouseX = e.clientX - pr.left;
-                puzzleState.mouseY = e.clientY - pr.top;
-            };
-        }
-
-        function closePuzzle() {
-            document.getElementById('text-puzzle-overlay').classList.remove('active');
-            if (puzzleState.rafId) {
-                cancelAnimationFrame(puzzleState.rafId);
-                puzzleState.rafId = null;
+            const x = (clientX - rect.left) * scaleX;
+            const y = (clientY - rect.top) * scaleY;
+            
+            scratchCtx.globalCompositeOperation = 'destination-out';
+            
+            // 筆刷
+            scratchCtx.beginPath();
+            scratchCtx.arc(x, y, 45, 0, Math.PI * 2);
+            scratchCtx.fill();
+            
+            // 龍火毛邊
+            for(let i=0; i<5; i++) {
+                scratchCtx.beginPath();
+                scratchCtx.arc(x + (Math.random()-0.5)*60, y + (Math.random()-0.5)*60, Math.random()*15+5, 0, Math.PI*2);
+                scratchCtx.fill();
             }
         }
 
-        function _initPuzzleChars() {
-            const area = document.getElementById('puzzle-char-area');
-            area.innerHTML = '';
-            puzzleState.chars = [];
-            const paper = document.getElementById('puzzle-paper');
-            const W = paper.offsetWidth;
-            const H = paper.offsetHeight - 100;
-            PUZZLE_CONFIG.chars.forEach((text) => {
-                const el = document.createElement('div');
-                el.className = 'puzzle-char';
-                el.innerText = text;
-                area.appendChild(el);
-                const x = 80 + Math.random() * (W - 220);
-                const y = 60 + Math.random() * (H - 120);
-                puzzleState.chars.push({
-                    text, x, y,
-                    vx: (Math.random() - 0.5) * 2,
-                    vy: (Math.random() - 0.5) * 2,
-                    locked: false, slotIndex: -1, el,
-                });
-                el.style.left = x + 'px';
-                el.style.top = y + 'px';
-            });
-        }
-
-        function _updateSlotRects() {
-            const paper = document.getElementById('puzzle-paper');
-            const pr = paper.getBoundingClientRect();
-            puzzleState.slotRects = Array.from(document.querySelectorAll('.puzzle-slot')).map(s => {
-                const r = s.getBoundingClientRect();
-                return {
-                    cx: r.left - pr.left + r.width / 2,
-                    cy: r.top - pr.top + r.height / 2,
-                    el: s, slotIdx: parseInt(s.dataset.slot),
-                };
-            });
-        }
-
-        function _puzzleLoop() {
-            const paper = document.getElementById('puzzle-paper');
-            const W = paper.offsetWidth;
-            const H = paper.offsetHeight - 80;
-
-            // --- 方塊間的矩形碰撞與強制分離 (AABB Collision & Separation) ---
-            for (let i = 0; i < puzzleState.chars.length; i++) {
-                const c1 = puzzleState.chars[i];
-                for (let j = i + 1; j < puzzleState.chars.length; j++) {
-                    const c2 = puzzleState.chars[j];
-                    if (c1.locked && c2.locked) continue;
-
-                    // 取得或估算寬高 (字體 22px + padding 14x8)
-                    const w1 = c1.el.offsetWidth / 2 || 40;
-                    const h1 = c1.el.offsetHeight / 2 || 21;
-                    const w2 = c2.el.offsetWidth / 2 || 40;
-                    const h2 = c2.el.offsetHeight / 2 || 21;
-
-                    const dx = c2.x - c1.x;
-                    const dy = c2.y - c1.y;
-                    const minX = w1 + w2 + 5; // 額外 5px 間距
-                    const minY = h1 + h2 + 5;
-
-                    if (Math.abs(dx) < minX && Math.abs(dy) < minY) {
-                        // 發生重疊，計算滲透深度
-                        const overlapX = minX - Math.abs(dx);
-                        const overlapY = minY - Math.abs(dy);
-
-                        // 沿著最短的分離軸推開
-                        if (overlapX < overlapY) {
-                            const sx = dx > 0 ? overlapX : -overlapX;
-                            if (!c1.locked && !c2.locked) {
-                                c1.x -= sx / 2; c2.x += sx / 2;
-                                c1.vx -= sx * 0.1; c2.vx += sx * 0.1;
-                            } else if (!c1.locked) {
-                                c1.x -= sx; c1.vx -= sx * 0.2;
-                                _triggerPuzzleShake(c2);
-                            } else if (!c2.locked) {
-                                c2.x += sx; c2.vx += sx * 0.2;
-                                _triggerPuzzleShake(c1);
-                            }
-                        } else {
-                            const sy = dy > 0 ? overlapY : -overlapY;
-                            if (!c1.locked && !c2.locked) {
-                                c1.y -= sy / 2; c2.y += sy / 2;
-                                c1.vy -= sy * 0.1; c2.vy += sy * 0.1;
-                            } else if (!c1.locked) {
-                                c1.y -= sy; c1.vy -= sy * 0.2;
-                                _triggerPuzzleShake(c2);
-                            } else if (!c2.locked) {
-                                c2.y += sy; c2.vy += sy * 0.2;
-                                _triggerPuzzleShake(c1);
-                            }
-                        }
-                    }
-                }
+        function checkScratchProgress() {
+            if (scratchSolved) return;
+            const canvas = document.getElementById('scratch-canvas');
+            const imageData = scratchCtx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixels = imageData.data;
+            let transparentCount = 0;
+            
+            const step = 4 * 16; 
+            const totalPixels = Math.floor(pixels.length / step);
+            
+            for (let i = 3; i < pixels.length; i += step) {
+                if (pixels[i] < 128) transparentCount++;
             }
-
-            // --- 鼠標排斥與基本運動 ---
-            puzzleState.chars.forEach(c => {
-                if (c.locked) return;
-
-                // 檢查是否靠近任何有效的空格 (Dampening Logic)
-                let nearAnySlot = puzzleState.slotRects.some(slot => {
-                    const sdx = c.x - slot.cx;
-                    const sdy = c.y - slot.cy;
-                    return Math.sqrt(sdx*sdx + sdy*sdy) < PUZZLE_CONFIG.snapDist * 2;
-                });
-
-                const dx = c.x - puzzleState.mouseX;
-                const dy = c.y - puzzleState.mouseY;
-                const dist = Math.sqrt(dx * dx + dy * dy);
+            
+            const percent = transparentCount / totalPixels;
+            if (percent > 0.55) {
+                scratchSolved = true;
+                // 全部刮開動畫
+                canvas.style.transition = 'opacity 1.5s ease-in-out';
+                canvas.style.opacity = '0';
                 
-                if (dist < PUZZLE_CONFIG.repelRadius && dist > 1) {
-                    // 如果靠近空格，則大幅降低排斥力，讓方塊能被順利「推入」或「吸入」
-                    const dampening = nearAnySlot ? 0.2 : 1.0;
-                    const force = (PUZZLE_CONFIG.repelRadius - dist) * PUZZLE_CONFIG.repelForce * dampening;
-                    c.vx += (dx / dist) * force;
-                    c.vy += (dy / dist) * force;
-                }
-                c.vx *= PUZZLE_CONFIG.friction;
-                c.vy *= PUZZLE_CONFIG.friction;
-                c.x += c.vx;
-                c.y += c.vy;
-                const elW = c.el.offsetWidth || 80;
-                const elH = c.el.offsetHeight || 42;
-                if (c.x < 0) { c.x = 0; c.vx = Math.abs(c.vx) * 0.6; }
-                if (c.y < 48) { c.y = 48; c.vy = Math.abs(c.vy) * 0.6; }
-                if (c.x + elW > W) { c.x = W - elW; c.vx = -Math.abs(c.vx) * 0.6; }
-                if (c.y + elH > H) { c.y = H - elH; c.vy = -Math.abs(c.vy) * 0.6; }
-
-                // --- 磁力吸附輔助 (Magnetic Snapping Assist) ---
-                const ccx = c.x + (c.el.offsetWidth || 80) / 2;
-                const ccy = c.y + (c.el.offsetHeight || 42) / 2;
-
-                let nearestSlot = null;
-                let minDistToSlot = Infinity;
-                for (const slot of puzzleState.slotRects) {
-                    const occupied = puzzleState.chars.some(o => o !== c && o.locked && o.slotIndex === slot.slotIdx);
-                    if (occupied) continue;
-                    const sdx = ccx - slot.cx;
-                    const sdy = ccy - slot.cy;
-                    const d = Math.sqrt(sdx * sdx + sdy * sdy);
-                    if (d < minDistToSlot) {
-                        minDistToSlot = d;
-                        nearestSlot = slot;
-                    }
-                }
-
-                if (nearestSlot && minDistToSlot < 65) {
-                    const attractionStrength = (65 - minDistToSlot) / 65;
-                    c.vx *= (1 - attractionStrength * 0.4); 
-                    c.vy *= (1 - attractionStrength * 0.4);
-                    const sdx = nearestSlot.cx - ccx;
-                    const sdy = nearestSlot.cy - ccy;
-                    c.vx += sdx * 0.15;
-                    c.vy += sdy * 0.15;
-                }
-
-                // --- 判定吸附 ---
-                for (const slot of puzzleState.slotRects) {
-                    const occupied = puzzleState.chars.some(o => o !== c && o.locked && o.slotIndex === slot.slotIdx);
-                    if (occupied) continue;
-                    const sdx = ccx - slot.cx;
-                    const sdy = ccy - slot.cy;
-                    if (Math.sqrt(sdx * sdx + sdy * sdy) < 40) {
-                        if (PUZZLE_CONFIG.answer[slot.slotIdx] === c.text) {
-                            c.x = slot.cx - (c.el.offsetWidth || 80) / 2;
-                            c.y = slot.cy - (c.el.offsetHeight || 42) / 2;
-                            c.vx = 0; c.vy = 0;
-                            c.locked = true; c.slotIndex = slot.slotIdx;
-                            c.el.classList.add('locked');
-                            slot.el.classList.add('filled');
-                            slot.el.innerText = '';
-                            _checkPuzzleSolved();
-                        } else {
-                            c.vx = (Math.random() - 0.5) * 8;
-                            c.vy = -4 - Math.random() * 4;
-                            slot.el.classList.add('error');
-                            setTimeout(() => slot.el.classList.remove('error'), 500);
-                            puzzleState.errorCount++;
-                            if (puzzleState.errorCount >= 1) {
-                                document.getElementById('puzzle-hint-msg').classList.add('visible');
-                            }
-                        }
-                        break;
-                    }
-                }
-                c.el.style.left = c.x + 'px';
-                c.el.style.top = c.y + 'px';
-            });
-            puzzleState.rafId = requestAnimationFrame(_puzzleLoop);
-        }
-
-        function _checkPuzzleSolved() {
-            const solved = PUZZLE_CONFIG.answer.every((ans, i) =>
-                puzzleState.chars.some(c => c.locked && c.slotIndex === i && c.text === ans)
-            );
-            if (!solved) return;
-            cancelAnimationFrame(puzzleState.rafId);
-            puzzleState.rafId = null;
-            document.getElementById('puzzle-success-flash').classList.add('show');
-            setTimeout(() => document.getElementById('puzzle-solved-text').classList.add('show'), 600);
-            setTimeout(() => {
-                const clueObj = {
-                    id: 'CLUE_JIANGMING_NOTE', isDistorted: false,
-                    name: '江明的隱藏紙條',
-                    desc: '江明的隱藏筆記顯示：昨晚有人帶走了底片。',
-                    truth: '江明在被殺前記錄了底片被取走的時間，指向趙福生。',
-                };
-                gameState.clues.collected.push('CLUE_JIANGMING_NOTE');
-                gameState.clues.details['CLUE_JIANGMING_NOTE'] = clueObj;
-                if (gameState.grammarProgress['GP4_WORD_ORDER']) {
-                    gameState.grammarProgress['GP4_WORD_ORDER'].learnedThroughPuzzle = true;
-                }
-                const paperEl = document.getElementById('puzzle-paper');
-                collectItem(clueObj, paperEl);
-                updateInventoryUI();
-                checkAccuseButtonVisible();
+                showSystemMessage('已解讀江明的隱藏紙條！');
+                
                 setTimeout(() => {
-                    closePuzzle();
-                    const area = document.getElementById('puzzle-char-area');
-                    area.innerHTML = '';
-                    puzzleState.chars = [];
-                    document.getElementById('puzzle-success-flash').classList.remove('show');
-                    document.getElementById('puzzle-solved-text').classList.remove('show');
-                    document.querySelectorAll('.puzzle-slot').forEach(s => {
-                        s.classList.remove('filled');
-                        const labels = ['一','二','三','四'];
-                        s.innerText = `第${labels[parseInt(s.dataset.slot)]}位`;
-                    });
-                    document.getElementById('puzzle-hint-msg').classList.remove('visible');
-                    puzzleState.errorCount = 0;
-                    if (currentScene === 'KITCHEN') initScene('KITCHEN', camX);
-                }, 2000);
-            }, 1500);
-        }
-
-        function _triggerPuzzleShake(charObj) {
-            if (charObj.isShaking) return;
-            charObj.isShaking = true;
-            charObj.el.classList.add('shake');
-            setTimeout(() => {
-                charObj.el.classList.remove('shake');
-                charObj.isShaking = false;
-            }, 300);
+                    gainClue('CLUE_JIANGMING_NOTE');
+                    canvas.style.opacity = '1';
+                    canvas.style.transition = '';
+                    closeScratch();
+                }, 3500);
+            }
         }
 
         function _persistGameEnd(type) {
