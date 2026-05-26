@@ -1208,6 +1208,43 @@
             pointer-events: none;
             z-index: 100;
         }
+    
+        #evidence-selector {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vw;
+            height: 70vh;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            border: 3px solid var(--ui-gold);
+            z-index: 7000;
+            display: none;
+            flex-direction: column;
+            padding: 40px;
+            box-sizing: border-box;
+            box-shadow: 0 0 100px rgba(0,0,0,1);
+            color: #d4c4a8;
+        }
+        #evidence-selector .selector-header {
+            font-size: 28px;
+            text-align: center;
+            border-bottom: 2px solid var(--ui-gold);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-family: 'Noto Serif TC', serif;
+        }
+        #evidence-selector #evidence-grid {
+            flex: 1;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+        }
+        #evidence-selector .menu-btn {
+            margin-top: 20px;
+            align-self: center;
+        }
+
     </style>
 </head>
 <body>
@@ -2002,7 +2039,7 @@ function startGame() {
                       playerReceived: "江明的萊卡相機。底片槽是空的，快門旁有細微指紋痕跡。", 
                       truthVersion: "江明用相機拍下手稿內容作為備份，底片被趙福生取走。",
                       imgSrc: "assets/clue_camera.png" },
-                    { type: 'ITEM', id: 'CLUE_COFFEE_CUP', text: '🔍 調查：殘留脣印的咖啡杯', x: 1200, y: '75%', clueName: "咖啡杯", 
+                    { type: 'ITEM', id: 'CLUE_COFFEE_CUP', text: '🔍 調查：殘留脣印的咖啡杯', x: 3839, y: '61%', clueName: "咖啡杯", 
                       playerReceived: "杯沿留有脣印，杯底有半冷的咖啡。這杯咖啡不是江明點的。", 
                       truthVersion: "這是男爵夫人的咖啡杯，證明她案發時在餐車角落。",
                       imgSrc: "assets/clue_coffee_cup.png" }
