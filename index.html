@@ -2047,12 +2047,12 @@ function startGame() {
                 bg: "url('assets/bg_corridor.png')",
                 widthRatio: 6, 
                 entities: [
-                    { type: 'PLATE', id: 'plate_301', img: 'plate_301.png', x: 425, y: '40%' },
-                    { type: 'PLATE', id: 'plate_302', img: 'plate_302.png', x: 1257, y: '40%' },
-                    { type: 'PLATE', id: 'plate_303', img: 'plate_303.png', x: 2089, y: '40%' },
-                    { type: 'PLATE', id: 'plate_304', img: 'plate_304.png', x: 2921, y: '40%' },
-                    { type: 'PLATE', id: 'plate_305', img: 'plate_305.png', x: 3753, y: '40%' },
-                    { type: 'PLATE', id: 'plate_306', img: 'plate_306.png', x: 4585, y: '40%' },
+                    { type: 'PLATE', id: 'plate_301', img: 'plate_301.png', x: 475, y: '40%' },
+                    { type: 'PLATE', id: 'plate_302', img: 'plate_302.png', x: 1307, y: '40%' },
+                    { type: 'PLATE', id: 'plate_303', img: 'plate_303.png', x: 2139, y: '40%' },
+                    { type: 'PLATE', id: 'plate_304', img: 'plate_304.png', x: 2971, y: '40%' },
+                    { type: 'PLATE', id: 'plate_305', img: 'plate_305.png', x: 3803, y: '40%' },
+                    { type: 'PLATE', id: 'plate_306', img: 'plate_306.png', x: 4635, y: '40%' },
 
                     { type: 'NPC', id: 'FANG', class: 'npc-fang', x: 1200, y: 'var(--ground-y)', text: '🔍 與 方小蘭 交談 (實習記者偽裝成醫生，對真相有著執著追求)' },
                     { type: 'ITEM', id: 'CLUE_STETHOSCOPE', text: '🔍 調查：走廊牆角的物品', x: 1500, y: '95%', clueName: "聽診器", 
@@ -3207,11 +3207,12 @@ function startGame() {
             `).join('');
         }
 
-        async function showClueDetail(clueId) {
+        async function showClueDetail(clueParam) {
             const detailPanel = document.getElementById('inv-details');
             const title = document.getElementById('clue-detail-title');
             const desc = document.getElementById('clue-detail-desc');
-            const clue = inventory.find(i => i.id === clueId);
+            let clue = typeof clueParam === 'object' ? clueParam : inventory.find(i => i.id === clueParam);
+            if (!clue) clue = gameState.clues.details[clueParam];
             if (!clue) return;
 
             detailPanel.style.display = 'block';
