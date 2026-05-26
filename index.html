@@ -3177,12 +3177,9 @@ function startGame() {
             title.innerText = clue.name || clue.id.replace('CLUE_', '');
             
             let content = clue.desc;
-            if (clue.truth) {
-                content += ` [ink][key][\n\n真相解析]\n${clue.truth}[/key][/ink]`;
-            }
             
             desc.innerHTML = ''; // 清空舊內容
-            await typeWriter(desc, content);
+            typeWriter(desc, content);
         }
 
         function toggleInventory() {
