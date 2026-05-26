@@ -2603,7 +2603,7 @@
                 ZHAO_5_FOLLOWUP: {
                     text: "（趙福生冷笑一聲，以為自己毀滅了所有證據）",
                     choices: [
-                        { text: "你確定什麼都不剩嗎？（出示手稿殘頁）", tone: "polite", response: "（看到殘頁，面如死灰）……天意。那灶膛的火不夠旺，只燒掉了一半。我當時太急了，沒檢查就出來了。也罷，也罷……反正我做都做了，後悔也沒用。你們帶我走吧。", nextNode: "END" }
+                        { text: "你確定什麼都不剩嗎？（出示手稿殘頁）", tone: "polite", response: "（看到殘頁，面如死灰）……天意。那灶膛的火不夠旺，只燒掉了一半。我當時太急了，沒檢查就出來了。也罷，也罷……反正我做都做了，後悔也沒用。你們帶我走吧。", nextNode: "__TRIGGER_TRUE_END__" }
                     ]
                 },
                 END: { text: "（趙福生閉上眼睛，拒絕再回答）", choices: [] },
@@ -3121,7 +3121,7 @@
                 initScene('DINING_CAR', 2000).then(() => {
                     gameState.npcs['ZHAO'].met = true;
                     currentNPCId = 'ZHAO';
-                    renderDialogueNode('ZHAO', 'ZHAO_ROUND5');
+                    renderDialogueNode('ZHAO', 'ZHAO_5');
                 });
             }
         }
