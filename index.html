@@ -1022,179 +1022,71 @@
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* ===== 文字物理謎題面板 ===== */
-        #text-puzzle-overlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.88);
+        /* ===== 刮刮樂與線索彈窗 ===== */
+        #scratch-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 7000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            cursor: url('assets/dragon_cursor.png') 16 16, auto;
+        }
+        #scratch-overlay.active { display: flex; }
+        #scratch-container {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            background: #fff8e7;
+            border: 2px solid #5c3a21;
+            box-shadow: 0 0 50px rgba(255,100,50,0.4);
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: url('assets/dragon_cursor.png') 16 16, auto;
+        }
+        #scratch-text-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: 'Noto Serif TC', serif;
+            font-size: 26px;
+            color: #3e2723;
+            line-height: 1.8;
+            text-align: center;
+            font-weight: bold;
+            padding: 40px;
+            box-sizing: border-box;
+            background-image: url('assets/clue_note_fragment.png');
+            background-size: cover;
+            background-position: center;
+        }
+        #scratch-canvas {
+            position: absolute;
+            top: 0; left: 0;
+        }
+
+        #clue-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
             z-index: 8000;
             display: none;
             justify-content: center;
             align-items: center;
         }
-        #text-puzzle-overlay.active { display: flex; }
-
-        #puzzle-paper {
+        #clue-modal-container {
+            width: 500px;
+            background: #1c1c1c;
+            border: 2px solid var(--ui-gold);
+            padding: 30px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
             position: relative;
-            width: 700px;
-            height: 520px;
-            background: #f5e6c8;
-            border-radius: 4px;
-            box-shadow: 0 0 60px rgba(212,175,55,0.3), inset 0 0 40px rgba(139,100,30,0.15);
-            background-image:
-                repeating-linear-gradient(transparent, transparent 31px, rgba(139,100,30,0.1) 31px, rgba(139,100,30,0.1) 32px),
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-            border: 2px solid #c8a96e;
-            overflow: hidden;
+            border-radius: 8px;
         }
 
-        #puzzle-close-btn {
-            position: absolute;
-            top: -18px; right: -18px;
-            width: 36px; height: 36px;
-            background: #5C3A21;
-            color: #f5e6c8;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            display: flex; justify-content: center; align-items: center;
-            border: 3px solid #f5e6c8;
-            z-index: 10;
-        }
-
-        #puzzle-title {
-            position: absolute;
-            top: 16px; left: 0; right: 0;
-            text-align: center;
-            font-size: 18px;
-            color: #5C3A21;
-            font-style: italic;
-            letter-spacing: 2px;
-            pointer-events: none;
-        }
-
-        #puzzle-hint-text {
-            position: absolute;
-            top: 14px; right: 20px;
-            font-size: 12px;
-            color: #8B6B3D;
-            opacity: 0.8;
-            max-width: 160px;
-            text-align: right;
-            pointer-events: none;
-        }
-
-
-        #puzzle-hint-msg {
-            position: absolute;
-            bottom: 100px; left: 0; right: 0;
-            text-align: center;
-            font-size: 14px;
-            color: #c0392b;
-            opacity: 0;
-            transition: opacity 0.5s;
-            pointer-events: none;
-        }
-        #puzzle-hint-msg.visible { opacity: 1; }
-
-        /* 浮動字元 */
-        .puzzle-char {
-            position: absolute;
-            background: rgba(92,58,33,0.9);
-            color: #f5e6c8;
-            font-size: 22px;
-            padding: 8px 14px;
-            border-radius: 4px;
-            cursor: default;
-            user-select: none;
-            box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
-            border: 1px solid rgba(212,175,55,0.3);
-            letter-spacing: 2px;
-            white-space: nowrap;
-            transform: translate(-50%, -50%); /* 以屬性 x, y 為中心點 */
-            transition: box-shadow 0.2s;
-        }
-        .puzzle-char.locked {
-            background: #2E7D32;
-            border-color: var(--ui-gold);
-            box-shadow: 0 0 12px rgba(212,175,55,0.8);
-            pointer-events: none;
-            z-index: 50;
-        }
-
-        /* 底部凹槽區 */
-        #puzzle-slots {
-            position: absolute;
-            bottom: 20px; left: 0; right: 0;
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            padding: 0 20px;
-        }
-        .puzzle-slot {
-            width: 100px; height: 44px;
-            border: 2px dashed #8B6B3D;
-            border-radius: 4px;
-            background: rgba(139,107,61,0.1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 12px;
-            color: rgba(92,58,33,0.4);
-            transition: all 0.3s;
-        }
-        .puzzle-slot.filled {
-            border-style: solid;
-            border-color: var(--ui-gold);
-            background: rgba(212,175,55,0.15);
-            box-shadow: 0 0 8px rgba(212,175,55,0.3);
-        }
-        .puzzle-slot.error {
-            border-color: #c0392b;
-            background: rgba(192,57,43,0.1);
-            animation: slot-error 0.4s;
-        }
-        @keyframes slot-error {
-            0%, 100% { transform: translateX(0); }
-            25%       { transform: translateX(-4px); }
-            75%       { transform: translateX(4px); }
-        }
-        @keyframes puzzle-shake {
-            0%, 100% { transform: translate(-50%, -50%); }
-            20%, 60% { transform: translate(-54%, -50%); }
-            40%, 80% { transform: translate(-46%, -50%); }
-        }
-        .puzzle-char.shake {
-            animation: puzzle-shake 0.3s ease-in-out;
-        }
-
-        /* 成功發光 */
-        #puzzle-success-flash {
-            position: absolute; inset: 0;
-            background: radial-gradient(circle, rgba(212,175,55,0.4) 0%, transparent 70%);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 1s;
-            z-index: 200;
-        }
-        #puzzle-success-flash.show { opacity: 1; }
-
-        #puzzle-solved-text {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 40px;
-            color: #5C3A21;
-            font-weight: bold;
-            letter-spacing: 8px;
-            opacity: 0;
-            pointer-events: none;
-            text-shadow: 0 0 20px rgba(212,175,55,0.8);
-            transition: opacity 1.5s;
-            z-index: 300;
-        }
-        #puzzle-solved-text.show { opacity: 1; }
-
-        /* ===== END 謎題面板 ===== */
 
         .scanlines {
             position: fixed; inset: 0;
