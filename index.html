@@ -2477,8 +2477,8 @@
                 START: {
                     text: "（陳阿發擦著桌子）探長，您來了。我已經把我知道的都跟列車長說了，真的，我什麼都沒看見……",
                     choices: [
-                        { text: "你發現屍體的時候，情況是怎樣的？", tone: "polite", grammarPoint: "GP2_TIME_ADVERB", isCorrect: true, response: "那時大概九點十分，我從廚房出來，就看到江先生倒在椅子邊，趙先生站在旁邊，臉色發白。之前我送咖啡時他們還在講話。後來我回廚房洗碗，再出來就是那樣了……", nextNode: "END" },
-                        { text: "你發現屍體什麼時候？", tone: "aggressive", grammarPoint: "GP2_TIME_ADVERB", isCorrect: false, response: "什麼時候？嗯……我記不太清了，好像是九點半，也可能快十點了。我洗碗洗得太累了，沒有注意確切的時間。", nextNode: "END" }
+                        { text: "你昨晚幾點發現的屍體？", tone: "polite", grammarPoint: "GP2_TIME_ADVERB", isCorrect: true, response: "昨晚大概九點十分，我從廚房出來，就看到江先生倒在椅子邊，趙先生站在旁邊，臉色發白。之前我送咖啡時他們還在講話，後來我回廚房洗碗，再出來就是那樣了……", nextNode: "END" },
+                        { text: "你昨天幾點發現的屍體？", tone: "aggressive", grammarPoint: "GP2_TIME_ADVERB", isCorrect: false, response: "昨天？昨天白天我一直在備料，大概下午三點多上的工。晚上的事……晚上我就是正常收拾，沒什麼特別的。", nextNode: "END" }
                     ]
                 },
                 CHEN_2: {
@@ -2551,8 +2551,8 @@
                 START: {
                     text: "有事請快問，我頭還在疼。",
                     choices: [
-                        { text: "你和江明今晚談了什麼？", tone: "polite", grammarPoint: "GP4_WORD_ORDER", isCorrect: true, response: "他約我來的，說有樁生意。他手上有幾張照片想賣給我，我看他這故弄玄虛的樣子，覺著沒什麼意思，就走了。", nextNode: "END" },
-                        { text: "江明和你談了什麼？", tone: "aggressive", grammarPoint: "GP4_WORD_ORDER", isCorrect: false, response: "江明找我？哪有！不過他最近跟我手下一個姓王的助手走得近，那人手腳不太乾淨，之前被我罵過。你們該去查查那個人。", nextNode: "END" }
+                        { text: "今晚您和江明談了什麼？", tone: "polite", grammarPoint: "GP4_WORD_ORDER", isCorrect: true, response: "他約我來的，說有樁生意。他手上有幾張照片想賣給我，我看他這故弄玄虛的樣子，覺著沒什麼意思，就走了。", nextNode: "END" },
+                        { text: "您和江明談了今晚什麼？", tone: "aggressive", grammarPoint: "GP4_WORD_ORDER", isCorrect: false, response: "（皺眉）您說話的方式很奇怪，探長。今晚？哪個今晚？（停頓，態度變得更防禦）我和江明談的事情很多，您要問哪一件？我的助手姓王，您不妨去查查他——他跟江明走得很近，手腳也不太乾淨。", nextNode: "END" }
                     ]
                 },
                 ZHAO_2: {
@@ -2588,10 +2588,10 @@
                     ]
                 },
                 ZHAO_4: {
-                    text: "（看到圍巾，並聽說上面掉落的絨毛出現在案發現場，手開始發抖）這……這是我的圍巾，但我今晚沒戴，一定是有人偷了陷害我！",
+                    text: "（您拿出了那條深藍色的羊毛圍巾）",
                     choices: [
-                        { text: "你的圍巾怎麼會出現在男爵夫人房裡？", tone: "polite", response: "我不知道！說了我什麼都不知道！你再這樣我就要找律師了！", nextNode: "END" },
-                        { text: "你的圍巾絨毛怎麼會掉在案發現場？", tone: "neutral", response: "我不知道！說了我什麼都不知道！你再這樣我就要找律師了！", nextNode: "END" }
+                        { text: "您的圍巾昨晚是怎麼出現在男爵夫人包廂裡的？", tone: "polite", grammarPoint: "GP4_WORD_ORDER", isCorrect: true, response: "（手開始發抖）這……這是我的圍巾，但我今晚沒戴，一定是有人偷了陷害我！", nextNode: "END" },
+                        { text: "您的圍巾是怎麼昨晚出現在男爵夫人包廂裡的？", tone: "aggressive", grammarPoint: "GP4_WORD_ORDER", isCorrect: false, response: "（皺眉）昨晚？探長，您是說昨晚，還是今晚？（停頓）我不知道您在說什麼。我的圍巾我自己收好的，沒人碰過。", nextNode: "END" }
                     ]
                 },
                 ZHAO_5: {
@@ -2618,21 +2618,22 @@
                 START: {
                     text: "你好，怎麼了嗎？",
                     choices: [
-                        { text: "妳的聽診器怎麼會出現在尸體旁邊？", tone: "polite", grammarPoint: "GP3_LOCATION_WORD", isCorrect: true, response: "下午我去餐車幫一位老先生聽診，順手掛在東側椅背上。晚上想起來去找，大概八點多，已經不見了。我沿著車廂問了好幾個人，都沒看到。直到剛剛列車長叫我去餐車，我才看到它掉在江先生手邊。我發誓，我絕對沒碰過現場。", nextNode: "END" },
-                        { text: "怎麼你的聽診器會在尸體旁邊？", tone: "aggressive", grammarPoint: "GP3_LOCATION_WORD", isCorrect: false, response: "什麼……怎麼？我不懂你什麼意思。聽診器就在那裡，我沒辦法解釋。你不要這樣問我，我真的不知道。", nextNode: "END" }
+                        { text: "妳的聽診器是怎麼從走廊前段到餐車後段的？", tone: "polite", grammarPoint: "GP3_LOCATION_WORD", isCorrect: true, response: "正是，我也想不通。聽診器本來掛在餐車前段椅背上，根本不可能自己移動到後段。一定是有人把它搬過去的。", nextNode: "END" },
+                        { text: "妳的聽診器是怎麼在走廊前段到餐車後段的？", tone: "aggressive", grammarPoint: "GP3_LOCATION_WORD", isCorrect: false, response: "……在？什麼意思？（困惑地看著玩家）您說的『在走廊前段到餐車後段』……我不太明白您的意思。我只知道聽診器不見了，後來在餐車找到。", nextNode: "END" }
                     ]
                 },
                 FANG_2: {
                     text: "探長，您還有話問我嗎？",
                     choices: [
-                        { text: "妳仔細看過聽診器了嗎？", tone: "polite", response: "我撿起來檢查過，上面沾了一點深色的絨毛，應該不是我的東西。那絨毛很細軟，像高級圍巾的料子。而且聽診器本來掛在車廂前段，卻跑到後段，中間隔了好幾張桌子，一定被人動過。如果有人用圍巾勒江先生，掙扎時碰到旁邊的聽診器，絨毛就可能沾上去。", nextNode: "END" },
-                        { text: "聽診器上面有沒有什麼異常？", tone: "neutral", response: "我撿起來檢查過，上面沾了一點深色的絨毛，應該不是我的東西。那絨毛很細軟，像高級圍巾的料子。而且聽診器本來掛在車廂前段，卻跑到後段，中間隔了好幾張桌子，一定被人動過。如果有人用圍巾勒江先生，掙扎時碰到旁邊的聽診器，絨毛就可能沾上去。", nextNode: "END" }
+                        { text: "聽診器上面有沒有沾到什麼東西？", tone: "polite", grammarPoint: "GP3_LOCATION_WORD", isCorrect: true, response: "我撿起來檢查過，上面沾了一點深色的絨毛，應該不是我的東西。那絨毛很細軟，像高級圍巾的料子。而且聽診器本來掛在車廂前段，卻跑到後段，中間隔了好幾張桌子，一定被人動過。如果有人用圍巾勒江先生，掙扎時碰到旁邊的聽診器，絨毛就可能沾上去。", nextNode: "END" },
+                        { text: "聽診器裡面有沒有沾到什麼東西？", tone: "aggressive", grammarPoint: "GP3_LOCATION_WORD", isCorrect: false, response: "裡面？聽診器沒有『裡面』，探長。（停頓）您是說表面嗎？我快速看了一下，好像有點髒，但我沒有仔細檢查。", nextNode: "END" }
                     ]
                 },
                 FANG_3: {
                     text: "還有什麼我能幫忙的嗎？",
                     choices: [
-                        { text: "咖啡裡有藥水味，是顯影液。這東西對人體有什麼影響嗎？", tone: "polite", response: "顯影液含有毒性，喝下去會頭暈噁心，嚴重的話四肢無力。如果劑量夠大，短時間內根本無法反抗。兇手應該是利用這一點，等江先生無力抵抗才下手的。太卑鄙了。", nextNode: "END" }
+                        { text: "咖啡裡面有藥水味，是顯影液。這東西喝下去對人體有什麼影響？", tone: "polite", grammarPoint: "GP3_LOCATION_WORD", isCorrect: true, response: "顯影液含有毒性，喝下去會頭暈噁心，嚴重的話四肢無力。如果劑量夠大，短時間內根本無法反抗。兇手應該是利用這一點，等江先生無力抵抗才下手的。太卑鄙了。", nextNode: "END" },
+                        { text: "咖啡上面有藥水味，是顯影液。這東西喝下去對人體有什麼影響？", tone: "aggressive", grammarPoint: "GP3_LOCATION_WORD", isCorrect: false, response: "咖啡上面？（困惑）您是說咖啡表面有漂浮物？我沒有見到咖啡杯，沒辦法確認。如果是溶在咖啡裡的顯影液，那對人體的影響會是……", nextNode: "END" }
                     ]
                 },
                 FANG_4: {
@@ -2665,8 +2666,8 @@
                 START: {
                     text: "噢，探長先生，這車上竟有兇案，真是太可怕了。不過我一直在寫信，什麼也沒聽見。",
                     choices: [
-                        { text: "您看到趙福生經過走廊時，手裡拿著什麼嗎？", tone: "polite", grammarPoint: "GP1_HONORIFIC", isCorrect: true, response: "他抱著一個黑色的皮包，鼓鼓的，走得很快，往行李車廂那邊去了。我還納悶，在車廂裡抱著皮包做什麼。", nextNode: "END" },
-                        { text: "趙福生被您看到拿著些什麼嗎？", tone: "aggressive", grammarPoint: "GP1_HONORIFIC", isCorrect: false, response: "被我看見？是的，我確實看見他了。他就這樣走過去了。", nextNode: "END" }
+                        { text: "請問您看到趙福生經過走廊時，手裡拿著什麼嗎？", tone: "polite", grammarPoint: "GP1_HONORIFIC", isCorrect: true, response: "他抱著一個黑色的皮包，鼓鼓的，走得很快，往行李車廂那邊去了。我還納悶，在車廂裡抱著皮包做什麼。", nextNode: "END" },
+                        { text: "你有沒有看到趙福生拿著什麼？", tone: "aggressive", grammarPoint: "GP1_HONORIFIC", isCorrect: false, response: "……（皺眉，語氣驟冷）這位探長，您是在審問我嗎？我是白男爵夫人，不是您的下人。", nextNode: "END" }
                     ]
                 },
                 BARONESS_2: {
