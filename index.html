@@ -2473,6 +2473,7 @@
         }
 
         const dialogueTree = {
+            CONDUCTOR: { MULTIPLE_WRONG_END: { text: "（列車長嘆氣）探長，車上所有乘客都對您的問話方式感到憤怒。大家拒絕配合調查，局長也拍電報要求您立刻停止行動……", choices: [{ text: "我明白了……", tone: "neutral", response: "（你被護送下了火車）", nextNode: "__TRIGGER_FALSE_END_TRUTH_HIDDEN__" }] } },
             CHEN_AFAR: {
                 START: {
                     text: "（陳阿發擦著桌子）探長，您來了。我已經把我知道的都跟列車長說了，真的，我什麼都沒看見……",
@@ -2607,6 +2608,7 @@
                     ]
                 },
                 END: { text: "（趙福生閉上眼睛，拒絕再回答）", choices: [] },
+                ZHAO_BAD_END: { text: "（點燃一根雪茄，從容地吐出煙圈）探長，您的指控充滿漏洞。既然您連話都說不清楚，我想我們沒什麼好談的了。明天一早，我的律師會來找您的。", choices: [{ text: "（無言以對）", tone: "neutral", response: "（趙福生揚長而去）", nextNode: "__TRIGGER_FALSE_END_UNSOLVED__" }] },
                 INTERROGATION: {
                     'CLUE_CAMERA': 'ZHAO_2',
                     'CLUE_FILM_CASE': 'ZHAO_3',
@@ -2657,6 +2659,7 @@
                     ]
                 },
                 END: { text: "（方小蘭低頭翻閱著醫療紀錄）", choices: [] },
+                FANG_BAD_END: { text: "（失望地搖頭）我以為您是個專業的探長，沒想到您的空間邏輯一塌糊塗。如果您堅持要抓我，請便吧，但真兇一定還在車上。", choices: [{ text: "（無言以對）", tone: "neutral", response: "（方小蘭冷冷地看著你）", nextNode: "__TRIGGER_FALSE_END_ACCUSE_DOCTOR__" }] },
                 INTERROGATION: {
                     'CLUE_STETHOSCOPE': 'FANG_2',
                     'CLUE_COFFEE_CUP': 'FANG_3'
@@ -3101,11 +3104,41 @@
             const gp3Wrong = gp.GP3_LOCATION_WORD.isCorrect === false;
             const gp4Wrong = gp.GP4_WORD_ORDER.isCorrect === false;
             const multipleWrong = Object.values(gp).filter(g => g.isCorrect === false).length >= 2;
-            if (multipleWrong) return triggerEnding('FALSE_END_TRUTH_HIDDEN');
-            if (gp1Wrong) return triggerEnding('FALSE_END_ACCUSE_BARONESS');
-            if (gp2Wrong) return triggerEnding('FALSE_END_ACCUSE_WAITER');
-            if (gp3Wrong) return triggerEnding('FALSE_END_ACCUSE_DOCTOR');
-            if (gp4Wrong) return triggerEnding('FALSE_END_UNSOLVED');
+            if (multipleWrong) {
+                return initScene('DINING_CAR', 2000).then(() => {
+                    gameState.npcs['CONDUCTOR'] = { name: '列車長', met: true };
+                    currentNPCId = 'CONDUCTOR';
+                    renderDialogueNode('CONDUCTOR', 'MULTIPLE_WRONG_END');
+                });
+            }
+            if (gp1Wrong) {
+                return initScene('DINING_CAR', 2000).then(() => {
+                    gameState.npcs['BARONESS'].met = true;
+                    currentNPCId = 'BARONESS';
+                    renderDialogueNode('BARONESS', 'BARONESS_BAD_END');
+                });
+            }
+            if (gp2Wrong) {
+                return initScene('DINING_CAR', 2000).then(() => {
+                    gameState.npcs['CHEN_AFAR'].met = true;
+                    currentNPCId = 'CHEN_AFAR';
+                    renderDialogueNode('CHEN_AFAR', 'CHEN_BAD_END');
+                });
+            }
+            if (gp3Wrong) {
+                return initScene('DINING_CAR', 2000).then(() => {
+                    gameState.npcs['FANG'].met = true;
+                    currentNPCId = 'FANG';
+                    renderDialogueNode('FANG', 'FANG_BAD_END');
+                });
+            }
+            if (gp4Wrong) {
+                return initScene('DINING_CAR', 2000).then(() => {
+                    gameState.npcs['ZHAO'].met = true;
+                    currentNPCId = 'ZHAO';
+                    renderDialogueNode('ZHAO', 'ZHAO_BAD_END');
+                });
+            }
             if (allCorrect) {
                 const clues = gameState.clues.collected;
                 const hasScarf = clues.includes('CLUE_SCARF');
