@@ -3192,10 +3192,6 @@
             title.innerText = labels[type] || '解謎結束';
 
             if (type === 'TRUE_END') {
-                const hasReinforcement = gameState.clues.collected.includes('CLUE_SCARF') && 
-                                         gameState.clues.collected.includes('CLUE_ZHAO_LIE') && 
-                                         gameState.clues.collected.includes('CLUE_FILM_CASE');
-
                 screen.style.background = 'rgba(10, 50, 10, 0.95)';
                 desc.innerText = '真相大白。趙福生是兇手。他受外國勢力指使，為取回秘密條約副本而殺害江明。手稿雖已部分焚毀，但江明用相機拍下的底片仍是證據。歷史的真相，不會永遠沉默。';
                 title.style.color = '#4CAF50';
