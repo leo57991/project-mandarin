@@ -1614,6 +1614,7 @@
 
         // --- 完整 gameState 結構 ---
         const gameState = {
+            manuscriptSpawnable: false,
             grammarProgress: {
                 GP1_HONORIFIC: { status: "NOT_STARTED", isCorrect: null },
                 GP2_TIME_ADVERB: { status: "NOT_STARTED", isCorrect: null },
@@ -1640,6 +1641,7 @@
             const saveData = {
                 currentScene: currentScene,
                 camX: camX,
+                manuscriptSpawnable: gameState.manuscriptSpawnable,
                 grammarProgress: gameState.grammarProgress,
                 collectedClues: gameState.clues.collected,
                 clueDetails: gameState.clues.details,
@@ -2182,7 +2184,7 @@
                 bg: "url('assets/bg/bg_kitchen.png')",
                 widthRatio: 4, 
                 entities: [
-                    { type: 'ITEM', id: 'CLUE_FILM_CASE', text: '🔍 調查：垃圾桶旁的空鐵盒', x: 600, y: '80%', clueName: "底片盒", 
+                    { type: 'ITEM', id: 'CLUE_FILM_CASE', text: '🔍 調查：垃圾桶旁的空鐵盒', x: 1478, y: '75%', clueName: "底片盒", 
                       playerReceived: "一個空置的底片盒，鐵蓋開啟著，上面有些許髒污。", 
                       truthVersion: "趙福生取走底片後，隨手將空盒扔在備料廚房的垃圾桶旁。",
                       imgSrc: "assets/clues/clue_film_case.png" },
@@ -2246,6 +2248,9 @@
         }
 
         async function initScene(sceneId, spawnX = 0) {
+            if (sceneId !== 'KITCHEN' && gameState.npcs && gameState.npcs.CHEN_AFAR && gameState.npcs.CHEN_AFAR.round4Done) {
+                gameState.manuscriptSpawnable = true;
+            }
             // 場景切換動畫
             const wipe = document.getElementById('screen-wipe');
             wipe.style.left = '-100%';
@@ -2299,7 +2304,7 @@
                     if (sceneId === 'KITCHEN' && !hasNote) return;
                 }
                 if (ent.id === 'CLUE_MANUSCRIPT_PAGE') {
-                    if (!gameState.npcs.CHEN_AFAR.round4Done) return;
+                    if (!gameState.manuscriptSpawnable) return;
                 }
                 if (ent.id === 'CLUE_SCARF') {
                     if (!(gameState.grammarProgress.GP3_LOCATION_WORD.isCorrect && gameState.npcs.FANG.round2Done)) return;
@@ -3437,6 +3442,7 @@
             }
             const saveData = {
                 currentScene: currentScene, camX: camX,
+                manuscriptSpawnable: gameState.manuscriptSpawnable,
                 grammarProgress: gameState.grammarProgress,
                 collectedClues: gameState.clues.collected,
                 clueDetails: gameState.clues.details
