@@ -2151,6 +2151,10 @@
                 entities: [
                     { type: 'NPC', id: 'CHEN_AFAR', class: 'npc-chen', x: 800, y: 'var(--ground-y)', text: '🔍 與 服務生陳阿發 交談 (沈默寡言，看過火車上許多不為人知的角落)' },
                     { type: 'NPC', id: 'ZHAO', class: 'npc-zhao', x: 2200, y: 'var(--ground-y)', text: '🔍 與 趙福生 交談 (外表是一位談吐文雅的富商，但眼神中偶爾閃過一絲令人不安的銳利。)' },
+                                        { type: 'ITEM', id: 'CLUE_STETHOSCOPE', text: '🔍 調查：屍體旁邊的物品', x: 2600, y: '85%', clueName: "聽診器", 
+                      playerReceived: "一副醫用聽診器，上面刻有「方」字。", 
+                      truthVersion: "趙福生從方小蘭的醫療包偷來放在餐車現場嫁禍她。",
+                      imgSrc: "assets/clues/clue_stethoscope.png" },
                     { type: 'ITEM', id: 'CLUE_CAMERA', text: '🔍 調查：桌上的萊卡相機', x: 2836, y: '66%', clueName: "萊卡相機", 
                       playerReceived: "江明的萊卡相機。底片槽是空的，快門旁有細微指紋痕跡。", 
                       truthVersion: "江明用相機拍下手稿內容作為備份，底片被趙福生取走。",
@@ -2173,10 +2177,6 @@
                     { type: 'PLATE', id: 'plate_306', img: 'plate_306.png', x: 4635, y: '40%' },
 
                     { type: 'NPC', id: 'FANG', class: 'npc-fang', x: 1200, y: 'var(--ground-y)', text: '🔍 與 方小蘭 交談 (實習記者偽裝成醫生，對真相有著執著追求)' },
-                    { type: 'ITEM', id: 'CLUE_STETHOSCOPE', text: '🔍 調查：走廊牆角的物品', x: 1500, y: '95%', clueName: "聽診器", 
-                      playerReceived: "一副醫用聽診器，上面刻有「方」字。", 
-                      truthVersion: "趙福生從方小蘭的醫療包偷來放在餐車現場嫁禍她。",
-                      imgSrc: "assets/clues/clue_stethoscope.png" },
                     { type: 'KNOB', id: 'door_cabin', x: 2172, y: '59%', target: 'CABIN', targetX: 0 }
                 ]
             },
@@ -2625,14 +2625,14 @@
                 START: {
                     text: "你好，怎麼了嗎？",
                     choices: [
-                        { text: "妳的聽診器是怎麼從走廊前段到餐車後段的？", tone: "polite", grammarPoint: "GP3_LOCATION_WORD", isCorrect: true, response: "正是，我也想不通。聽診器本來掛在餐車前段椅背上，根本不可能自己移動到後段。一定是有人把它搬過去的。", nextNode: "END" },
+                        { text: "妳的聽診器是怎麼從走廊前段到餐車後段的？", tone: "polite", grammarPoint: "GP3_LOCATION_WORD", isCorrect: true, response: "正是，我也想不通。我傍晚回房時，不小心把它掉在走廊前段了，根本不可能自己移動到餐車後段。一定是有人把它搬過去嫁禍我！", nextNode: "END" },
                         { text: "妳的聽診器是怎麼在走廊前段到餐車後段的？", tone: "aggressive", grammarPoint: "GP3_LOCATION_WORD", isCorrect: false, response: "……在？什麼意思？（困惑地看著玩家）您說的『在走廊前段到餐車後段』……我不太明白您的意思。我只知道聽診器不見了，後來在餐車找到。", nextNode: "END" }
                     ]
                 },
                 FANG_2: {
                     text: "探長，您還有話問我嗎？",
                     choices: [
-                        { text: "聽診器上面有沒有沾到什麼東西？", tone: "polite", grammarPoint: "GP3_LOCATION_WORD", isCorrect: true, response: "我撿起來檢查過，上面沾了一點深色的絨毛，應該不是我的東西。那絨毛很細軟，像高級圍巾的料子。而且聽診器本來掛在車廂前段，卻跑到後段，中間隔了好幾張桌子，一定被人動過。如果有人用圍巾勒江先生，掙扎時碰到旁邊的聽診器，絨毛就可能沾上去。", nextNode: "END" },
+                        { text: "聽診器上面有沒有沾到什麼東西？", tone: "polite", grammarPoint: "GP3_LOCATION_WORD", isCorrect: true, response: "我撿起來檢查過，上面沾了一點深色的絨毛，應該不是我的東西。那絨毛很細軟，像高級圍巾的料子。而且聽診器本來掉在走廊，卻跑到餐車後段，中間隔了這麼遠，一定被人動過。如果有人用圍巾勒江先生，掙扎時碰到旁邊的聽診器，絨毛就可能沾上去。", nextNode: "END" },
                         { text: "聽診器裡面有沒有沾到什麼東西？", tone: "aggressive", grammarPoint: "GP3_LOCATION_WORD", isCorrect: false, response: "裡面？聽診器沒有『裡面』，探長。（停頓）您是說表面嗎？我快速看了一下，好像有點髒，但我沒有仔細檢查。", nextNode: "END" }
                     ]
                 },
@@ -2681,8 +2681,8 @@
                 BARONESS_2: {
                     text: "還有事嗎，探長？",
                     choices: [
-                        { text: "方醫生的聽診器，您幫忙找的時候有注意到什麼嗎？", tone: "polite", response: "我們在走廊找了找，沒找到。不過我記得她說她把聽診器掛在餐車前段的椅子上，但我們是在後段找到的聽診器。這中間的距離可不短，一定有人動過。而且那時候趙先生剛好從餐車出來，說不定就是他。", nextNode: "END" },
-                        { text: "關於聽診器…", tone: "neutral", response: "我們在走廊找了找，沒找到。不過我記得她說她把聽診器掛在餐車前段的椅子上，但我們是在後段找到的聽診器。這中間的距離可不短，一定有人動過。而且那時候趙先生剛好從餐車出來，說不定就是他。", nextNode: "END" }
+                        { text: "方醫生的聽診器，您幫忙找的時候有注意到什麼嗎？", tone: "polite", response: "我們在走廊找了找，沒找到。不過我記得她說她傍晚回房時不小心掉在走廊前段了，但我們是在餐車後段找到的聽診器。這中間的距離可不短，一定有人動過。而且那時候趙先生剛好從餐車出來，說不定就是他。", nextNode: "END" },
+                        { text: "關於聽診器…", tone: "neutral", response: "我們在走廊找了找，沒找到。不過我記得她說她傍晚回房時不小心掉在走廊前段了，但我們是在餐車後段找到的聽診器。這中間的距離可不短，一定有人動過。而且那時候趙先生剛好從餐車出來，說不定就是他。", nextNode: "END" }
                     ]
                 },
                 BARONESS_3: {
