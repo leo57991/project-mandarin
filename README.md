@@ -1,7 +1,7 @@
 # Linguistic Detective: Snow Country Train
 # 語境偵緝：雪國列車
 
-![Game Title Screen](assets/bg_title_pixel.png)
+![Game Title Screen](assets/bg/bg_title_pixel.png)
 
 ## Overview
 
@@ -68,7 +68,7 @@ Instructional design, narrative structure, grammar point selection, and all peda
 ### 🌟 遊戲特色
 
 - **沉浸式橫捲軸世界**：精美的等角透視 (Isometric) 視覺風格，支援無縫場景切換。
-- **語境物理謎題**：獨創的「文字物理引擎」，玩家需要透過物理碰撞將打亂的字元歸位，重組關鍵線索。
+- **文字流體解謎**：獨創的「文字游龍（ASCII Metaball）」引擎，利用滑鼠的物理慣性與引力場進行顯影互動，重組關鍵線索。
 - **動態對話系統**：具備排版引擎與文字特效，支援中文避頭尾排列，提供視覺小說般的閱讀體驗。
 - **偵探評鑑系統**：根據您的調查細節與語法精確度，在結局獲得專屬的偵探等級評鑑。
 

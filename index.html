@@ -38,7 +38,7 @@
             top: 0; left: 0;
             width: 3072px; /* 3個循環寬度 */
             height: 100vh;
-            background-image: url('assets/bg_dining_empty_seamless.png');
+            background-image: url('assets/bg/bg_dining_empty_seamless.png');
             background-repeat: repeat-x;
             background-size: auto 100%; /* 高度填滿，寬度等比 */
             image-rendering: pixelated;
@@ -76,10 +76,10 @@
         }
 
         /* 特定 NPC 背景與屬性 - 修正檔名 */
-        .npc-chen { background-image: url('assets/npc_chen.png'); }
-        .npc-zhao { background-image: url('assets/npc_zhao.png'); }
-        .npc-baroness { background-image: url('assets/npc_baroness.png'); }
-        .npc-fang { background-image: url('assets/npc_fang.png'); }
+        .npc-chen { background-image: url('assets/characters/npc_chen.png'); }
+        .npc-zhao { background-image: url('assets/characters/npc_zhao.png'); }
+        .npc-baroness { background-image: url('assets/characters/npc_baroness.png'); }
+        .npc-fang { background-image: url('assets/characters/npc_fang.png'); }
 
         /* 玩家實體（用於相機跟隨與互動偵測） */
         #player {
@@ -273,14 +273,14 @@
         }
 
         /* 多種表情類別 */
-        .npc-chen.serious { background-image: url('assets/npc_chen_serious.png'); }
-        .npc-chen.worried { background-image: url('assets/npc_chen_worried.png'); }
-        .npc-zhao.angry   { background-image: url('assets/npc_zhao_angry.png'); }
-        .npc-zhao.nervous { background-image: url('assets/npc_zhao_nervous.png'); }
-        .npc-baroness.shocked { background-image: url('assets/npc_baroness_shocked.png'); }
-        .npc-baroness.haughty { background-image: url('assets/npc_baroness_haughty.png'); }
-        .npc-fang.resolved { background-image: url('assets/npc_fang_resolved.png'); }
-        .npc-fang.sad      { background-image: url('assets/npc_fang_sad.png'); }
+        .npc-chen.serious { background-image: url('assets/characters/npc_chen_serious.png'); }
+        .npc-chen.worried { background-image: url('assets/characters/npc_chen_worried.png'); }
+        .npc-zhao.angry   { background-image: url('assets/characters/npc_zhao_angry.png'); }
+        .npc-zhao.nervous { background-image: url('assets/characters/npc_zhao_nervous.png'); }
+        .npc-baroness.shocked { background-image: url('assets/characters/npc_baroness_shocked.png'); }
+        .npc-baroness.haughty { background-image: url('assets/characters/npc_baroness_haughty.png'); }
+        .npc-fang.resolved { background-image: url('assets/characters/npc_fang_resolved.png'); }
+        .npc-fang.sad      { background-image: url('assets/characters/npc_fang_sad.png'); }
 
         /* 雪花粒子 (用於包廂窗外) */
         .snow-overlay {
@@ -818,7 +818,7 @@
         /* 標題畫面：新星露谷風格 */
         #title-screen {
             position: fixed; inset: 0;
-            background: #000 url('assets/bg_title_pixel.png') no-repeat center center;
+            background: #000 url('assets/bg/bg_title_pixel.png') no-repeat center center;
             background-size: cover;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 9000;
@@ -976,7 +976,7 @@
         /* 開場動畫 CSS */
         #opening-screen {
             position: fixed; inset: 0;
-            background: #010410 url('assets/bg_cabin.png') center/cover no-repeat;
+            background: #010410 url('assets/bg/bg_cabin.png') center/cover no-repeat;
             z-index: 9200; /* 高於標題畫面但低於面板 */
             overflow: hidden;
             display: none;
@@ -1042,7 +1042,7 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            cursor: url('assets/dragon_cursor_small.png') 16 16, auto;
+            cursor: url('assets/ui/dragon_cursor_small.png') 16 16, auto;
         }
         #scratch-overlay.active { display: flex; }
         #scratch-container {
@@ -1054,7 +1054,7 @@
             box-shadow: 0 0 50px rgba(255,100,50,0.4);
             overflow: hidden;
             border-radius: 8px;
-            cursor: url('assets/dragon_cursor_small.png') 16 16, auto;
+            cursor: url('assets/ui/dragon_cursor_small.png') 16 16, auto;
         }
         #scratch-text-layer {
             position: absolute;
@@ -1286,7 +1286,7 @@
         </div>
 
         <audio id="bgm" loop>
-            <source src="assets/bgm.mp3" type="audio/mpeg">
+            <source src="assets/audio/bgm.mp3" type="audio/mpeg">
         </audio>
         
         <div id="inventory-panel">
@@ -1398,10 +1398,10 @@
         // =====================================================
         const AudioManager = (() => {
             const sounds = {
-                typewriter: 'assets/sfx/typewriter.wav',
-                click: 'assets/sfx/click.wav',
-                hover: 'assets/sfx/hover.wav',
-                clue: 'assets/sfx/clue.wav'
+                typewriter: 'assets/audio/sfx/typewriter.wav',
+                click: 'assets/audio/sfx/click.wav',
+                hover: 'assets/audio/sfx/hover.wav',
+                clue: 'assets/audio/sfx/clue.wav'
             };
 
             const audioMap = {};
@@ -2096,7 +2096,7 @@
                     const card = document.createElement('div');
                     card.className = 'suspect-card';
                     card.innerHTML = `
-                        <div class="suspect-img" style="background-image: url('assets/npc_${imgId}.png')"></div>
+                        <div class="suspect-img" style="background-image: url('assets/characters/npc_${imgId}.png')"></div>
                         <div class="suspect-info">
                             <h3>${npc.name}</h3>
                             <div class="suspect-lore">${npc.description || '尚未獲得更深層的背景資料。'}</div>
@@ -2144,7 +2144,7 @@
         // --- 多場景配置 (Scene Configuration) ---
         const SCENES = {
             DINING_CAR: {
-                bg: "url('assets/bg_dining_empty_seamless.png')",
+                bg: "url('assets/bg/bg_dining_empty_seamless.png')",
                 widthRatio: 6, 
                 entities: [
                     { type: 'NPC', id: 'CHEN_AFAR', class: 'npc-chen', x: 800, y: 'var(--ground-y)', text: '🔍 與 服務生陳阿發 交談 (沈默寡言，看過火車上許多不為人知的角落)' },
@@ -2152,15 +2152,15 @@
                     { type: 'ITEM', id: 'CLUE_CAMERA', text: '🔍 調查：桌上的萊卡相機', x: 600, y: '70%', clueName: "萊卡相機", 
                       playerReceived: "江明的萊卡相機。底片槽是空的，快門旁有細微指紋痕跡。", 
                       truthVersion: "江明用相機拍下手稿內容作為備份，底片被趙福生取走。",
-                      imgSrc: "assets/clue_camera.png" },
+                      imgSrc: "assets/clues/clue_camera.png" },
                     { type: 'ITEM', id: 'CLUE_COFFEE_CUP', text: '🔍 調查：殘留脣印的咖啡杯', x: 3839, y: '61%', clueName: "咖啡杯", 
                       playerReceived: "杯沿留有脣印，杯底有半冷的咖啡。這杯咖啡不是江明點的。", 
                       truthVersion: "這是男爵夫人的咖啡杯，證明她案發時在餐車角落。",
-                      imgSrc: "assets/clue_coffee_cup.png" }
+                      imgSrc: "assets/clues/clue_coffee_cup.png" }
                 ]
             },
             CORRIDOR: {
-                bg: "url('assets/bg_corridor.png')",
+                bg: "url('assets/bg/bg_corridor.png')",
                 widthRatio: 6, 
                 entities: [
                     { type: 'PLATE', id: 'plate_301', img: 'plate_301.png', x: 425, y: '40%' },
@@ -2174,43 +2174,43 @@
                     { type: 'ITEM', id: 'CLUE_STETHOSCOPE', text: '🔍 調查：走廊牆角的物品', x: 1500, y: '95%', clueName: "聽診器", 
                       playerReceived: "一副醫用聽診器，上面刻有「方」字。", 
                       truthVersion: "趙福生從方小蘭的醫療包偷來放在餐車現場嫁禍她。",
-                      imgSrc: "assets/clue_stethoscope.png" },
+                      imgSrc: "assets/clues/clue_stethoscope.png" },
                     { type: 'KNOB', id: 'door_cabin', x: 2172, y: '59%', target: 'CABIN', targetX: 0 }
                 ]
             },
             KITCHEN: {
-                bg: "url('assets/bg_kitchen.png')",
+                bg: "url('assets/bg/bg_kitchen.png')",
                 widthRatio: 4, 
                 entities: [
                     { type: 'ITEM', id: 'CLUE_FILM_CASE', text: '🔍 調查：垃圾桶旁的空鐵盒', x: 600, y: '80%', clueName: "底片盒", 
                       playerReceived: "一個空置的底片盒，鐵蓋開啟著，上面有些許髒污。", 
                       truthVersion: "趙福生取走底片後，隨手將空盒扔在備料廚房的垃圾桶旁。",
-                      imgSrc: "assets/clue_film_case.png" },
+                      imgSrc: "assets/clues/clue_film_case.png" },
                     // 文字謎題觸發點：需先持有底片盒線索才會出現
                     { type: 'PUZZLE', id: 'PUZZLE_NOTE', text: '🔍 調查：地板縫隙的紙條碎片', x: 1200, y: '75%',
                       requiresClue: 'CLUE_FILM_CASE',
-                      imgSrc: 'assets/clue_note_fragment.png' },
+                      imgSrc: 'assets/clues/clue_note_fragment.png' },
                     // 手稿殘頁：需陳阿發 Round 4 對話完成
                     { type: 'ITEM', id: 'CLUE_MANUSCRIPT_PAGE', text: '🔍 調查：廚房灶膛內未燒乾淨的紙片', x: 1800, y: '75%', clueName: "手稿殘頁",
                       playerReceived: "灶膛裡發現的沒燒乾淨的碎紙片，上面有火漆印的痕跡。",
                       truthVersion: "江明所攜帶的秘密條約手稿殘頁，雖被趙福生焚毀，但仍保留了關鍵的使館火漆印記。",
-                      imgSrc: "assets/clue_manuscript_page.png" },
+                      imgSrc: "assets/clues/clue_manuscript_page.png" },
                     // NPC 陳阿發在廚房：需獲得「江明的隱藏紙條」
                     { type: 'NPC', id: 'CHEN_AFAR', class: 'npc-chen', x: 800, y: 'var(--ground-y)', text: '🔍 與 服務生陳阿發 交談' }
                 ]
             },
             CABIN: {
-                bg: "url('assets/bg_cabin.png')",
+                bg: "url('assets/bg/bg_cabin.png')",
                 widthRatio: 2, 
                 entities: [
                     { type: 'ITEM', id: 'CLUE_LETTER', text: '🔍 調查：書桌上的外文電報', x: 150, y: '70%', clueName: "外文電報", 
                       playerReceived: "一封用法文寫成的電報，收件人是趙福生。內容無法完全辨認，但看到了數字和地名。", 
                       truthVersion: "這是外國勢力給趙福生的指令：取回手稿，不惜一切代價。",
-                      imgSrc: "assets/clue_letter.png" },
+                      imgSrc: "assets/clues/clue_letter.png" },
                     { type: 'ITEM', id: 'CLUE_SCARF', text: '🔍 調查：行李箱旁的深色物', x: 400, y: '90%', clueName: "深色圍巾", 
                       playerReceived: "一條質地厚重的深色圍巾，不屬於男爵夫人。她說她從未見過這條圍巾。", 
                       truthVersion: "趙福生的圍巾，他用它勒死江明後藏在男爵夫人包廂嫁禍。",
-                      imgSrc: "assets/clue_scarf.png" },
+                      imgSrc: "assets/clues/clue_scarf.png" },
                     { type: 'NPC', id: 'BARONESS', class: 'npc-baroness', x: 800, y: 'var(--ground-y)', transform: 'translate(-50%, -100%) scaleX(-1)', text: '🔍 與 白男爵夫人 交談 (精通多國語言的貴族，與江明有債務糾紛)' },
                     { type: 'DOOR', text: '前往 走廊', target: 'CORRIDOR', targetX: 2172, x: 200, y: '70%' }
                 ]
@@ -2333,7 +2333,7 @@
                 } else if(ent.type === 'PLATE') {
                     el.classList.add('plate-sprite');
                     const plateImg = document.createElement('img');
-                    plateImg.src = `assets/${ent.img}`;
+                    plateImg.src = `assets/ui/${ent.img}`;
                     plateImg.style.width = '100%';
                     el.appendChild(plateImg);
                     el.style.left = ent.x + 'px';
