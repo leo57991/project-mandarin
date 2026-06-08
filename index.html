@@ -1145,9 +1145,59 @@
             align-self: center;
         }
 
+
+        /* === 展示控制台 (Presenter Dashboard) === */
+        #presenter-panel {
+            position: fixed;
+            top: 20px; right: 20px;
+            width: 320px;
+            background: rgba(10, 15, 30, 0.95);
+            border: 2px dashed #ff4444;
+            color: #fff;
+            padding: 20px;
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            border-radius: 8px;
+            font-family: sans-serif;
+        }
+        #presenter-panel h3 {
+            margin: 0 0 10px 0; color: #ff4444; text-align: center; font-size: 18px;
+        }
+        .presenter-btn {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            color: #fff;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+        .presenter-btn:hover {
+            background: #ff4444; color: #000;
+        }
     </style>
+
 </head>
 <body>
+    <!-- 展示控制台 -->
+    <div id="presenter-panel">
+        <h3>🎛️ 展示模式 (Presenter)</h3>
+        <button class="presenter-btn" onclick="devGetAllClues()">🎒 一鍵獲取所有線索</button>
+        <button class="presenter-btn" onclick="devSetGrammar(true)">✅ 語法全對 (準備真結局)</button>
+        <button class="presenter-btn" onclick="devSetGrammar(false)">❌ 語法全錯 (準備壞結局)</button>
+        <button class="presenter-btn" onclick="devToggleFastText()" id="dev-fast-btn">⚡ 啟用極速文字</button>
+        <hr style="border-color:#555; width:100%;">
+        <div style="display:flex; gap:5px; flex-wrap:wrap;">
+            <button class="presenter-btn" style="flex:1;" onclick="initScene('DINING_CAR')">📍餐車</button>
+            <button class="presenter-btn" style="flex:1;" onclick="initScene('CORRIDOR')">📍走廊</button>
+            <button class="presenter-btn" style="flex:1;" onclick="initScene('KITCHEN')">📍廚房</button>
+            <button class="presenter-btn" style="flex:1;" onclick="initScene('CABIN')">📍包廂</button>
+        </div>
+    </div>
+
     <canvas id="global-ascii-bg"></canvas>
     <div id="game-container">
         <!-- 標題畫面 -->
@@ -1548,7 +1598,8 @@
             // 先渲染隱藏的 HTML
             element.innerHTML = TextLayoutEngine.render(rawText, true);
             const spans = element.querySelectorAll('.char-span');
-            const baseSpeed = gameState.settings.textSpeed || 50;
+            let baseSpeed = gameState.settings.textSpeed || 50;
+            if (window.DEV_FAST_TEXT) baseSpeed = 1; // 極速模式
 
             for (const span of spans) {
                 const finalChar = span.getAttribute('data-char');
@@ -2753,7 +2804,48 @@
         });
 
         // --- 輸入監聽 ---
+
+        // =====================================================
+        // 展示控制台邏輯 (Presenter Dashboard)
+        // =====================================================
+        window.DEV_FAST_TEXT = false;
+
+        function devGetAllClues() {
+            Object.keys(CLUE_TEMPLATES).forEach(id => {
+                if (!gameState.clues.collected.includes(id)) {
+                    gameState.clues.collected.push(id);
+                    gameState.clues.details[id] = Object.assign({}, CLUE_TEMPLATES[id]);
+                    inventory.push(gameState.clues.details[id]);
+                    unseenClues++;
+                }
+            });
+            updateInventoryUI();
+            checkAccuseButtonVisible();
+            showSystemMessage('已獲取所有線索！');
+        }
+
+        function devSetGrammar(isCorrect) {
+            ['GP1_HONORIFIC', 'GP2_TIME_ADVERB', 'GP3_LOCATION_WORD', 'GP4_WORD_ORDER'].forEach(gp => {
+                gameState.grammarProgress[gp].isCorrect = isCorrect;
+            });
+            Object.keys(gameState.npcs).forEach(npc => {
+                gameState.npcs[npc].met = true;
+            });
+            checkAccuseButtonVisible();
+            showSystemMessage(isCorrect ? '已將所有語法設為正確，可直接指認！' : '已將所有語法設為錯誤，可觀看壞結局！');
+        }
+
+        function devToggleFastText() {
+            window.DEV_FAST_TEXT = !window.DEV_FAST_TEXT;
+            document.getElementById('dev-fast-btn').innerText = window.DEV_FAST_TEXT ? '⚡ 關閉極速文字' : '⚡ 啟用極速文字';
+        }
+
         window.addEventListener('keydown', e => {
+            if (e.shiftKey && e.key === 'D') {
+                const panel = document.getElementById('presenter-panel');
+                panel.style.display = (panel.style.display === 'flex') ? 'none' : 'flex';
+            }
+
             if (e.key === '`') toggleDevMode();
             if (e.key === 'Escape') {
                 if (document.getElementById('notebook-panel').style.display === 'flex') toggleNotebook(false);
