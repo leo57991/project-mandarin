@@ -1162,7 +1162,7 @@
         #presenter-panel {
             position: fixed;
             top: 20px; right: 20px;
-            width: 320px;
+            width: 360px;
             background: rgba(10, 15, 30, 0.95);
             border: 2px dashed #ff4444;
             color: #fff;
@@ -1199,7 +1199,13 @@
         <h3>🎛️ 展示模式 (Presenter)</h3>
         <button class="presenter-btn" onclick="devGetAllClues()">🎒 一鍵獲取所有線索</button>
         <button class="presenter-btn" onclick="devSetGrammar(true)">✅ 語法全對 (準備真結局)</button>
-        <button class="presenter-btn" onclick="devSetGrammar(false)">❌ 語法全錯 (準備壞結局)</button>
+        <button class="presenter-btn" onclick="devSetGrammar(false)">❌ 語法全錯 (列車長趕下車)</button>
+        <div style="display:flex; gap:5px; flex-wrap:wrap; margin-top:5px; margin-bottom:5px;">
+            <button class="presenter-btn" style="flex:1; font-size:11px;" onclick="devSetSpecificFalse('GP1_HONORIFIC')">❌ 錯怪夫人</button>
+            <button class="presenter-btn" style="flex:1; font-size:11px;" onclick="devSetSpecificFalse('GP2_TIME_ADVERB')">❌ 錯怪阿發</button>
+            <button class="presenter-btn" style="flex:1; font-size:11px;" onclick="devSetSpecificFalse('GP3_LOCATION_WORD')">❌ 錯怪醫生</button>
+            <button class="presenter-btn" style="flex:1; font-size:11px;" onclick="devSetSpecificFalse('GP4_WORD_ORDER')">❌ 嫌犯逃脫</button>
+        </div>
         <button class="presenter-btn" onclick="devToggleFastText()" id="dev-fast-btn">⚡ 啟用極速文字</button>
         <hr style="border-color:#555; width:100%;">
         <div style="display:flex; gap:5px; flex-wrap:wrap;">
@@ -2845,6 +2851,17 @@
             });
             checkAccuseButtonVisible();
             showSystemMessage(isCorrect ? '已將所有語法設為正確，可直接指認！' : '已將所有語法設為錯誤，可觀看壞結局！');
+        }
+
+        function devSetSpecificFalse(targetGp) {
+            ['GP1_HONORIFIC', 'GP2_TIME_ADVERB', 'GP3_LOCATION_WORD', 'GP4_WORD_ORDER'].forEach(gp => {
+                gameState.grammarProgress[gp].isCorrect = (gp !== targetGp);
+            });
+            Object.keys(gameState.npcs).forEach(npc => {
+                gameState.npcs[npc].met = true;
+            });
+            checkAccuseButtonVisible();
+            showSystemMessage('已設定只錯一題，請點擊指認以觀看特定假結局！');
         }
 
         function devToggleFastText() {
