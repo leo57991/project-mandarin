@@ -2616,6 +2616,7 @@
                     ]
                 },
                 END: { text: "（陳阿發低下頭繼續擦桌子）我就知道這些了。", choices: [] },
+                CHEN_AFAR_BAD_END: { text: "（激動地摔下抹布）探長，您連時間的先後順序都搞不清楚，就想隨便找個端盤子的頂罪？我根本不可能在那個時間去包廂！", choices: [{ text: "（無言以對）", tone: "neutral", response: "（陳阿發轉身離開，留下無解的謎團）", nextNode: "__TRIGGER_FALSE_END_ACCUSE_WAITER__" }] },
                 INTERROGATION: {
                     'CLUE_COFFEE_CUP': 'CHEN_2',
                     'CLUE_SCARF': 'CHEN_3',
@@ -2788,6 +2789,7 @@
                     ]
                 },
                 END: { text: "（白男爵夫人轉身望向窗外的雪景，不再說話）", choices: [] },
+                BARONESS_BAD_END: { text: "（冷笑一聲，輕蔑地看著你）探長先生，您連最基本的社交辭令與禮儀都不懂，還想把這種荒謬的指控推到我身上？我們沒有什麼好談的了。", choices: [{ text: "（無言以對）", tone: "neutral", response: "（白男爵夫人叫來乘務員，將你請出了包廂）", nextNode: "__TRIGGER_FALSE_END_ACCUSE_BARONESS__" }] },
                 INTERROGATION: {
                     'CLUE_STETHOSCOPE': 'BARONESS_2',
                     'CLUE_COFFEE_CUP': 'BARONESS_3',
@@ -3249,7 +3251,7 @@
                 return initScene('DINING_CAR', 2000).then(() => {
                     gameState.npcs['CHEN_AFAR'].met = true;
                     currentNPCId = 'CHEN_AFAR';
-                    renderDialogueNode('CHEN_AFAR', 'CHEN_BAD_END');
+                    renderDialogueNode('CHEN_AFAR', 'CHEN_AFAR_BAD_END');
                 });
             }
             if (gp3Wrong) {
