@@ -3163,9 +3163,10 @@
                                 choices: respChoices
                             };
                             renderDialogueNode(npcId, '_TEMP_RESP');
-                        } else if (targetNode === '__TRIGGER_TRUE_END__') {
+                        } else if (targetNode && targetNode.startsWith('__TRIGGER_')) {
                             closeDialogue();
-                            triggerEnding('TRUE_END');
+                            const endType = targetNode.replace('__TRIGGER_', '').replace('__', '');
+                            triggerEnding(endType);
                         } else if (targetNode) {
                             renderDialogueNode(npcId, targetNode);
                         }
