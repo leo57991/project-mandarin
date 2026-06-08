@@ -31,3 +31,7 @@ Maintain the pixel-art aesthetic and existing layout at all costs. The title scr
 
 ---
 *Note: This file is intended for AI agents to ensure architectural consistency during development.*
+
+## 4. Game Logic & Clue Design Philosophy
+- **Physical Clues Only**: There are no "distorted" or "false" clues generated from dialogues. All clues are objective physical items collected by clicking on the environment.
+- **Consequence of Bad Grammar**: If a player chooses an incorrect grammar option, the NPC should refuse to answer, withhold information, or end the conversation. Do NOT generate misleading clue variants.

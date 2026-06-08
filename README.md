@@ -5,7 +5,7 @@
 
 ## Overview
 
-A browser-based Mandarin Chinese grammar learning game set aboard a murder mystery train in 1899. The game teaches four target grammar points through a consequence-based feedback mechanic: grammatical errors made during NPC dialogue and investigation silently corrupt clues, altering the narrative toward one of five distinct endings.
+A browser-based Mandarin Chinese grammar learning game set aboard a murder mystery train in 1899. The game teaches four target grammar points through a consequence-based feedback mechanic: grammatical errors or impolite tones made during NPC dialogue cause suspects to withhold vital context, leading the player's investigation toward one of six distinct endings.
 
 Designed and built as a final project for **[Course Name]**, **[Your University]** (2026).
 
@@ -19,7 +19,7 @@ Designed and built as a final project for **[Course Name]**, **[Your University]
 Conventional Mandarin grammar instruction relies heavily on explicit error correction — learners are immediately told when they are wrong. This approach reduces the communicative pressure that motivates grammar accuracy in real language use.
 
 ### The Design Response
-This game employs **implicit negative feedback embedded in narrative consequences**: incorrect grammar choices do not trigger error messages, but instead subtly misdirect the investigation. Learners must infer the causal link between their language choices and narrative outcomes — approximating the stakes of real communicative failure.
+This game employs **implicit negative feedback embedded in narrative consequences**: incorrect grammar choices or aggressive tones do not trigger explicit error messages, but instead offend NPCs, causing them to immediately terminate the conversation and withhold vital background context. Without this crucial information, players are led into investigative blind spots. Learners must infer the causal link between their language choices and narrative outcomes — approximating the stakes of real communicative failure.
 
 ### Target Grammar Points
 1. **Honorifics & Politeness (敬語)** — Strategic use of formal vs. informal address in investigative contexts.
@@ -28,9 +28,10 @@ This game employs **implicit negative feedback embedded in narrative consequence
 4. **Syntactic Word Order (語序)** — Mastery of standard Mandarin sentence structures to decode narrative intent.
 
 ### Key Mechanics
-- **Branching narrative with 5 endings**: The final outcome is determined by the accumulation of grammatical choices throughout the play.
-- **NPC rapport system**: Dialogue options expand or contract based on prior interaction quality, incentivizing grammatical accuracy as a social strategy.
-- **Evaluation Report UI**: Post-game feedback surfaces the grammar decisions that shaped the outcome, making implicit consequences explicit at the reflection stage.
+- **Physical Evidence Collection**: All clues are 100% objective physical items found in the environment. There are no "false clues" — the challenge lies in extracting the correct context from suspects.
+- **Branching narrative with 6 endings**: The final outcome is determined by the accumulation of grammatical choices. A single grammar error alienates a specific NPC leading to a dedicated bad ending, while multiple errors result in the player being kicked off the train.
+- **NPC rapport system**: Dialogue options expand or contract based on prior interaction quality, incentivizing grammatical accuracy and polite tone as a social strategy.
+- **Evaluation Report UI**: Post-game feedback surfaces the grammar decisions that shaped the outcome, offering dynamic hints based on the player's specific failure point.
 
 ---
 
@@ -68,13 +69,15 @@ Instructional design, narrative structure, grammar point selection, and all peda
 ### 🌟 遊戲特色
 
 - **沉浸式橫捲軸世界**：精美的等角透視 (Isometric) 視覺風格，支援無縫場景切換。
+- **客觀物理證據**：遊戲中沒有「假線索」，所有的證據都是 100% 真實的物理物件。真正的挑戰在於使用正確的語法與禮貌的語氣，從嫌疑人口中套出線索背後的真相。
 - **文字流體解謎**：獨創的「文字游龍（ASCII Metaball）」引擎，利用滑鼠的物理慣性與引力場進行顯影互動，重組關鍵線索。
-- **動態對話系統**：具備排版引擎與文字特效，支援中文避頭尾排列，提供視覺小說般的閱讀體驗。
-- **偵探評鑑系統**：根據您的調查細節與語法精確度，在結局獲得專屬的偵探等級評鑑。
+- **多重分支結局**：包含 1 個真結局與 5 個壞結局。錯誤的語法會導致交涉破裂，並導向錯怪不同無辜者的結局。
+- **偵探評鑑系統**：根據您的調查細節與溝通手腕，在結算畫面動態生成專屬的偵探等級評鑑與調查盲點提示。
 
 ### 🕹️ 操作指南
 
 - **移動視角**：使用鍵盤 `A` / `D` 鍵左右橫移。
 - **互動調查**：使用滑鼠點擊場景中的人物 (NPC) 或閃爍的物件。
 - **文字謎題**：使用滑鼠推動文字方塊，將其撞入正確的語序空格中。
+- **展示控制台 (Demo Mode)**：按下鍵盤 `Shift + D` 可隨時呼叫簡報專用的展示面板，支援一鍵獲取證據、瞬間傳送以及強制切換真假結局。
 - **開發者模式**：按下鍵盤 `~` (反引號) 可開啟座標追蹤與極速移動模式。
