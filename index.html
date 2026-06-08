@@ -598,17 +598,17 @@
         /* 偵探評鑑書 */
         #eval-report {
             position: absolute; left: 50%; top: 50%;
-            background: #F5E6C8; /* 米黃色舊紙張 */
-            border: 8px solid #5C3A21; /* 深棕色皮革 */
-            border-radius: 12px; color: #333;
-            font-family: 'cursive', 'Courier New', sans-serif;
-            width: 85vw; max-width: 900px; height: 80vh;
+            background: rgba(15, 10, 5, 0.98); /* 探員報告暗黑底 */
+            border: 4px solid var(--ui-gold); /* 復古金邊框 */
+            border-radius: 8px; color: #e0dcd3;
+            font-family: var(--font-family);
+            width: 85vw; max-width: 1000px; height: 85vh;
             padding: 40px; box-sizing: border-box;
             display: none; flex-direction: column;
             z-index: 10000;
-            box-shadow: 15px 15px 40px rgba(0,0,0,0.8);
+            box-shadow: 0 0 50px rgba(0,0,0,0.9), inset 0 0 20px rgba(212,175,55,0.1);
             /* 從右下角飛入 */
-            transform: translate(50vw, 50vh) rotate(20deg) scale(0.5);
+            transform: translate(50vw, 50vh) rotate(10deg) scale(0.5);
             transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s;
             opacity: 0;
         }
@@ -618,29 +618,41 @@
             opacity: 1;
         }
 
-        #eval-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid #5C3A21; padding-bottom: 1vh; margin-bottom: 2vh;}
-        .eval-title { font-size: 38px; font-weight: bold; margin: 0; letter-spacing: 2px;}
-        .eval-rank { font-size: 56px; color: #b71c1c; font-weight: bold; text-shadow: 2px 2px 2px rgba(0,0,0,0.2);}
+        #eval-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--ui-gold); padding-bottom: 15px; margin-bottom: 20px;}
+        .eval-title { font-size: 38px; font-weight: bold; margin: 0; letter-spacing: 3px; color: var(--ui-gold); text-shadow: 0 0 10px rgba(212,175,55,0.3);}
+        .eval-rank { font-size: 56px; color: #E53935; font-weight: bold; text-shadow: 2px 2px 2px rgba(0,0,0,0.8), 0 0 15px rgba(229,57,53,0.5);}
 
-        #eval-body { display: flex; gap: 40px; flex: 1; overflow-y: auto; text-align: left; }
-        .eval-left, .eval-right { flex: 1; }
-        .eval-left h3, .eval-right h3 { color: #5C3A21; border-bottom: 1px dashed #5C3A21; padding-bottom: 5px; margin-top:0;}
+        #eval-body { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; flex: 1; overflow-y: auto; text-align: left; padding-right: 10px; }
+        .eval-body-full { grid-column: 1 / -1; }
         
-        .eval-item { margin-bottom: 15px; font-size: 18px; line-height: 1.5; border-bottom: 1px dashed #cca; padding-bottom: 10px; }
-        .eval-item.right { color: #2E7D32; }
-        .eval-item.wrong { color: #C62828; }
+        #eval-report h3 { color: var(--ui-gold); border-bottom: 1px dashed rgba(212,175,55,0.5); padding-bottom: 8px; margin-top:0; letter-spacing: 1px; font-size: 20px;}
         
-        #eval-footer { margin-top: 2vh; font-size: 26px; font-weight: bold; text-align: center; border-top: 2px solid #5C3A21; padding-top: 2vh; color: #5C3A21;}
+        .eval-item { margin-bottom: 15px; font-size: 16px; line-height: 1.6; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 4px;}
+        .eval-item.right { border-left: 4px solid #4CAF50; }
+        .eval-item.wrong { border-left: 4px solid #E53935; }
+        .eval-item b { display: inline-block; margin-bottom: 5px; font-size: 18px;}
+        .eval-item.right b { color: #4CAF50; }
+        .eval-item.wrong b { color: #E53935; }
+        
+        #eval-footer { margin-top: 20px; font-size: 18px; line-height: 1.6; text-align: center; border-top: 2px solid var(--ui-gold); padding-top: 20px; color: #aaa;}
+        #eval-footer-summary { font-size: 24px; font-weight: bold; color: var(--ui-gold); margin-bottom: 15px;}
+        #eval-footer-hint { font-size: 18px; color: #E53935; background: rgba(229,57,53,0.1); padding: 15px; border-radius: 6px; border: 1px solid rgba(229,57,53,0.3); text-align: left; display: inline-block; max-width: 80%;}
 
         .close-eval-btn {
-            position: absolute; top: -25px; right: -25px;
-            width: 50px; height: 50px; background: #5C3A21; color: #F5E6C8;
-            border-radius: 50%; font-size: 36px; border: 4px solid #F5E6C8;
+            position: absolute; top: -20px; right: -20px;
+            width: 45px; height: 45px; background: #1a1a1a; color: var(--ui-gold);
+            border-radius: 50%; font-size: 30px; border: 2px solid var(--ui-gold);
             cursor: pointer; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            transition: transform 0.2s;
+            box-shadow: 0 0 15px rgba(212,175,55,0.4);
+            transition: all 0.2s;
         }
-        .close-eval-btn:hover { transform: scale(1.1); }
+        .close-eval-btn:hover { transform: scale(1.1); background: var(--ui-gold); color: #000; box-shadow: 0 0 25px rgba(212,175,55,0.8);}
+        
+        /* 自訂捲軸 */
+        #eval-body::-webkit-scrollbar { width: 8px; }
+        #eval-body::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
+        #eval-body::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.5); border-radius: 4px; }
+        #eval-body::-webkit-scrollbar-thumb:hover { background: rgba(212,175,55,0.8); }
 
         /* 切換場景確認框 */
         #transition-confirm {
@@ -3332,6 +3344,19 @@
             
             document.getElementById('eval-rank').innerText = rank;
 
+            // HTML reset for the body (since we append elements later)
+            const evalBody = document.getElementById('eval-body');
+            evalBody.innerHTML = `
+                <div class="eval-left">
+                    <h3>📝 調查語錄分析</h3>
+                    <div id="eval-grammar-list"></div>
+                </div>
+                <div class="eval-right">
+                    <h3>🔍 證據鏈還原</h3>
+                    <div id="eval-clue-list"></div>
+                </div>
+            `;
+
             // 組裝左側語法明細
             let grammarHtml = "";
             for (let k in grammarCompare) {
@@ -3340,45 +3365,79 @@
                 let data = grammarCompare[k];
                 if (isRight || learnedPuzzle) {
                      let extra = learnedPuzzle ? `<br><small style="color:var(--ui-gold)">★ 您透過謎題掌握了時間狀語前置的規則</small>` : "";
-                     grammarHtml += `<div class="eval-item right"><b>✔ ${data.name}</b><br><small style="color:#4CAF50">${data.r}</small>${extra}</div>`;
+                     grammarHtml += `<div class="eval-item right"><b>✔ ${data.name}</b><br><span style="color:#4CAF50">${data.r}</span>${extra}</div>`;
                 } else {
                      grammarHtml += `<div class="eval-item wrong"><b>✘ ${data.name}</b><br>
-                        <small><b>你的選擇:</b> ${data.w}<br>
-                        <b>正確對比:</b> ${data.r}</small></div>`;
+                        <small style="color:#aaa;">您的選擇: ${data.w}</small><br>
+                        <small style="color:#E53935;">正確對比: ${data.r}</small></div>`;
                 }
             }
             document.getElementById('eval-grammar-list').innerHTML = grammarHtml;
 
             // 組裝右側收集線索歷史
             let clueHtml = "";
+            if (gameState.clues.collected.length === 0) {
+                clueHtml = "<div style='color:#777; font-style:italic;'>查無證據。</div>";
+            }
             gameState.clues.collected.forEach(id => {
                 let clue = gameState.clues.details[id];
-                let typeText = clue.isDistorted ? "<span style='color:#C62828'>[DISTORTED]</span>" : "<span style='color:#2E7D32'>[TRUE]</span>";
-                let fullDesc = clue.desc + (clue.truth ? `<br><b style="color:var(--ui-gold)">真相解析：</b>${clue.truth}` : "");
-                clueHtml += `<div style="margin-bottom:15px; border-bottom: 1px dotted #555; padding-bottom:10px;">${typeText} <b>${clue.id}</b><br><small style="color:#ccc;">${fullDesc}</small></div>`;
+                let typeText = clue.isDistorted ? "<span style='color:#E53935'>[DISTORTED]</span>" : "<span style='color:#4CAF50'>[TRUE]</span>";
+                let fullDesc = clue.desc + (clue.truth ? `<br><span style="color:var(--ui-gold); font-size:0.9em;">▶ 真相解析：${clue.truth}</span>` : "");
+                clueHtml += `<div style="margin-bottom:15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom:10px;">${typeText} <b style="color:#e0dcd3;">${clue.name}</b><br><small style="color:#aaa; line-height:1.4; display:block; margin-top:5px;">${fullDesc}</small></div>`;
             });
             document.getElementById('eval-clue-list').innerHTML = clueHtml;
 
-            // 組裝底部總結
-            let footer = document.getElementById('eval-footer');
-            if (endType === 'TRUE_END') footer.innerText = "「您的語法掌握讓真相浮現。」";
-            else footer.innerText = "「語法的誤差，讓真相蒙上了陰影。」";
-
-            // 新增羈絆回顧
-            let rapportHtml = `<div style="margin-top:20px; border-top:2px solid var(--ui-gold); padding-top:10px;">
-                                <h3 style="color:var(--ui-gold)">人際羈絆與心理博弈</h3>
-                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">`;
+            // 羈絆計算與警告
+            let totalAggressive = 0;
+            let rapportHtml = `<div class="eval-body-full" style="margin-top:10px;">
+                                <h3>🎭 人際羈絆與心理博弈</h3>
+                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">`;
             for (let npc in gameState.rapport) {
                 let r = gameState.rapport[npc];
+                totalAggressive += r.aggressive;
                 let name = gameState.npcs[npc].name;
-                let status = r.bonusUnlocked ? `<span style='color:#4CAF50'>[解鎖線索: ${r.bonusUnlocked}]</span>` : "<span style='color:#777'>[未獲得額外情報]</span>";
-                rapportHtml += `<div class="eval-item" style="background:rgba(255,255,255,0.05); padding:10px;">
-                                    <b>${name}</b> ${status}<br>
-                                    禮貌: ${r.polite} | 強硬: ${r.aggressive}
+                let status = r.bonusUnlocked ? `<span style='color:#4CAF50'>[解鎖隱藏對話: ${r.bonusUnlocked}]</span>` : "<span style='color:#777'>[未獲得額外情報]</span>";
+                rapportHtml += `<div class="eval-item" style="border-left:4px solid var(--ui-gold);">
+                                    <b style="color:var(--ui-gold); font-size:16px;">${name}</b> ${status}<br>
+                                    <span style="color:#aaa;">禮貌: ${r.polite} | 強硬: <span style="color:${r.aggressive > 0 ? '#E53935' : '#aaa'}">${r.aggressive}</span></span>
                                 </div>`;
             }
             rapportHtml += `</div></div>`;
-            document.getElementById('eval-body').innerHTML += rapportHtml;
+            evalBody.innerHTML += rapportHtml;
+
+            // 強硬警告
+            if (totalAggressive >= 2) {
+                let warningHtml = `<div class="eval-body-full" style="margin-top:10px; background:rgba(229,57,53,0.1); border:1px solid #E53935; padding:15px; border-radius:6px;">
+                    <b style="color:#E53935;">⚠️ 【探長溝通能力評語】</b><br>
+                    <span style="color:#ccc; font-size:15px; line-height:1.6;">您的偵訊手段過於強硬，引發了多位嫌疑人的反感與防備。身為調查員，熟練掌握並運用華語中的『禮貌用語』與『委婉句型』，將有助於卸下嫌疑人的心防，獲取更多隱藏情報。請勤加練習說話的藝術！</span>
+                </div>`;
+                evalBody.innerHTML += warningHtml;
+            }
+
+            // 底部總結與動態隱晦提示
+            let footer = document.getElementById('eval-footer');
+            let summaryText = "";
+            let hintHtml = "";
+
+            if (endType === 'TRUE_END') {
+                summaryText = "「您的語法掌握讓真相浮現。」";
+            } else {
+                summaryText = "「語法的誤差，讓真相蒙上了陰影。」";
+                
+                const hints = {
+                    'FALSE_END_ACCUSE_BARONESS': "💡 <b>【調查盲點】</b>：您似乎過早將矛頭指向了男爵夫人。若能更準確掌握『<b>敬語</b>』的對應邏輯與禮儀，或許能讓她願意透露真正嫌疑人的動向。",
+                    'FALSE_END_ACCUSE_WAITER': "💡 <b>【調查盲點】</b>：混亂的時間線讓您誤會了服務生。請重新釐清『<b>時間副詞（昨晚、幾點）</b>』在句中的準確位置，才能還原真實的時間軸。",
+                    'FALSE_END_ACCUSE_DOCTOR': "💡 <b>【調查盲點】</b>：空間方位的誤判導致方醫生蒙受不白之冤。請仔細辨別『<b>空間介詞（在...前/後）</b>』的準確涵義，釐清兇器的真實移動軌跡。",
+                    'FALSE_END_UNSOLVED': "💡 <b>【調查盲點】</b>：您的『<b>語序結構</b>』出現了偏差，讓狡猾的嫌疑人抓到了語病並拒絕回答。請重新溫習標準句型語序，才能從對方嘴裡撬出真相。",
+                    'FALSE_END_TRUTH_HIDDEN': "💡 <b>【調查盲點】</b>：您在調查過程中犯下了多個語法錯誤，導致所有人都拒絕配合。請全面複習華語的基本語法與禮貌用語，再來挑戰一次吧！"
+                };
+
+                if (hints[endType]) {
+                    hintHtml = `<div id="eval-footer-hint">${hints[endType]}</div>`;
+                }
+            }
+
+            footer.innerHTML = `<div id="eval-footer-summary">${summaryText}</div>${hintHtml}`;
 
             report.style.display = 'flex';
             // 強制瀏覽器重繪後套用動畫 class
