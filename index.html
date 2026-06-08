@@ -3399,9 +3399,8 @@
             }
             gameState.clues.collected.forEach(id => {
                 let clue = gameState.clues.details[id];
-                let typeText = clue.isDistorted ? "<span style='color:#E53935'>[遭曲解]</span>" : "";
                 let fullDesc = clue.desc + (clue.truth ? `<br><span style="color:var(--ui-gold); font-size:0.9em;">▶ 真相解析：${clue.truth}</span>` : "");
-                clueHtml += `<div style="margin-bottom:15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom:10px;">${typeText} <b style="color:#e0dcd3;">${clue.name}</b><br><small style="color:#aaa; line-height:1.4; display:block; margin-top:5px;">${fullDesc}</small></div>`;
+                clueHtml += `<div style="margin-bottom:15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom:10px;"><b style="color:#e0dcd3;">${clue.name}</b><br><small style="color:#aaa; line-height:1.4; display:block; margin-top:5px;">${fullDesc}</small></div>`;
             });
             document.getElementById('eval-clue-list').innerHTML = clueHtml;
 
