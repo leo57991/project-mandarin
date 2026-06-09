@@ -3233,36 +3233,37 @@
             const gp3Wrong = gp.GP3_LOCATION_WORD.isCorrect === false;
             const gp4Wrong = gp.GP4_WORD_ORDER.isCorrect === false;
             const multipleWrong = Object.values(gp).filter(g => g.isCorrect === false).length >= 2;
+            const hw = window.innerWidth / 2;
             if (multipleWrong) {
-                return initScene('DINING_CAR', 2000).then(() => {
+                return initScene('DINING_CAR', 0).then(() => {
                     gameState.npcs['CONDUCTOR'] = { name: '列車長', met: true };
                     currentNPCId = 'CONDUCTOR';
                     renderDialogueNode('CONDUCTOR', 'MULTIPLE_WRONG_END');
                 });
             }
             if (gp1Wrong) {
-                return initScene('DINING_CAR', 2000).then(() => {
+                return initScene('CABIN', 800 - hw).then(() => {
                     gameState.npcs['BARONESS'].met = true;
                     currentNPCId = 'BARONESS';
                     renderDialogueNode('BARONESS', 'BARONESS_BAD_END');
                 });
             }
             if (gp2Wrong) {
-                return initScene('DINING_CAR', 2000).then(() => {
+                return initScene('DINING_CAR', 800 - hw).then(() => {
                     gameState.npcs['CHEN_AFAR'].met = true;
                     currentNPCId = 'CHEN_AFAR';
                     renderDialogueNode('CHEN_AFAR', 'CHEN_AFAR_BAD_END');
                 });
             }
             if (gp3Wrong) {
-                return initScene('DINING_CAR', 2000).then(() => {
+                return initScene('CORRIDOR', 1200 - hw).then(() => {
                     gameState.npcs['FANG'].met = true;
                     currentNPCId = 'FANG';
                     renderDialogueNode('FANG', 'FANG_BAD_END');
                 });
             }
             if (gp4Wrong) {
-                return initScene('DINING_CAR', 2000).then(() => {
+                return initScene('DINING_CAR', 2200 - hw).then(() => {
                     gameState.npcs['ZHAO'].met = true;
                     currentNPCId = 'ZHAO';
                     renderDialogueNode('ZHAO', 'ZHAO_BAD_END');
@@ -3281,7 +3282,7 @@
                     showSystemMessage('您懷疑趙福生是兇手，但手頭缺乏足夠的關鍵鐵證。缺少：' + missing.join('、') + '，請繼續調查後再指認。');
                     return;
                 }
-                initScene('DINING_CAR', 2000).then(() => {
+                initScene('DINING_CAR', 2200 - hw).then(() => {
                     gameState.npcs['ZHAO'].met = true;
                     currentNPCId = 'ZHAO';
                     renderDialogueNode('ZHAO', 'ZHAO_5');
