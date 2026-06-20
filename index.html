@@ -537,8 +537,6 @@
 
         /* UI - 指認兇手按鈕 */
         #accuse-btn {
-            position: absolute;
-            bottom: 30px; right: 190px;
             height: 60px; padding: 0 20px;
             background-color: rgba(60, 10, 10, 0.9);
             border: 2px solid #F44336;
@@ -1197,18 +1195,21 @@
         @media (max-width: 1024px) { :root { --ui-scale: 0.65; } }
         @media (min-width: 1441px) { :root { --ui-scale: 1; } }
 
-        #hud-container {
+        #hud-bottom-left {
             transform: scale(var(--ui-scale));
-            transform-origin: top left;
+            transform-origin: bottom left;
+        }
+        #hud-bottom-right {
+            transform: scale(var(--ui-scale));
+            transform-origin: bottom right;
         }
         #evidence-selector {
             transform: scale(var(--ui-scale));
             transform-origin: bottom left;
         }
         #speech-bubble {
-            transform: translateX(-50%) scale(var(--ui-scale)) !important;
+            transform: scale(var(--ui-scale)) !important;
             transform-origin: bottom center;
-            bottom: calc(20px * var(--ui-scale));
         }
         .panel-box {
             transform: scale(var(--ui-scale));
@@ -1314,6 +1315,7 @@
         </div>
         
         <div id="hud-bottom-right" class="hud-group" style="display:none;">
+            <div id="accuse-btn" style="display:none;" onclick="resolveEnding()">🔍 指認兇手</div>
             <div id="notebook-btn" class="side-btn" onclick="toggleNotebook()">
                 <div style="font-size: 24px;">📓</div>
                 <div>手札(N)</div>
