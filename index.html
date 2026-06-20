@@ -2550,30 +2550,30 @@
             CONDUCTOR: { MULTIPLE_WRONG_END: { text: "（列車長嘆氣）探長，車上所有乘客都對您的問話方式感到憤怒。大家拒絕配合調查，局長也拍電報要求您立刻停止行動……", choices: [{ text: "我明白了……", tone: "neutral", response: "（你被護送下了火車）", nextNode: "__TRIGGER_FALSE_END_TRUTH_HIDDEN__" }] } },
             CHEN_AFAR: {
                 START: {
-                    text: "（陳阿發擦著桌子）探長，您來了。我已經把我知道的都跟列車長說了，真的，我什麼都沒看見……",
+                    text: "（陳阿發擦著桌子）探長，您來了。我已經把知道的都跟列車長說了，真的，我什麼都沒看見……",
                     choices: [
-                        { text: "你昨晚幾點發現的屍體？", tone: "polite", grammarPoint: "GP2_TIME_ADVERB", isCorrect: true, response: "昨晚大概九點十分，我從廚房出來，就看到江先生倒在椅子邊，趙先生站在旁邊，臉色發白。之前我送咖啡時他們還在講話，後來我回廚房洗碗，再出來就是那樣了……", nextNode: "END" },
-                        { text: "你昨天幾點發現的屍體？", tone: "aggressive", grammarPoint: "GP2_TIME_ADVERB", isCorrect: false, response: "昨天？昨天白天我一直在備料，大概下午三點多上的工。晚上的事……晚上我就是正常收拾，沒什麼特別的。", nextNode: "END" }
+                        { text: "你發現屍體的時候，情況是怎樣的？", tone: "polite", grammarPoint: "GP2_TIME_ADVERB", isCorrect: true, response: "那時大概九點十分，我從廚房出來，就看到江先生倒在椅子邊，趙先生站在旁邊，臉色發白。之前我送咖啡時他們還在講話。後來我回廚房洗碗，再出來就是那樣了……對了，303號房間的白男爵夫人那時好像也在附近，您可以去問問她。", nextNode: "END" },
+                        { text: "你發現屍體什麼時候？", tone: "aggressive", grammarPoint: "GP2_TIME_ADVERB", isCorrect: false, response: "什麼時候？嗯……我記不太清了，好像是九點半，也可能快十點了。我洗碗洗得很累，沒有注意具體的時間。", nextNode: "END" }
                     ]
                 },
                 CHEN_2: {
                     text: "探長，您還有事嗎？",
                     choices: [
-                        { text: "咖啡杯裡有藥水味，你知道那是什麼嗎？", tone: "polite", response: "我送咖啡的時候沒注意，不過江先生喝咖啡前，我看到趙先生往杯子那邊靠了一下，手好像動了動。我那時以為他在加糖，現在想想……也許趙先生在那時候動了什麼手腳？", nextNode: "CHEN_2_FOLLOWUP" },
-                        { text: "趙福生離開餐車後，江明有什麼不對勁嗎？", tone: "neutral", response: "藥水味？我送咖啡的時候沒注意，不過江先生喝咖啡前，我看到趙先生往杯子那邊靠了一下，手好像動了動。我那時以為他在加糖，現在想想……也許趙先生在那時候動了什麼手腳？", nextNode: "CHEN_2_FOLLOWUP" }
+                        { text: "咖啡杯裡有藥水味，你知道那是什麼嗎？", tone: "polite", response: "我送咖啡的時候沒注意，不過江先生喝咖啡前，我看到趙先生往杯子那邊靠了一下，手好像動了一下。我那時以為他在加糖，現在想想……也許趙先生那時候動了什麼手腳？", nextNode: "CHEN_2_FOLLOWUP" },
+                        { text: "趙福生離開餐車後，江明有什麼不對勁嗎？", tone: "neutral", response: "我送咖啡的時候沒注意，不過江先生喝咖啡前，我看到趙先生往杯子那邊靠了一下，手好像動了一下。我那時以為他在加糖，現在想想……也許趙先生那時候動了什麼手腳？", nextNode: "CHEN_2_FOLLOWUP" }
                     ]
                 },
                 CHEN_2_FOLLOWUP: {
                     text: "（陳阿發回憶著當時的情景）",
                     choices: [
-                        { text: "你確定是趙福生動的手？", tone: "polite", response: "我不敢百分百確定，但那桌上沒有糖罐，趙先生的手也確實有在咖啡杯上停留一下。", nextNode: "END" }
+                        { text: "你確定是趙福生動的手？", tone: "polite", response: "我不敢百分百確定，但那桌上沒有糖罐，趙先生的手也確實在咖啡杯上停留了一下。", nextNode: "END" }
                     ]
                 },
                 CHEN_3: {
                     text: "探長，您還在查？我剛剛又想到一件事。",
                     choices: [
-                        { text: "什麼事？", tone: "polite", response: "趙先生上車的時候，那件藏青色圍巾可講究了，圍在脖子上，誰碰他跟誰急。可今晚我見他從走廊回來時，圍巾不見了，手裡多了個鼓鼓的皮包，露出一截圍巾尾。他那是把圍巾硬塞進包裡了，為什麼要這樣？", nextNode: "CHEN_3_FOLLOWUP" },
-                        { text: "哦？說說看吧。", tone: "neutral", response: "趙先生上車的時候，那件藏青色圍巾可講究了，圍在脖子上，誰碰他跟誰急。可今晚我見他從走廊回來時，圍巾不見了，手裡多了個鼓鼓的皮包，露出一截圍巾尾。他那是把圍巾硬塞進包裡了，為什麼要這樣？", nextNode: "CHEN_3_FOLLOWUP" }
+                        { text: "什麼事？", tone: "polite", response: "趙先生上車的時候，那件藏青色圍巾可講究了，圍在脖子上，都不許別人碰他的圍巾。可今晚我見他從走廊回來時，圍巾不見了，手裡卻多了個鼓鼓的皮包，露出一截圍巾尾。他那是把圍巾硬塞進包裡了，為什麼要這樣？", nextNode: "CHEN_3_FOLLOWUP" },
+                        { text: "哦？說說看吧。", tone: "neutral", response: "趙先生上車的時候，那件藏青色圍巾可講究了，圍在脖子上，都不許別人碰他的圍巾。可今晚我見他從走廊回來時，圍巾不見了，手裡卻多了個鼓鼓的皮包，露出一截圍巾尾。他那是把圍巾硬塞進包裡了，為什麼要這樣？", nextNode: "CHEN_3_FOLLOWUP" }
                     ]
                 },
                 CHEN_3_FOLLOWUP: {
