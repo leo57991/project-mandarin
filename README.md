@@ -7,8 +7,6 @@
 
 A browser-based Mandarin Chinese grammar learning game set aboard a murder mystery train in 1899. The game teaches four target grammar points through a consequence-based feedback mechanic: grammatical errors or impolite tones made during NPC dialogue cause suspects to withhold vital context, leading the player's investigation toward one of six distinct endings.
 
-Designed and built as a final project for **[Course Name]**, **[Your University]** (2026).
-
 **Live Demo**: [https://leo57991.github.io/project-mandarin/](https://leo57991.github.io/project-mandarin/)
 
 ---
